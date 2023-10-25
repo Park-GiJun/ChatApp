@@ -1,23 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package com.chat.form;
-
-
 
 public class mainPage extends javax.swing.JPanel {
     public mainPage() {
         initComponents();
         searchPage.setVisible(false);
         messagePage.setVisible(false);
-        
     }
-    
-    public void init(){
-         
+  
+    public void init(){  
     }
-
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -334,7 +325,7 @@ public class mainPage extends javax.swing.JPanel {
         chatBox.setLayout(chatBoxLayout);
         chatBoxLayout.setHorizontalGroup(
             chatBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 610, Short.MAX_VALUE)
         );
         chatBoxLayout.setVerticalGroup(
             chatBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -379,7 +370,7 @@ public class mainPage extends javax.swing.JPanel {
                     .addGap(0, 0, 0)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addGap(0, 94, Short.MAX_VALUE)
+                    .addGap(0, 100, Short.MAX_VALUE)
                     .addComponent(messagePage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
@@ -406,18 +397,15 @@ public class mainPage extends javax.swing.JPanel {
        mainPage.setVisible(false);
        searchPage.setVisible(true);
        messagePage.setVisible(false);
-       
     }//GEN-LAST:event_searchBtnMouseClicked
 
     private void mainBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainBtnMouseClicked
      mainPage.setVisible(true);
      searchPage.setVisible(false);
-     messagePage.setVisible(false);
-            
+     messagePage.setVisible(false); 
     }//GEN-LAST:event_mainBtnMouseClicked
 
     private void messageBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_messageBtnMouseClicked
-        // TODO add your handling code here:
         mainPage.setVisible(false);
         searchPage.setVisible(false);
         messagePage.setVisible(true);

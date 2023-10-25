@@ -1,7 +1,5 @@
 package com.chat.main;
 
-import javax.swing.JFrame;
-
 public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
@@ -12,8 +10,7 @@ public class Main extends javax.swing.JFrame {
         loginFrame.setVisible(true);
         loginFrame.add(loginBtn);
         }
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+
     private void initComponents() {
 
         loginFrame = new javax.swing.JFrame();
@@ -26,17 +23,18 @@ public class Main extends javax.swing.JFrame {
         loginFrame.setBackground(java.awt.Color.black);
         loginFrame.setMaximumSize(new java.awt.Dimension(400, 300));
         loginFrame.setMinimumSize(new java.awt.Dimension(400, 300));
+        loginFrame.setLocationRelativeTo(null);
+        loginFrame.requestFocus();
 
-        loginBtn.setText("jButton1");
+        loginBtn.setText("login");
         loginBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 loginBtnMouseClicked(evt);
             }
         });
 
-        jTextField1.setText("jTextField1");
-
-        jTextField2.setText("jTextField2");
+        jTextField1.setText("id                  ");
+        jTextField2.setText("pwd              ");
 
         javax.swing.GroupLayout loginFrameLayout = new javax.swing.GroupLayout(loginFrame.getContentPane());
         loginFrame.getContentPane().setLayout(loginFrameLayout);

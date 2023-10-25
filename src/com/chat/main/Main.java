@@ -23,6 +23,8 @@ public class Main extends javax.swing.JFrame {
         loginFrame.setBackground(java.awt.Color.black);
         loginFrame.setMaximumSize(new java.awt.Dimension(400, 300));
         loginFrame.setMinimumSize(new java.awt.Dimension(400, 300));
+        loginFrame.setLocationRelativeTo(null);
+        loginFrame.requestFocus();
 
         loginBtn.setText("jButton1");
         loginBtn.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -31,9 +33,9 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-        jTextField1.setText("jTextField1");
+        jTextField1.setText("id");
 
-        jTextField2.setText("jTextField2");
+        jTextField2.setText("pwd");
 
         javax.swing.GroupLayout loginFrameLayout = new javax.swing.GroupLayout(loginFrame.getContentPane());
         loginFrame.getContentPane().setLayout(loginFrameLayout);
@@ -96,7 +98,7 @@ public class Main extends javax.swing.JFrame {
 
     private void loginBtnMouseClicked(java.awt.event.MouseEvent evt) {
         loginFrame.dispose();
-        mainPage1.setVisible(true);// TODO add your handling code here:
+        mainPage1.setVisible(true);//
     }
 
     public static void main(String args[]) {

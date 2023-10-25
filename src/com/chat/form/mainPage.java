@@ -9,10 +9,8 @@ public class mainPage extends javax.swing.JPanel {
   
     public void init(){  
     }
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        // 패널 추가
         leftPanel = new javax.swing.JPanel();
         mainBtn = new javax.swing.JButton();
         searchBtn = new javax.swing.JButton();
@@ -40,17 +38,20 @@ public class mainPage extends javax.swing.JPanel {
         postBtn = new javax.swing.JButton();
         chatBox = new javax.swing.JPanel();
         enterMessage = new javax.swing.JTextField();
-
+        
+        //기본 프레임 사이즈
         setMaximumSize(new java.awt.Dimension(800, 560));
         setMinimumSize(new java.awt.Dimension(800, 560));
         setPreferredSize(new java.awt.Dimension(800, 560));
-
+    
+        //왼쪽 패널 색상, 사이즈
         leftPanel.setBackground(java.awt.Color.red);
         leftPanel.setMaximumSize(new java.awt.Dimension(100, 560));
         leftPanel.setMinimumSize(new java.awt.Dimension(100, 560));
         leftPanel.setOpaque(false);
         leftPanel.setPreferredSize(new java.awt.Dimension(100, 560));
 
+        //메인탭 버튼
         mainBtn.setText("MainBtn");
         mainBtn.setMaximumSize(new java.awt.Dimension(100, 100));
         mainBtn.setMinimumSize(new java.awt.Dimension(100, 100));
@@ -61,6 +62,7 @@ public class mainPage extends javax.swing.JPanel {
             }
         });
 
+        //서치탭 버튼
         searchBtn.setText("SearchBtn");
         searchBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -68,15 +70,18 @@ public class mainPage extends javax.swing.JPanel {
             }
         });
 
+        //메세지 탭 버튼
         messageBtn.setText("MessageBtn");
         messageBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 messageBtnMouseClicked(evt);
             }
         });
-
+        
+        //왼쪽 패널 레이아웃
         javax.swing.GroupLayout leftPanelLayout = new javax.swing.GroupLayout(leftPanel);
         leftPanel.setLayout(leftPanelLayout);
+        //버튼들 패널에 그룹화
         leftPanelLayout.setHorizontalGroup(
             leftPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(mainBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -94,16 +99,21 @@ public class mainPage extends javax.swing.JPanel {
                 .addComponent(messageBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
+        
+        
+        //메인 페이지 사이즈, 색상
         mainPage.setBackground(java.awt.Color.black);
         mainPage.setMaximumSize(new java.awt.Dimension(700, 560));
         mainPage.setMinimumSize(new java.awt.Dimension(700, 560));
         mainPage.setPreferredSize(new java.awt.Dimension(700, 560));
-
+        
+        
+        //프로필 사진(패널) 사이즈, 색상
         profilePhoto.setMaximumSize(new java.awt.Dimension(165, 210));
         profilePhoto.setMinimumSize(new java.awt.Dimension(165, 210));
         profilePhoto.setPreferredSize(new java.awt.Dimension(165, 210));
-
+        
+        //프로필 사진 위치
         javax.swing.GroupLayout profilePhotoLayout = new javax.swing.GroupLayout(profilePhoto);
         profilePhoto.setLayout(profilePhotoLayout);
         profilePhotoLayout.setHorizontalGroup(
@@ -114,16 +124,20 @@ public class mainPage extends javax.swing.JPanel {
             profilePhotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 210, Short.MAX_VALUE)
         );
-
+        
+        //프로필 직원 이름
         empName.setForeground(java.awt.Color.white);
         empName.setText("empName");
-
+        
+        //프로필 직원 사번
         empNum.setForeground(new java.awt.Color(255, 255, 255));
         empNum.setText("empNum");
 
+        //어쩌구 저쩌구
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("jLabel3");
-
+        
+        //투두 리스트 패널
         todoList.setMaximumSize(new java.awt.Dimension(310, 170));
         todoList.setMinimumSize(new java.awt.Dimension(310, 170));
         todoList.setPreferredSize(new java.awt.Dimension(310, 170));
@@ -137,7 +151,8 @@ public class mainPage extends javax.swing.JPanel {
         jCheckBox4.setText("jCheckBox4");
 
         jCheckBox5.setText("jCheckBox5");
-
+        
+        //투두 리스트 위치
         javax.swing.GroupLayout todoListLayout = new javax.swing.GroupLayout(todoList);
         todoList.setLayout(todoListLayout);
         todoListLayout.setHorizontalGroup(
@@ -167,7 +182,8 @@ public class mainPage extends javax.swing.JPanel {
                 .addComponent(jCheckBox5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(35, 35, 35))
         );
-
+        
+        //메인 페이지 요소들 위치
         javax.swing.GroupLayout mainPageLayout = new javax.swing.GroupLayout(mainPage);
         mainPage.setLayout(mainPageLayout);
         mainPageLayout.setHorizontalGroup(
@@ -203,22 +219,26 @@ public class mainPage extends javax.swing.JPanel {
                 .addComponent(todoList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(23, 23, 23))
         );
-
+        
+        // 서치 페이지 패널
         searchPage.setBackground(java.awt.Color.cyan);
         searchPage.setMaximumSize(new java.awt.Dimension(700, 560));
         searchPage.setMinimumSize(new java.awt.Dimension(700, 560));
         searchPage.setPreferredSize(new java.awt.Dimension(700, 560));
 
+        // 서치 패널 
         searchPanel.setBackground(java.awt.Color.white);
         searchPanel.setMaximumSize(new java.awt.Dimension(230, 560));
         searchPanel.setMinimumSize(new java.awt.Dimension(230, 560));
         searchPanel.setPreferredSize(new java.awt.Dimension(230, 560));
-
+        
+        //search가 들어가는 텍스트 필드
         searchField.setText("jTextField1");
         searchField.setMaximumSize(new java.awt.Dimension(193, 44));
         searchField.setMinimumSize(new java.awt.Dimension(193, 44));
         searchField.setPreferredSize(new java.awt.Dimension(193, 44));
-
+        
+        // 서치 트리
         jScrollPane1.setViewportView(jTree1);
 
         javax.swing.GroupLayout searchTreeLayout = new javax.swing.GroupLayout(searchTree);
@@ -232,6 +252,8 @@ public class mainPage extends javax.swing.JPanel {
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
         );
 
+        
+        //서치 페이지 패널의 위치 지정
         javax.swing.GroupLayout searchPanelLayout = new javax.swing.GroupLayout(searchPanel);
         searchPanel.setLayout(searchPanelLayout);
         searchPanelLayout.setHorizontalGroup(
@@ -267,20 +289,25 @@ public class mainPage extends javax.swing.JPanel {
                 .addComponent(searchPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
-
+        
+        //메세지 페이지 패널
         messagePage.setBackground(java.awt.Color.pink);
         messagePage.setMaximumSize(new java.awt.Dimension(700, 560));
         messagePage.setMinimumSize(new java.awt.Dimension(700, 560));
-
+        
+        //메세지 좌측 초록색 리스트
         messageList.setBackground(java.awt.Color.green);
         messageList.setMaximumSize(new java.awt.Dimension(90, 560));
         messageList.setMinimumSize(new java.awt.Dimension(90, 560));
         messageList.setPreferredSize(new java.awt.Dimension(90, 560));
 
+
+        //쪽지함 패널
         postPanel.setMaximumSize(new java.awt.Dimension(90, 70));
         postPanel.setMinimumSize(new java.awt.Dimension(90, 70));
         postPanel.setPreferredSize(new java.awt.Dimension(90, 70));
-
+        
+        //쪽지함 진입용 버튼
         postBtn.setText("postBtn");
         postBtn.setMaximumSize(new java.awt.Dimension(90, 70));
         postBtn.setMinimumSize(new java.awt.Dimension(90, 70));
@@ -315,7 +342,9 @@ public class mainPage extends javax.swing.JPanel {
                 .addComponent(postPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 490, Short.MAX_VALUE))
         );
-
+        
+        
+        //채팅방 화면
         chatBox.setBackground(java.awt.Color.pink);
         chatBox.setMaximumSize(new java.awt.Dimension(610, 530));
         chatBox.setMinimumSize(new java.awt.Dimension(610, 530));
@@ -331,8 +360,9 @@ public class mainPage extends javax.swing.JPanel {
             chatBoxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 530, Short.MAX_VALUE)
         );
-
+        // 메세지 입력
         enterMessage.setText("enterMessage");
+
 
         javax.swing.GroupLayout messagePageLayout = new javax.swing.GroupLayout(messagePage);
         messagePage.setLayout(messagePageLayout);
@@ -393,18 +423,21 @@ public class mainPage extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    //서치버튼 클릭
     private void searchBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchBtnMouseClicked
        mainPage.setVisible(false);
        searchPage.setVisible(true);
        messagePage.setVisible(false);
     }//GEN-LAST:event_searchBtnMouseClicked
 
+    //메인 버튼 클릭
     private void mainBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mainBtnMouseClicked
      mainPage.setVisible(true);
      searchPage.setVisible(false);
      messagePage.setVisible(false); 
     }//GEN-LAST:event_mainBtnMouseClicked
 
+    //메세지 버튼 클릭
     private void messageBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_messageBtnMouseClicked
         mainPage.setVisible(false);
         searchPage.setVisible(false);

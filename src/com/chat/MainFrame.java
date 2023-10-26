@@ -2,16 +2,25 @@ package com.chat;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.plaf.basic.BasicSplitPaneUI.BasicVerticalLayoutManager;
@@ -52,11 +61,15 @@ public class MainFrame extends JFrame {
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
 	JPanel message_Box = new JPanel();
-	JPanel message_chatBox = new JPanel();
+	JScrollPane message_chatBox = new JScrollPane();
+	JScrollPane message_chatlog = new JScrollPane();
 	JButton message_postBtn = new JButton();
 	JPanel message_sendPanel = new JPanel();
 	JTextField message_sendBox = new JTextField();
 	JButton message_sendBtn = new JButton();
+	JButton people = new JButton();
+	
+	// 메세지
 
 	public MainFrame() {
 		CardLayout mainLayout = new CardLayout();
@@ -156,14 +169,15 @@ public class MainFrame extends JFrame {
 		message_Panel.setBounds(100, 0, 700, 560);
 		message_Panel.setBackground(Color.blue);
 		message_Panel.add(message_Box);
-		message_Box.setBounds(0, 0, 90, 560);
+		message_Box.setBounds(0, 0, 90, 700);
 		message_Box.setBackground(Color.orange);
-		message_Box.setLayout(null);
+		BoxLayout boxLayoutY = new BoxLayout(message_Box, BoxLayout.Y_AXIS);
+		message_Box.setLayout(boxLayoutY);
 		message_Panel.add(message_chatBox);
 		message_chatBox.setBounds(90, 0, 610, 560);
 		message_chatBox.setBackground(Color.pink);
 		message_Box.add(message_postBtn);
-		message_postBtn.setBounds(0, 0, 90, 70);
+		message_postBtn.setSize(90, 70);
 		message_chatBox.add(message_sendBox);
 		message_chatBox.setLayout(null);
 		message_chatBox.add(message_sendPanel);
@@ -173,6 +187,57 @@ public class MainFrame extends JFrame {
 		message_sendBox.setBounds(0, 0, 520, 40);
 		message_sendPanel.add(message_sendBtn);
 		message_sendBtn.setBounds(520, 0, 90, 40);
+		message_chatBox.add(message_chatlog);
+		message_chatlog.setBounds(0, 0, 610, 520);
+		message_chatlog.setBackground(Color.red);
+
+		// 채팅방
+
+		
+
+
+		// 새로운 JPanel을 만들어서 메시지를 표시할 것입니다.
+		JPanel messageDisplayPanel = new JPanel();
+		messageDisplayPanel.setLayout(new BoxLayout(messageDisplayPanel, BoxLayout.Y_AXIS));
+
+		// message_chatlog에 messageDisplayPanel을 추가합니다.
+		message_chatlog.setViewportView(messageDisplayPanel);
+		
+		// message_sendBtn 액션 리스너
+		message_sendBtn.addActionListener(new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        String message = message_sendBox.getText();
+
+		        if (!message.isEmpty()) {
+		            // 메시지를 표시할 JLabel을 생성하고 텍스트를 설정합니다
+		            JLabel messageLabel = new JLabel(message);
+
+		            // 메시지를 추가할 때마다 수직로 정렬
+		            messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		            // 메시지를 messageDisplayPanel에 추가합니다.
+		            messageDisplayPanel.add(messageLabel);
+
+		            // 선택적으로 줄 바꿈을 추가할 수 있습니다.
+		            messageDisplayPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+
+		            // 메시지 입력 필드를 지웁니다.
+		            message_sendBox.setText("");
+
+		            // message_chatlog가 스크롤되도록 만듭니다
+		            message_chatlog.revalidate();
+		            message_chatlog.repaint();
+		        }
+		    }
+		});
+
+		// 채팅목록
+
+		for (int i = 1; i <= 50; i++) {
+			JButton personButton = new JButton("Person " + i);
+			personButton.setBounds(90, (70 * i), 90, 70);
+			message_Box.add(personButton);
+		}
 
 		home_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

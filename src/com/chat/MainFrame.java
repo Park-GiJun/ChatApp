@@ -4,21 +4,26 @@ package com.chat;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Socket;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
 public class MainFrame extends JFrame {
 
+	//서버 ip 및 소켓
+	String ip;
+	Socket socket;
+	
+	
 	//로그인 패널
 	JPanel loginPanel = new JPanel();
 	JTextField id_TextField = new JTextField();
@@ -77,12 +82,18 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String id = id_TextField.getText();
 				String pwd = pwd_TextField.getText();
-				Server_2 server = new Server_2(id,pwd);
-				if(server.Login()) {
-					mainLayout.show(getContentPane(), "mainPanel");
+				if(!id.equals("")&&!pwd.equals("")) {
+					Server_2 server = new Server_2(id,pwd);
+					if(server.Login()) {
+						mainLayout.show(getContentPane(), "mainPanel");
+					} else {
+						System.out.println("로그인 실패");
+					}
 				} else {
-					System.out.println("로그인 실패");
+					JOptionPane.showMessageDialog(loginPanel, "아이디를 입력하세요", "로그인에 실패했습니다.", JOptionPane.WARNING_MESSAGE);
 				}
+					
+				
 			}
 		});
 

@@ -1,9 +1,6 @@
 package com.chat;
 
-
-
 public class Main {
-
 	
 	public Main() {
 		

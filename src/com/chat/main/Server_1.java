@@ -1,70 +1,107 @@
 package com.chat.main;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.awt.BorderLayout;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.ArrayList;
 
-public class Server_1 {
-	public static void main(String[] args) {
-		
-		ServerSocket serverSocket = null;
-		Socket socket = null;
-		BufferedReader in = null;
-		BufferedWriter out = null;
-		Scanner sc = new Scanner(System.in);
-		
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+public class Server_1 extends JFrame {
+	private static final long serialVersionUID = 1L;
+	private ArrayList<MultiServerThread> list;
+	private Socket socket;
+	JTextArea ta;
+	JTextField tf;
+
+	public Server_1() {
+		setTitle("채팅 서버 ver 1.0");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		ta = new JTextArea();
+		add(new JScrollPane(ta));
+		tf = new JTextField();
+		tf.setEditable(false);
+		add(tf, BorderLayout.SOUTH);
+		setSize(300, 300);
+		setVisible(true);
+		// 채팅 관련 코드
+		list = new ArrayList<MultiServerThread>();
 		try {
-			
-			//1. 서버 소켓 생성
-			serverSocket = new ServerSocket(9999);
-			
-			//2. 연결 대기
-			System.out.println("연결 대기중...");
-			
-			socket = serverSocket.accept();
-			
-			//3. 네트워크 입출력 스트림 생성
-			in = new BufferedReader(new InputStreamReader(System.in));
-			out = new BufferedWriter(new OutputStreamWriter(System.out));
-			
-			//4. 클라이언트로부터 데이터 수신(서버 <- 클라이언트)
-			while(true) {
-				String inMsg = in.readLine();
-				if(inMsg.equalsIgnoreCase("bye")) {
-					System.out.println("클라이언트가 나갔습니다.");
-					break;
-				}
-				
-				// 정상 메세지의 경우
-				System.out.println("클라이언트 > "+inMsg);
-				
-				// 5. 클라이언트로 데이터 전송 (서버 -> 클라이언트)
-				System.out.print("보내기 >> ");
-				String outMsg = sc.nextLine();
-				out.write(outMsg+"\n");
-				out.flush();
+			ServerSocket serverSocket = new ServerSocket(5000);
+			MultiServerThread mst = null;
+			boolean isStop = false;
+			tf.setText("서버 실행\n");
+			while (!isStop) {
+				// 클라이언트별 소켓 생성
+				socket = serverSocket.accept();
+				// 채팅 객체 생성
+				mst = new MultiServerThread();
+				list.add(mst);
+				mst.start();
 			}
-			
-		} catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			// 6. 접속 종료
+		}
+	}
+
+	public static void main(String[] args) {
+		new Server_1();
+	}
+
+	// 내부 클래스
+	class MultiServerThread extends Thread {
+		private ObjectInputStream ois;
+		private ObjectOutputStream oos;
+
+		@Override
+		public void run() {
+			boolean isStop = false;
 			try {
-				sc.close();
-				out.close();
-				in.close();
-				socket.close();
-				serverSocket.close();
+				ois = new ObjectInputStream(socket.getInputStream());
+				oos = new ObjectOutputStream(socket.getOutputStream());
+				// 채팅 내용을 저장할 변수
+				String message = null;
+				while (!isStop) {
+					message = (String) ois.readObject();
+					String[] str = message.split("#");
+					if (str[1].equals("exit")) {
+						broadCasting(message);
+						isStop = true;
+					} else {
+						// 모든 사용자에게 채팅 내용 전달
+						broadCasting(message);
+					}
+				}
+				list.remove(this);
+				ta.append(socket.getInetAddress() + " IP 주소의 사용자께서 종료하셨습니다.\n");
+				tf.setText("남은 사용자 수 : " + list.size());
+			} catch (Exception e) {
+				list.remove(this);
+				ta.append(socket.getInetAddress() + " IP 주소의 사용자께서 비정상 종료하셨습니다.");
+				tf.setText("남은 사용자 수 : " + list.size());
+			}
+		}
+
+		// 모두에게 전송
+		public void broadCasting(String message) {
+			for (MultiServerThread ct : list) {
+				ct.send(message);
+			}
+		}
+
+		// 한 사용자에게 전송
+		public void send(String message) {
+			try {
+				oos.writeObject(message);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-
 	}
-
 }

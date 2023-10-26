@@ -86,7 +86,10 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void loginBtnMouseClicked(java.awt.event.MouseEvent evt) {
-        loginFrame.dispose();
+    	
+        System.out.println("로그인버튼 클릭!");
+        System.out.println(idTextField.getText());
+        System.out.println(pwdTextField.getText());
         mainPage1.setVisible(true);//
     }
 

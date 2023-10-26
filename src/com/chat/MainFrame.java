@@ -19,10 +19,7 @@ import javax.swing.JTree;
 
 public class MainFrame extends JFrame {
 
-	//서버 ip 및 소켓
-	String ip;
-	Socket socket;
-	
+	//사용자 ip
 	
 	//로그인 패널
 	JPanel loginPanel = new JPanel();
@@ -80,6 +77,7 @@ public class MainFrame extends JFrame {
 		//로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//server 
 				String id = id_TextField.getText();
 				String pwd = pwd_TextField.getText();
 				if(!id.equals("")&&!pwd.equals("")) {

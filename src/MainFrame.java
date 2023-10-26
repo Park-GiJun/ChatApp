@@ -113,6 +113,7 @@ public class MainFrame extends JFrame {
 		home_photo.setBounds(268, 25, 165, 210);
 		home_Panel.add(home_name);
 		home_name.setBounds(220, 255, 60, 27);
+		home_name.setText("홍길동");
 		home_Panel.add(home_num);
 		home_num.setBounds(210, 292, 80, 20);
 		home_Panel.add(home_todo);

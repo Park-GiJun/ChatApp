@@ -75,8 +75,14 @@ public class MainFrame extends JFrame {
 		//로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				mainLayout.show(getContentPane(), "mainPanel");
+				String id = id_TextField.getText();
+				String pwd = pwd_TextField.getText();
+				Server_2 server = new Server_2(id,pwd);
+				if(server.Login()) {
+					mainLayout.show(getContentPane(), "mainPanel");
+				} else {
+					System.out.println("로그인 실패");
+				}
 			}
 		});
 

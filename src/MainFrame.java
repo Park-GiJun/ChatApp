@@ -1,11 +1,9 @@
-
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -156,8 +154,7 @@ public class MainFrame extends JFrame {
 		message_sendPanel.add(message_sendBox);
 		message_sendBox.setBounds(0, 0, 520, 40);
 		message_sendPanel.add(message_sendBtn);
-		message_sendBtn.setBounds(520,0,90,40);
-
+		message_sendBtn.setBounds(520, 0, 90, 40);
 
 		home_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

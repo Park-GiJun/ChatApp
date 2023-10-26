@@ -19,7 +19,24 @@ public class Server_1 extends JFrame {
 	private Socket socket;
 	JTextArea ta;
 	JTextField tf;
-
+	private String id, pwd;
+	private ServerDAO_1 dao = new ServerDAO_1();
+	
+	public Server_1(String id, String pwd) {
+		this.id = id;
+		this.pwd = pwd;
+	}
+	public boolean Login() {
+		if(!id.equals("")&&!pwd.equals("")) {
+			ArrayList<ServerVO_1> ar = dao.list(id);
+			if(ar.size()!=0 && ar.get(0).getPwd().equals(pwd))
+			{return true;}
+			else {return false;}
+		} else {
+			return false;
+		}
+	}
+	
 	public Server_1() {
 		setTitle("채팅 서버 ver 1.0");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

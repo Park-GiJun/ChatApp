@@ -22,9 +22,9 @@ public class ServerDAO_1 {
 		try {
 			connDB();
 
-			String query = "SELECT * FROM emp";
+			String query = "SELECT * FROM login";
 			if (id != null) {
-				query += " where cn='" + id + "'";
+				query += " where user_id='" + id + "'";
 			}
 			System.out.println("SQL : " + query);
 			rs = stmt.executeQuery(query);
@@ -38,7 +38,7 @@ public class ServerDAO_1 {
 				rs.previous();
 
 				while (rs.next()) {
-					String pwd = rs.getString("pwd");
+					String pwd = rs.getString("user_pwd");
 					ServerVO_1 data = new ServerVO_1(id, pwd);
 					list.add(data);
 				}

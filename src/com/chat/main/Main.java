@@ -8,7 +8,10 @@ public class Main extends javax.swing.JFrame {
 
     private void init() {
         loginFrame.setVisible(true);
+        loginFrame.add(idTextField);
+        loginFrame.add(pwdTextField);
         loginFrame.add(loginBtn);
+        loginFrame.add(fixInfoLabel);
     }
 
     private void initComponents() {
@@ -19,13 +22,29 @@ public class Main extends javax.swing.JFrame {
         idTextField = new javax.swing.JTextField();
         pwdTextField = new javax.swing.JTextField();
         mainPage1 = new com.chat.form.mainPage();
+        fixInfoLabel = new javax.swing.JLabel();
+        loginMainPanel = new javax.swing.JPanel();
 
         loginFrame.setBackground(java.awt.Color.black);
-        loginFrame.setMaximumSize(new java.awt.Dimension(400, 300));
-        loginFrame.setMinimumSize(new java.awt.Dimension(400, 300));
+        loginFrame.setMaximumSize(new java.awt.Dimension(800, 560));
+        loginFrame.setMinimumSize(new java.awt.Dimension(800, 560));
         loginFrame.setLocationRelativeTo(null);
         loginFrame.requestFocus();
-
+        
+        // 로그인 프레임 레이아웃
+        loginFrame.setLayout(null);
+    
+        //아이디 패스워드 위치
+        idTextField.setBounds(218, 326, 251, 38);
+        pwdTextField.setBounds(218,374,251,38);
+        loginBtn.setBounds(496, 326, 86, 86);
+        fixInfoLabel.setBounds(218,412,124,14);
+        loginMainPanel.setBounds(218, 148, 364, 148);
+        
+        //로그인 패널
+		
+        
+        
         loginBtn.setText("login");
         loginBtn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -34,42 +53,10 @@ public class Main extends javax.swing.JFrame {
         });
 
         idTextField.setText("id");
-        idTextField.setMaximumSize(new java.awt.Dimension(251, 38));
-        idTextField.setMinimumSize(new java.awt.Dimension(251, 38));
         pwdTextField.setText("pwd");
-        pwdTextField.setSize(251, 38);
+        fixInfoLabel.setText("정보수정");
 
-        javax.swing.GroupLayout loginFrameLayout = new javax.swing.GroupLayout(loginFrame.getContentPane());
-        loginFrame.getContentPane().setLayout(loginFrameLayout);
-        loginFrameLayout.setHorizontalGroup(
-                loginFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, loginFrameLayout.createSequentialGroup()
-                                .addGap(132, 132, 132)
-                                .addGroup(loginFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(loginFrameLayout.createSequentialGroup()
-                                                .addGroup(loginFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(pwdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addGap(18, 18, 18)
-                                                .addComponent(loginBtn)
-                                                .addGap(0, 16, Short.MAX_VALUE)))
-                                .addGap(86, 86, 86))
-        );
-        loginFrameLayout.setVerticalGroup(
-                loginFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(loginFrameLayout.createSequentialGroup()
-                                .addGap(21, 21, 21)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(loginFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(loginFrameLayout.createSequentialGroup()
-                                                .addComponent(idTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(pwdTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(loginBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addContainerGap(115, Short.MAX_VALUE))
-        );
+        
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 560));
@@ -136,5 +123,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton loginBtn;
     private javax.swing.JFrame loginFrame;
     private com.chat.form.mainPage mainPage1;
+    private javax.swing.JLabel fixInfoLabel;
+    private javax.swing.JPanel loginMainPanel;
 
 }

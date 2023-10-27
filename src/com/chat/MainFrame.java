@@ -10,24 +10,32 @@ import java.awt.event.ActionListener;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
 public class MainFrame extends JFrame {
+	private ClientConnection clientConnection; // ClientConnection 객체 추가
 
-	// 로그인 패널
-	JPanel loginPanel = new JPanel();
-	JTextField id_TextField = new JTextField();
-	JTextField pwd_TextField = new JTextField();
-	JButton login_Btn = new JButton();
+	// 로그인 패널 및 로그인 정보 필드
+	private JPanel loginPanel = new JPanel();
+	private JTextField id_TextField = new JTextField();
+	private JTextField pwd_TextField = new JTextField();
+	private JButton login_Btn = new JButton();
+	private String id;
+	private String pwd;
 
 	// 메인패널
 	JPanel main_Panel = new JPanel();
@@ -65,9 +73,15 @@ public class MainFrame extends JFrame {
 	JButton message_sendBtn = new JButton();
 	JButton people = new JButton();
 
+	// 채팅방
+	private ObjectOutputStream out;
+	JTextArea messageDisplayArea = new JTextArea();
+
 	// 메세지
 
-	public MainFrame() {
+	public MainFrame(ClientConnection clientConnection) {
+		this.clientConnection = clientConnection; // ClientConnection 초기화
+
 		CardLayout mainLayout = new CardLayout();
 		setLayout(mainLayout);
 		setSize(800, 560);
@@ -88,22 +102,21 @@ public class MainFrame extends JFrame {
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				mainLayout.show(getContentPane(), "mainPanel");
-//				// server
-//				String id = id_TextField.getText();
-//				String pwd = pwd_TextField.getText();
-//				if (!id.equals("") && !pwd.equals("")) {
-//					Server_2 server = new Server_2(id, pwd);
-//					if (server.Login()) {
-//						mainLayout.show(getContentPane(), "mainPanel");
-//					} else {
-//						System.out.println("로그인 실패");
-//					}
-//				} else {
-//					JOptionPane.showMessageDialog(loginPanel, "아이디를 입력하세요", "로그인에 실패했습니다.",
-//							JOptionPane.WARNING_MESSAGE);
-//				}
+				id = id_TextField.getText();
+				pwd = pwd_TextField.getText();
+				if (!id.isEmpty() && !pwd.isEmpty()) {
+					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
+					try {
+						clientConnection.login(id, pwd);
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
 
+					mainLayout.show(getContentPane(), "mainPanel");
+				} else {
+					JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
+							JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 
@@ -188,53 +201,41 @@ public class MainFrame extends JFrame {
 		message_chatlog.setBackground(Color.red);
 
 		// 채팅방
+		String userName = id;
 
 		// 새로운 JPanel을 만들어서 메시지를 표시할 것입니다.
-		JPanel messageDisplayPanel = new JPanel();
-		messageDisplayPanel.setLayout(new BoxLayout(messageDisplayPanel, BoxLayout.Y_AXIS));
+		JTextArea messageDisplayArea = new JTextArea();
+		messageDisplayArea.setEditable(false);
+		messageDisplayArea.setLayout(new BoxLayout(messageDisplayArea, BoxLayout.Y_AXIS));
 
 		// message_chatlog에 messageDisplayPanel을 추가합니다.
-		message_chatlog.setViewportView(messageDisplayPanel);
+		message_chatlog.setViewportView(messageDisplayArea);
 
-		// message_sendBtn 액션 리스너
+		// 메세지 입력 필드와 전송 버튼 리스너
 		message_sendBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String message = message_sendBox.getText();
-
-				// .txt 파일 생성
-				String username = System.getProperty("user.home");
-				String filePath = username + "/git/ChatApp/src/com/chat/chat_logs/user_messages.txt"; // 파일 경로 및 이름 지정
+				sendMessage(message_sendBox.getText());
 
 				if (!message.isEmpty()) {
-					try {
-						// 파일을 열거나 생성하여 메시지를 추가합니다.
-						FileWriter fileWriter = new FileWriter(filePath, true); // true는 파일을 이어쓰기 모드로 열도록 합니다.
-						BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-						bufferedWriter.write(message);
-						bufferedWriter.newLine(); // 줄 바꿈을 추가합니다.
-						bufferedWriter.close();
+					// 메시지를 표시할 JLabel을 생성하고 텍스트를 설정합니다
+					JLabel messageLabel = new JLabel(message);
 
-						// 메시지를 표시할 JLabel을 생성하고 텍스트를 설정합니다
-						JLabel messageLabel = new JLabel(message);
+					// 메시지를 추가할 때마다 수직로 정렬
+					messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-						// 메시지를 추가할 때마다 수직로 정렬
-						messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+					// 메시지를 messageDisplayPanel에 추가합니다.
+					messageDisplayArea.add(messageLabel);
 
-						// 메시지를 messageDisplayPanel에 추가합니다.
-						messageDisplayPanel.add(messageLabel);
+					// 선택적으로 줄 바꿈을 추가할 수 있습니다.
+					messageDisplayArea.add(Box.createRigidArea(new Dimension(0, 5)));
 
-						// 선택적으로 줄 바꿈을 추가할 수 있습니다.
-						messageDisplayPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+					// 메시지 입력 필드를 지웁니다.
+					message_sendBox.setText("");
 
-						// 메시지 입력 필드를 지웁니다.
-						message_sendBox.setText("");
-
-						// message_chatlog가 스크롤되도록 만듭니다
-						message_chatlog.revalidate();
-						message_chatlog.repaint();
-					} catch (IOException ex) {
-						ex.printStackTrace(); // 파일 작업 중 오류가 발생하면 오류를 출력합니다.
-					}
+					// message_chatlog가 스크롤되도록 만듭니다
+					message_chatlog.revalidate();
+					message_chatlog.repaint();
 				}
 			}
 		});
@@ -267,4 +268,14 @@ public class MainFrame extends JFrame {
 
 	}
 
+	// 메시지를 전송하는 메서드
+	private void sendMessage(String message) {
+		String recipient = JOptionPane.showInputDialog("Enter recipient's name:");
+		if (recipient != null && !recipient.isEmpty()) {
+			clientConnection.sendMessage(message, recipient);
+			message_sendBox.setText("");
+		} else {
+			JOptionPane.showMessageDialog(this, "수신자의 이름을 입력하세요.", "전송 오류", JOptionPane.WARNING_MESSAGE);
+		}
+	}
 }

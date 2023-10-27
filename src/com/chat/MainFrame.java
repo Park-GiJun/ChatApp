@@ -3,27 +3,23 @@ package com.chat;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.plaf.basic.BasicSplitPaneUI.BasicVerticalLayoutManager;
 
 public class MainFrame extends JFrame {
 
@@ -68,7 +64,7 @@ public class MainFrame extends JFrame {
 	JTextField message_sendBox = new JTextField();
 	JButton message_sendBtn = new JButton();
 	JButton people = new JButton();
-	
+
 	// 메세지
 
 	public MainFrame() {
@@ -193,42 +189,54 @@ public class MainFrame extends JFrame {
 
 		// 채팅방
 
-		
-
-
 		// 새로운 JPanel을 만들어서 메시지를 표시할 것입니다.
 		JPanel messageDisplayPanel = new JPanel();
 		messageDisplayPanel.setLayout(new BoxLayout(messageDisplayPanel, BoxLayout.Y_AXIS));
 
 		// message_chatlog에 messageDisplayPanel을 추가합니다.
 		message_chatlog.setViewportView(messageDisplayPanel);
-		
+
 		// message_sendBtn 액션 리스너
 		message_sendBtn.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        String message = message_sendBox.getText();
+			public void actionPerformed(ActionEvent e) {
+				String message = message_sendBox.getText();
 
-		        if (!message.isEmpty()) {
-		            // 메시지를 표시할 JLabel을 생성하고 텍스트를 설정합니다
-		            JLabel messageLabel = new JLabel(message);
+				// .txt 파일 생성
+				String username = System.getProperty("user.home");
+				String filePath = username + "/git/ChatApp/src/com/chat/chat_logs/user_messages.txt"; // 파일 경로 및 이름 지정
 
-		            // 메시지를 추가할 때마다 수직로 정렬
-		            messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+				if (!message.isEmpty()) {
+					try {
+						// 파일을 열거나 생성하여 메시지를 추가합니다.
+						FileWriter fileWriter = new FileWriter(filePath, true); // true는 파일을 이어쓰기 모드로 열도록 합니다.
+						BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+						bufferedWriter.write(message);
+						bufferedWriter.newLine(); // 줄 바꿈을 추가합니다.
+						bufferedWriter.close();
 
-		            // 메시지를 messageDisplayPanel에 추가합니다.
-		            messageDisplayPanel.add(messageLabel);
+						// 메시지를 표시할 JLabel을 생성하고 텍스트를 설정합니다
+						JLabel messageLabel = new JLabel(message);
 
-		            // 선택적으로 줄 바꿈을 추가할 수 있습니다.
-		            messageDisplayPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+						// 메시지를 추가할 때마다 수직로 정렬
+						messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		            // 메시지 입력 필드를 지웁니다.
-		            message_sendBox.setText("");
+						// 메시지를 messageDisplayPanel에 추가합니다.
+						messageDisplayPanel.add(messageLabel);
 
-		            // message_chatlog가 스크롤되도록 만듭니다
-		            message_chatlog.revalidate();
-		            message_chatlog.repaint();
-		        }
-		    }
+						// 선택적으로 줄 바꿈을 추가할 수 있습니다.
+						messageDisplayPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+
+						// 메시지 입력 필드를 지웁니다.
+						message_sendBox.setText("");
+
+						// message_chatlog가 스크롤되도록 만듭니다
+						message_chatlog.revalidate();
+						message_chatlog.repaint();
+					} catch (IOException ex) {
+						ex.printStackTrace(); // 파일 작업 중 오류가 발생하면 오류를 출력합니다.
+					}
+				}
+			}
 		});
 
 		// 채팅목록

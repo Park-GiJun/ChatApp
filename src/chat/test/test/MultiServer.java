@@ -1,17 +1,15 @@
 package chat.test.test;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 public class MultiServer extends JFrame {
@@ -30,7 +28,7 @@ public class MultiServer extends JFrame {
 		clientOutputStreams = new HashMap<>();
 		try {
 			serverSocket = new ServerSocket(12345);
-			appendToChat("Server is running. Waiting for clients...");
+			System.out.println("Server is running. Waiting for clients...");
 			while (true) {
 				Socket clientSocket = serverSocket.accept();
 				ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
@@ -39,10 +37,6 @@ public class MultiServer extends JFrame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	private void appendToChat(String message) {
-		textArea.append(message + "\n");
 	}
 
 	private class ClientHandler extends Thread {
@@ -63,24 +57,36 @@ public class MultiServer extends JFrame {
 					in = new ObjectInputStream(socket.getInputStream());
 					String id = (String) in.readObject();
 					String pwd = (String) in.readObject();
-					String inp = (String) in.readObject();
-					System.out.println(inp);
-					String[] arr = inp.split(":");
-					String sendName = arr[0];
-					String message = arr[1];
-					String recipient = arr[2];
-					System.out.println(sendName + " " + message + " " + recipient);
+					clientName = id; // 클라이언트 이름 설정
+					System.out.println(clientName + " connected");
 					clientOutputStreams.put(clientName, out);
-					ObjectOutputStream recipientOut = clientOutputStreams.get(recipient);
-					if (recipientOut != null) {
-						System.out.println(clientName + ":" + message);
-						recipientOut.writeObject(clientName + ":" + message);
+
+					while (true) {
+						String inp = (String) in.readObject();
+						System.out.println(clientName + " sent: " + inp);
+						String[] arr = inp.split(":");
+						String sendName = arr[0];
+						String message = arr[1];
+						String recipient = arr[2];
+						System.out.println("in / 발신자 : " + sendName + " 메세지 :" + message + " 수신자 :" + recipient);
+
+						// 클라이언트 간 메시지 중계
+						for (String client : clientOutputStreams.keySet()) {
+							ObjectOutputStream recipientOut = clientOutputStreams.get(client);
+							if (recipientOut != null) {
+								// 원래의 메시지를 모든 클라이언트에게 보냅니다.
+								recipientOut.writeObject(sendName + ":" + message + ":" + recipient);
+								System.out.println("out / 발신자 : "+ sendName + " 메세지 : " + message + " 수신자 :" + recipient);
+								recipientOut.flush();
+							}
+						}
 					}
 				}
 			} catch (IOException | ClassNotFoundException e) {
 				e.printStackTrace();
 			} finally {
 				clientOutputStreams.remove(clientName);
+				System.out.println(clientName + " disconnected");
 			}
 		}
 	}

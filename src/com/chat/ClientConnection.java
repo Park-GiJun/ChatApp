@@ -39,23 +39,50 @@ public class ClientConnection {
 		try {
 			String inp = userName + ":" + message + ":" + recipient;
 			out.writeObject(inp);
-			System.out.println(inp);
+			out.flush(); 
+			System.out.println(" Sent: " + inp);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public String receiveMessage() {
-		String receivedMessage = null; // 메시지를 저장할 변수를 미리 선언
+	public class MessageResult {
+		private String sendName;
+		private String receivedMessage;
+		private String recipient;
+
+		public MessageResult(String sendName, String receivedMessage, String recipient) {
+			this.sendName = sendName;
+			this.receivedMessage = receivedMessage;
+			this.recipient = recipient;
+		}
+
+		public String getSendName() {
+			return sendName;
+		}
+
+		public String getReceivedMessage() {
+			return receivedMessage;
+		}
+
+		public String getRecipient() {
+			return recipient;
+		}
+	}
+
+	public MessageResult receiveMessage() {
+		String receivedMessage = null;
+		String recipient = null;
+		String sendName = null;
 		try {
 			String inp = (String) in.readObject();
-			System.out.println(inp);
 			String[] arr = inp.split(":");
-			String sendName = arr[0];
+			recipient = arr[2];
+			sendName = arr[0];
 			receivedMessage = arr[1];
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
-		return receivedMessage;
+		return new MessageResult(sendName, receivedMessage, recipient);
 	}
 }

@@ -8,7 +8,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -21,7 +20,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 
 public class MainFrame extends JFrame {
 
@@ -116,6 +114,8 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
+		
+		setTitle(id);
 
 		// 메인 패널
 		add(main_Panel);
@@ -196,68 +196,52 @@ public class MainFrame extends JFrame {
 		message_chatBox.add(message_chatlog);
 		message_chatlog.setBounds(0, 0, 610, 520);
 		message_chatlog.setBackground(Color.red);
-		
 
 		// 새로운 JPanel을 만들어서 메시지를 표시할 것입니다.
-		JTextArea messageDisplayArea = new JTextArea();
+		messageDisplayArea = new JTextArea();
 		messageDisplayArea.setEditable(false);
 		messageDisplayArea.setLayout(new BoxLayout(messageDisplayArea, BoxLayout.Y_AXIS));
 
 		// message_chatlog에 messageDisplayPanel을 추가합니다.
 		message_chatlog.setViewportView(messageDisplayArea);
 
-		Thread messageReceiverThread = new Thread(new Runnable() {
-			public void run() {
-				// 메세지 입력 필드와 전송 버튼 리스너
-				message_sendBtn.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						String message = message_sendBox.getText();
-						sendMessage(message_sendBox.getText());
+		// 메세지 입력 필드와 전송 버튼 리스너
+		message_sendBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String message = message_sendBox.getText();
+				sendMessage(message_sendBox.getText());
 
-						if (!message.isEmpty()) {
-							// 메시지를 표시할 JLabel을 생성하고 텍스트를 설정합니다
-							JLabel messageLabel = new JLabel(id + "- send : " +message);
+				if (!message.isEmpty()) {
+					// 메시지를 표시할 JLabel을 생성하고 텍스트를 설정합니다
+					JLabel messageLabel = new JLabel(id + "- send : " + message);
 
-							// 메시지를 추가할 때마다 수직로 정렬
-							messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+					// 메시지를 추가할 때마다 수직로 정렬
+					messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-							// 메시지를 messageDisplayPanel에 추가합니다.
-							messageDisplayArea.add(messageLabel);
+					// 메시지를 messageDisplayPanel에 추가합니다.
+					messageDisplayArea.add(messageLabel);
 
-							// 선택적으로 줄 바꿈을 추가할 수 있습니다.
-							messageDisplayArea.add(Box.createRigidArea(new Dimension(0, 5)));
+					// 선택적으로 줄 바꿈을 추가할 수 있습니다.
+					messageDisplayArea.add(Box.createRigidArea(new Dimension(0, 5)));
 
-							// 메시지 입력 필드를 지웁니다.
-							message_sendBox.setText("");
+					// 메시지 입력 필드를 지웁니다.
+					message_sendBox.setText("");
 
-							// message_chatlog가 스크롤되도록 만듭니다
-							message_chatlog.revalidate();
-							message_chatlog.repaint();
-						}
-					}
-				});
-				boolean isStop = false;
-				while (!isStop) {
-					String receivedMessage = clientConnection.receiveMessage();
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							JLabel receivedLabel = new JLabel(receivedMessage);
-							receivedLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-							messageDisplayArea.append(receivedMessage + "\n"); // JTextArea에 메시지 추가
-						}
-					});
+					// message_chatlog가 스크롤되도록 만듭니다
+					message_chatlog.revalidate();
+					message_chatlog.repaint();
+
 				}
 			}
 		});
-		messageReceiverThread.start();
 
 		// 채팅목록
 
-//		for (int i = 1; i <= 50; i++) {
-//			JButton personButton = new JButton("Person " + i);
-//			personButton.setBounds(90, (70 * i), 90, 70);
-//			message_Box.add(personButton);
-//		}
+//      for (int i = 1; i <= 50; i++) {
+//         JButton personButton = new JButton("Person " + i);
+//         personButton.setBounds(90, (70 * i), 90, 70);
+//         message_Box.add(personButton);
+//      }
 
 		home_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -273,10 +257,8 @@ public class MainFrame extends JFrame {
 		message_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "messagePanel");
-
 			}
 		});
-
 	}
 
 	// 메시지를 전송하는 메서드
@@ -288,5 +270,34 @@ public class MainFrame extends JFrame {
 		} else {
 			JOptionPane.showMessageDialog(this, "수신자의 이름을 입력하세요.", "전송 오류", JOptionPane.WARNING_MESSAGE);
 		}
+	}
+
+	public void receiveMessages() {
+		try {
+			while (true) {
+				String message = clientConnection.receiveMessage().getReceivedMessage(); // 서버로부터 메시지 받기
+				if (message != null) {
+					appendMessageToTextArea(message);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	void appendMessageToTextArea(String message) {
+		JLabel messageLabel = new JLabel(id + "- receive : " + message);
+		System.out.println("mainFrame :" + message);
+		messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		messageDisplayArea.add(messageLabel);
+		messageDisplayArea.add(Box.createRigidArea(new Dimension(0, 5)));
+		messageDisplayArea.append(message + "\n");
+		// message_chatlog가 스크롤되도록 만듭니다
+		message_chatlog.revalidate();
+		message_chatlog.repaint();
+	}
+
+	public String getId() {
+		return id_TextField.getText();
 	}
 }

@@ -10,14 +10,14 @@ public class ClientConnection {
 	private int serverPort;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
-	String name, email, phone, dept_num;
+	String name, email, phone, dept_num, user_id, user_pwd;
 
 	public ClientConnection(String serverAddress, int serverPort) {
 		this.serverAddress = serverAddress;
 		this.serverPort = serverPort;
 		connectToServer();
 	}
-
+	public ClientConnection() {}
 	public String getName() {
 		return name;
 	}
@@ -33,11 +33,19 @@ public class ClientConnection {
 	public String getDeptNum() {
 		return dept_num;
 	}
+	public String getUserId() {
+		return user_id;
+	}
+	public String getUserPwd() {
+		return user_pwd;
+	}
 
 	public boolean login(String id, String pwd) throws IOException {
 		// 서버로 아이디와 비밀번호 전송
 		String pass_in = null;
 		boolean pass_out = false;
+		this.user_id = id;
+		this.user_pwd = pwd;
 		try {
 			out.writeObject(id);
 			out.writeObject(pwd);

@@ -33,8 +33,7 @@ public class MainFrame extends JFrame {
 	private JTextField id_TextField = new JTextField();
 	private JTextField pwd_TextField = new JTextField();
 	private JButton login_Btn = new JButton();
-	private String id;
-	private String pwd;
+	private String id, pwd, UserEmail, name;
 	private boolean pass = false;
 	private JButton pwdAdminSet = new JButton();
 
@@ -44,6 +43,7 @@ public class MainFrame extends JFrame {
 	JButton home_Btn = new JButton();
 	JButton search_Btn = new JButton();
 	JButton message_Btn = new JButton();
+	JButton info_Btn = new JButton();
 
 	CardLayout panelLayout = new CardLayout();
 	JPanel card_Panel = new JPanel();
@@ -83,7 +83,15 @@ public class MainFrame extends JFrame {
 	public boolean getPass() {
 		return pass;
 	}
-
+//	public String getUserEmail() {
+//		UserEmail = home_email.getText();
+//		return UserEmail;
+//	}
+//	public String getName() {
+//		name = home_name.getText();
+//		return name;
+//	}
+	public MainFrame() {}
 	public MainFrame(ClientConnection clientConnection) {
 		this.clientConnection = clientConnection; // ClientConnection 초기화
 
@@ -190,6 +198,15 @@ public class MainFrame extends JFrame {
 		home_Panel.add(home_todo);
 		home_todo.setBounds(195, 356, 310, 170);
 		home_todo.add(home_todo_list);
+		
+		// 정보수정 버튼 추가 액션 추가 
+		info_Btn.setBounds(16, 530, 20, 10);
+		left_Panel.add(info_Btn);
+		info_Btn.addActionListener(new ActionListener() {
+			public void actionPerformed (ActionEvent e) {
+				Information info = new Information();
+			}
+		});
 
 		// 서치패널
 		search_Panel.setLayout(null);

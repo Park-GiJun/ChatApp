@@ -76,10 +76,10 @@ public class MainFrame extends JFrame {
 	JTextArea messageDisplayArea = new JTextArea(); // JTextArea를 인스턴스 변수로 선언
 	JButton addPerson = new JButton();
 
-	// 메세지
 	public boolean getPass() {
 		return pass;
 	}
+//	public String 
 
 	public MainFrame(ClientConnection clientConnection) {
 		this.clientConnection = clientConnection; // ClientConnection 초기화
@@ -135,6 +135,10 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PasswordSet_admin pwdSet = new PasswordSet_admin();
+				if(pwdSet.getPass()) {
+				clientConnection.pwdUp(pwdSet.getnum_refer(), pwdSet.getname_refer());
+				System.out.println(pwdSet.getnum_refer()+"&&"+ pwdSet.getname_refer());
+				}
 			}
 		});
 

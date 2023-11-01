@@ -10,6 +10,7 @@ public class ClientConnection {
 	private int serverPort;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
+	String name, email, phone, dept_num;
 
 	public ClientConnection(String serverAddress, int serverPort) {
 		this.serverAddress = serverAddress;
@@ -17,14 +18,45 @@ public class ClientConnection {
 		connectToServer();
 	}
 
-	public void login(String id, String pwd) throws IOException {
-		// 서버로 아이디와 비밀번호 전송
-		out.writeObject(id);
-		out.writeObject(pwd);
-		// 이후 로그인 처리를 서버에서 수행
+	public String getName() {
+		return name;
 	}
 
-	// 서버에 연결하는 메서드
+	public String getEmail() {
+		return email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public String getDeptNum() {
+		return dept_num;
+	}
+
+	public boolean login(String id, String pwd) throws IOException {
+		// 서버로 아이디와 비밀번호 전송
+		String pass_in = null;
+		boolean pass_out = false;
+		try {
+			out.writeObject(id);
+			out.writeObject(pwd);
+			pass_in = (String) in.readObject();
+			name = (String) in.readObject();
+			email = (String) in.readObject();
+			phone = (String) in.readObject();
+			dept_num = (String) in.readObject();
+			System.out.println("정보 읽었냐?");
+			if (pass_in.equals("true")) {
+				pass_out = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(pass_out);
+		return pass_out;
+	}
+
 	private void connectToServer() {
 		try {
 			Socket socket = new Socket(serverAddress, serverPort);
@@ -39,7 +71,7 @@ public class ClientConnection {
 		try {
 			String inp = userName + ":" + message + ":" + recipient;
 			out.writeObject(inp);
-			out.flush(); 
+			out.flush();
 			System.out.println(" Sent: " + inp);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -76,6 +108,7 @@ public class ClientConnection {
 		String sendName = null;
 		try {
 			String inp = (String) in.readObject();
+			System.out.println(inp);
 			String[] arr = inp.split(":");
 			recipient = arr[2];
 			sendName = arr[0];

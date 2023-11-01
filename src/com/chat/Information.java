@@ -59,8 +59,8 @@ public class Information {
 		main_Panel.setLayout(null);
 		main_Panel.setBackground(Color.white);
 
-		main_Title.setFont(new Font("Gothic", Font.BOLD, 16));
-		main_Title.setBounds(146, 33, 250, 40);
+		main_Title.setFont(new Font("Gothic", Font.BOLD, 18));
+		main_Title.setBounds(166, 33, 250, 40);
 
 		main_NumberLabel.setBounds(66, 98, 250, 25);
 		main_Number.setBounds(171, 98, 180, 25);
@@ -83,7 +83,7 @@ public class Information {
 		main_EmailLabel.setBounds(66, 305, 250, 25);
 		main_Email.setBounds(171, 303, 150, 25);
 
-		main_Button.setBounds(315, 345, 60, 30);
+		main_Button.setBounds(330, 365, 60, 30);
 
 		// 2. 정보 수정 확인창
 		modify_Frame.setSize(300, 180);
@@ -95,21 +95,6 @@ public class Information {
 		modify_Text.setBounds(50, 30, 200, 20);
 		modify_Button_Yes.setBounds(65, 70, 70, 30);
 		modify_Button_No.setBounds(145, 70, 75, 30);
-		
-		ClientConnection client = new ClientConnection();
-		
-		String db_Number = client.user_id;
-		String db_Name = client.getName();
-		String db_Pwd = client.user_pwd;
-		String db_Phone = client.getPhone();
-		String db_Email = client.getEmail();
-		
-		main_Number.setText(db_Number);
-		main_Name.setText(db_Name);
-		main_Pwd.setText(db_Pwd);
-		main_PwdCheck.setText(db_Pwd);
-		main_Phone.setText(db_Phone);
-		main_Email.setText(db_Email);
 
 		// 3. 수정 완료
 		save_Frame.setSize(300, 150);
@@ -177,7 +162,7 @@ public class Information {
 				save_Frame.setVisible(true);
 			}
 		});
-		
+
 		// 2-2-2. 정보 변경창 "아니요" 버튼
 		modify_Button_No.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -213,9 +198,5 @@ public class Information {
 		save_Frame.add(save_Panel);
 		save_Panel.add(save_Message);
 
-	}
-
-	public static void main(String[] args) {
-		Information info = new Information();
 	}
 }

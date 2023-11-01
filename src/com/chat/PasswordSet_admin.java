@@ -23,7 +23,7 @@ public class PasswordSet_admin {
 	JLabel pwd_PwdLabel = new JLabel("비밀번호");
 	JTextField pwd_Pwd = new JTextField("");
 	JButton pwd_Login = new JButton("로그인");
-	Font labelFont = new Font("Gothic", Font.BOLD, 12);
+	Font labelFont = new Font("Gothic", Font.BOLD, 13);
 
 	// 1-*. 로그인 코드 정보
 	String admin_ID = "admin";
@@ -85,22 +85,22 @@ public class PasswordSet_admin {
 		pwd_Title.setFont(new Font("Gothic", Font.BOLD, 20));
 		pwd_Title.setBounds(198, 40, 130, 25);
 
-		pwd_CodeLabel.setBounds(78, 125, 60, 18);
+		pwd_CodeLabel.setBounds(68, 126, 60, 18);
 		pwd_CodeLabel.setFont(labelFont);
 		pwd_MainPanel.add(pwd_CodeLabel);
 
-		pwd_Code.setBounds(148, 120, 200, 35);
+		pwd_Code.setBounds(138, 120, 200, 35);
 		pwd_MainPanel.add(pwd_Code);
 
-		pwd_PwdLabel.setBounds(78, 165, 60, 18);
+		pwd_PwdLabel.setBounds(68, 166, 60, 18);
 		pwd_PwdLabel.setFont(labelFont);
 		pwd_MainPanel.add(pwd_PwdLabel);
 
 //		pwd_Pwd.setEchoChar('*');
-		pwd_Pwd.setBounds(148, 160, 200, 35);
+		pwd_Pwd.setBounds(138, 160, 200, 35);
 		pwd_MainPanel.add(pwd_Pwd);
 
-		pwd_Login.setBounds(360, 120, 80, 75);
+		pwd_Login.setBounds(350, 120, 80, 75);
 		pwd_Login.setOpaque(true);
 		pwd_MainPanel.add(pwd_Login);
 
@@ -114,16 +114,6 @@ public class PasswordSet_admin {
 		info_Panel.setLayout(null);
 		info_Panel.setBackground(Color.WHITE);
 		info_Frame.add(info_Panel);
-		JPanel admin_WarningPanel = new JPanel();
-		admin_WarningPanel.setSize(410, 160);
-		admin_WarningPanel.setLayout(null);
-		admin_WarningPanel.setBackground(Color.WHITE);
-		admin_WarningFrame.add(admin_WarningPanel);
-		JLabel admin_WarningText = new JLabel("<html><div style='text-align:center;'>"
-				+ "권한이 없습니다.<br/>코드를 다시 확인하거나 관리자가 아닌 경우<br/>정보 수정 권한이 있는 관리자에게 문의하세요." + "</div></html>");
-		admin_WarningText.setFont(new Font("Gothic", Font.BOLD, 13));
-		admin_WarningPanel.add(admin_WarningText);
-		admin_WarningText.setBounds(60, 30, 330, 63);
 
 		info_Title.setFont(new Font("Gothic", Font.BOLD, 20));
 		info_Title.setBounds(168, 20, 90, 30);
@@ -158,21 +148,20 @@ public class PasswordSet_admin {
 
 		reset_Panel.add(reset_Text);
 		reset_Text.setBounds(60, 40, 250, 50);
+		reset_Text.setFont(labelFont);
 
 		// 사원 정보 불일치 -> 경고창
-		admin_WarningFrame.setSize(410, 160);
+		admin_WarningFrame.setSize(300, 160);
 		admin_WarningFrame.setVisible(false);
 		admin_WarningFrame.setResizable(false);
 		admin_WarningFrame.setLocationRelativeTo(null);
 		admin_WarningFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-		admin_WarningPanel.setSize(410, 160);
 		admin_WarningPanel.setLayout(null);
 		admin_WarningPanel.setBackground(Color.WHITE);
 		admin_WarningFrame.add(admin_WarningPanel);
-		admin_WarningText.setFont(new Font("Gothic", Font.BOLD, 13));
+		admin_WarningText.setFont(labelFont);
 		admin_WarningPanel.add(admin_WarningText);
-		admin_WarningText.setBounds(60, 30, 330, 63);
+		admin_WarningText.setBounds(40, 25, 250, 63);
 
 		// 관리자 로그인 정보 확인 경고
 		login_WarningFrame.setSize(410, 160);
@@ -180,14 +169,13 @@ public class PasswordSet_admin {
 		login_WarningFrame.setResizable(false);
 		login_WarningFrame.setLocationRelativeTo(null);
 		login_WarningFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
 		login_WarningPanel.setSize(410, 160);
 		login_WarningPanel.setLayout(null);
 		login_WarningPanel.setBackground(Color.WHITE);
 		login_WarningFrame.add(login_WarningPanel);
-		login_WarningText.setFont(new Font("Gothic", Font.BOLD, 13));
+		login_WarningText.setFont(labelFont);
 		login_WarningPanel.add(login_WarningText);
-		login_WarningText.setBounds(60, 30, 330, 63);
+		login_WarningText.setBounds(60, 25, 330, 63);
 
 		// 창 닫기
 		pwd_MainFrame.addWindowListener(new WindowAdapter() {
@@ -230,17 +218,21 @@ public class PasswordSet_admin {
 
 										reset_Frame.setVisible(true); // 초기화 비밀번호 안내
 									} else {
-										login_WarningFrame.setVisible(true); // 사원 정보 불일치 경고
+										admin_WarningFrame.setVisible(true); // 사원 정보 불일치 경고
 									}
 								}
 							}
 						});
 
 					} else { // 로그인 실패
-						admin_WarningFrame.setVisible(true); // 로그인 정보 확인 경고
+						login_WarningFrame.setVisible(true); // 로그인 정보 확인 경고
 					}
 				}
 			}
 		});
 	}
+
+//	public static void main(String[] args) {
+//		PasswordSet_admin pwdAdmin = new PasswordSet_admin();
+//	}
 }

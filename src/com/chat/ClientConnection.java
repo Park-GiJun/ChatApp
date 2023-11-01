@@ -110,9 +110,9 @@ public class ClientConnection {
 			String inp = (String) in.readObject();
 			System.out.println(inp);
 			String[] arr = inp.split(":");
-			recipient = arr[2];
 			sendName = arr[0];
 			receivedMessage = arr[1];
+			recipient = arr[2];
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}

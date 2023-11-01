@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,6 +26,7 @@ import javax.swing.JTree;
 public class MainFrame extends JFrame {
 
 	private ClientConnection clientConnection; // ClientConnection 객체 추가
+	private Map<String, String> receivedMessages = new HashMap<>();
 
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
@@ -225,10 +228,10 @@ public class MainFrame extends JFrame {
 		message_sendPanel.setBounds(0, 485, 610, 40);
 		// 메세지 입력창
 		message_sendPanel.add(message_sendBox);
-		message_sendBox.setBounds(0, 0, 520, 40);
+		message_sendBox.setBounds(0, 0, 610, 40);
 		/// 메세지 전송 버튼
-		message_sendPanel.add(message_sendBtn);
-		message_sendBtn.setBounds(520, 0, 90, 40);
+//		message_sendPanel.add(message_sendBtn);
+//		message_sendBtn.setBounds(520, 0, 90, 40);
 		// 메세지 로그
 		message_chatBox.add(message_chatlog);
 		message_chatlog.setBounds(0, 0, 610, 520);
@@ -246,23 +249,31 @@ public class MainFrame extends JFrame {
 		message_chatlog.setViewportView(messageDisplayArea);
 
 		// 메세지 입력 필드와 전송 버튼 리스너
-		message_sendBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String message = message_sendBox.getText();
-				sendMessage(message);
-			}
-		});
+//		message_sendBtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				String message = message_sendBox.getText();
+//				sendMessage(message);
+//			}
+//		});
 
-		// 채팅목록
+//		// 채팅목록
 		// 사용자 추가
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String recipient = JOptionPane.showInputDialog("Enter recipient: ");
+				String recipient = JOptionPane.showInputDialog("수신자: ");
 				JButton personButton = new JButton(recipient);
+				String buttonText = recipient;
 				personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
 				message_Box.add(personButton);
 				message_Box.revalidate(); // 레이아웃을 갱신하여 버튼을 새 위치에 배치
-				JTextArea recipientChatArea = new JTextArea();
+				personButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						String message = message_sendBox.getText();
+						showMessageForRecipient(buttonText);
+						sendMessage(message, recipient);
+
+					}
+				});
 
 			}
 		});
@@ -286,16 +297,19 @@ public class MainFrame extends JFrame {
 	}
 
 	// 메시지를 전송하는 메서드
-	private void sendMessage(String message) {
+	private void sendMessage(String message, String recipient) {
 		if (!message.isEmpty()) {
-			JLabel messageLabel = new JLabel("Me" + "- send : " + message);
+			// 발신자 정보 추가
+			String messageText = id + " - send: " + message;
+
+			JLabel messageLabel = new JLabel(messageText);
 			messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			messageDisplayArea.add(messageLabel);
 			messageDisplayArea.add(Box.createRigidArea(new Dimension(0, 5)));
 			message_sendBox.setText("");
 			message_chatlog.revalidate();
 			message_chatlog.repaint();
-			String recipient = JOptionPane.showInputDialog("Enter recipient's name:");
+
 			if (recipient != null && !recipient.isEmpty()) {
 				clientConnection.sendMessage(id, message, recipient);
 				message_sendBox.setText("");
@@ -308,10 +322,18 @@ public class MainFrame extends JFrame {
 	public void receiveMessages() {
 		try {
 			while (true) {
-				String message = clientConnection.receiveMessage().getReceivedMessage(); // 서버로부터 메시지 받기
-				String name = clientConnection.receiveMessage().getSendName();
-				if (message != null) {
-					appendMessageToTextArea(message, name);
+				ClientConnection.MessageResult messageResult = clientConnection.receiveMessage(); // 서버로부터 메시지 받기
+				if (messageResult != null) {
+					String senderName = messageResult.getSendName();
+					String receivedMessage = messageResult.getReceivedMessage();
+					String recipient = messageResult.getRecipient();
+					String messageText = senderName + " - receive: " + receivedMessage;
+
+					if (recipient.equals(id)) {
+						appendMessageToTextArea(messageText);
+					}
+
+					receivedMessages.put(receivedMessage, senderName);
 				}
 			}
 		} catch (Exception e) {
@@ -319,15 +341,26 @@ public class MainFrame extends JFrame {
 		}
 	}
 
-	void appendMessageToTextArea(String message, String sendName) {
-		JLabel messageLabel = new JLabel(sendName + "- receive : " + message);
-		System.out.println("mainFrame :" + message);
+	void appendMessageToTextArea(String message) {
+		JLabel messageLabel = new JLabel(message);
 		messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		messageDisplayArea.add(messageLabel);
 		messageDisplayArea.add(Box.createRigidArea(new Dimension(0, 5)));
-		// message_chatlog가 스크롤되도록 만듭니다
 		message_chatlog.revalidate();
 		message_chatlog.repaint();
+	}
+
+	// 수신자에 해당하는 메시지만 표시하는 메서드
+	private void showMessageForRecipient(String recipient) {
+		messageDisplayArea.setText(""); // 기존 메시지 지우기
+
+		for (String receivedMessage : receivedMessages.keySet()) {
+			String senderName = receivedMessages.get(receivedMessage);
+			if (recipient.equals(senderName)) {
+				String messageText = senderName + " - receive: " + receivedMessage;
+				appendMessageToTextArea(messageText);
+			}
+		}
 	}
 
 	public String getId() {

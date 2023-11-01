@@ -1,6 +1,6 @@
 package com.chat;
 
-import com.chat.ClientConnection.MessageResult;
+import javax.swing.SwingUtilities;
 
 public class Main {
 	public static void main(String[] args) {
@@ -18,26 +18,27 @@ public class Main {
 		}
 		// 메시지 수신 스레드 시작
 		Thread messageReceiverThread = new Thread(new Runnable() {
-
 			public void run() {
-				System.out.println("1");
+				System.out.println("메시지 수신 스레드 시작");
 				while (true) {
-					System.out.println("2");
-					MessageResult receivedMessage = clientConnection.receiveMessage();
-					String senderName = receivedMessage.getSendName();
-					String receiveMessage = receivedMessage.getReceivedMessage();
-					String receipent = receivedMessage.getRecipient();
-					System.out.println("메세지 수신");
-					if (receivedMessage != null) {
-						System.out.println("3");
+					try {
+						System.out.println("메시지 대기 중...");
+						ClientConnection.MessageResult receivedMessage = clientConnection.receiveMessage();
+						String senderName = receivedMessage.getSendName();
+						String receiveMessage = receivedMessage.getReceivedMessage();
+						String recipient = receivedMessage.getRecipient();
+						System.out.println(
+								"메시지 수신: 발신자=" + senderName + ", 메시지=" + receiveMessage + ", 수신자=" + recipient);
 						String id = mainFrame.getId();
-						System.out.println("발신자: " + senderName + " 메세지 :" + receiveMessage + " 수신자 : " + receipent
-								+ " ID : " + id);
-						if (receipent.equals(id)) {
-							mainFrame.appendMessageToTextArea(receiveMessage, senderName);
-							System.out.println("수신자 = id");
-
+						if (recipient.equals(id)) {
+							SwingUtilities.invokeLater(new Runnable() {
+								public void run() {
+									mainFrame.appendMessageToTextArea(senderName + " - receive: " + receiveMessage);
+								}
+							});
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			}

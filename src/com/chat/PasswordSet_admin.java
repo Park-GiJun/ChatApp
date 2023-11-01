@@ -169,7 +169,7 @@ public class PasswordSet_admin {
 //                    admin_PwdSetFrame.setVisible(true);
 //                    admin_WarningText.setText("<html><div style='align:center'"+
 //                            "권한이 없습니다.</br>코드를 다시 확인하거나 관리자가 아닌 경우</br>정보 수정 권한이 있는 관리자에게 문의하세요."+
-//                            "</div></html>");
+//                            "</div></html>");	
 				}
 			}
 		});

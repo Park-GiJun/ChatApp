@@ -1,29 +1,31 @@
 package com.chat;
 
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class PasswordSet_admin {
-	// 1. 메인 프레임
-	JFrame pwd_MainFrame = new JFrame("비밀번호 초기화");
-	JPanel pwd_MainPanel = new JPanel();
-	JLabel pwd_Title = new JLabel("관리자 로그인");
-	JLabel pwd_CodeLabel = new JLabel("관리 코드");
-	JTextField pwd_Code = new JTextField("");
-	JLabel pwd_PwdLabel = new JLabel("비밀번호");
-	JTextField pwd_Pwd = new JTextField("");
-	JButton pwd_Login = new JButton("로그인");
-	Font labelFont = new Font("Gothic", Font.BOLD, 13);
+   JFrame pwd_MainFrame = new JFrame("비밀번호 초기화");
+   JPanel pwd_MainPanel = new JPanel();
+   JLabel pwd_Title = new JLabel("관리자 로그인");
+   JLabel pwd_CodeLabel = new JLabel("관리 코드");
+   JTextField pwd_Code = new JTextField("");
+   JLabel pwd_PwdLabel = new JLabel("비밀번호");
+   JTextField pwd_Pwd = new JTextField("");
+   JButton pwd_Login = new JButton("로그인");
+   Font labelFont = new Font("Gothic", Font.BOLD, 12);
+   
+   // 사원 정보 조회
+   JFrame admin_ResetFrame = new JFrame();
+   JPanel admin_ResetPanel = new JPanel();
+   JLabel admin_ResetTitle = new JLabel("정보 조회");
+   JLabel reset_NumLabel = new JLabel("사번");
+   JTextField reset_NumField = new JTextField(20);
+   JLabel reset_NameLabel = new JLabel("이름");
+   JTextField reset_NameField = new JTextField(20);
+   JButton reset_Refer = new JButton("조회");
+   JLabel reset_Message = new JLabel("비밀번호를 초기화할 사원의 사번과 이름을 입력하세요.");
 
 	// 1-*. 로그인 코드 정보
 	String admin_ID = "admin";

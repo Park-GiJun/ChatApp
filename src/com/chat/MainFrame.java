@@ -83,6 +83,7 @@ public class MainFrame extends JFrame {
 	public boolean getPass() {
 		return pass;
 	}
+
 //	public String getUserEmail() {
 //		UserEmail = home_email.getText();
 //		return UserEmail;
@@ -91,7 +92,9 @@ public class MainFrame extends JFrame {
 //		name = home_name.getText();
 //		return name;
 //	}
-	public MainFrame() {}
+	public MainFrame() {
+	}
+
 	public MainFrame(ClientConnection clientConnection) {
 		this.clientConnection = clientConnection; // ClientConnection 초기화
 
@@ -146,6 +149,10 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PasswordSet_admin pwdSet = new PasswordSet_admin();
+				if (pwdSet.getPass()) {
+					clientConnection.pwdUp(pwdSet.getnum_refer(), pwdSet.getname_refer());
+					System.out.println(pwdSet.getnum_refer() + "&&" + pwdSet.getname_refer());
+				}
 			}
 		});
 
@@ -198,12 +205,12 @@ public class MainFrame extends JFrame {
 		home_Panel.add(home_todo);
 		home_todo.setBounds(195, 356, 310, 170);
 		home_todo.add(home_todo_list);
-		
-		// 정보수정 버튼 추가 액션 추가 
+
+		// 정보수정 버튼 추가 액션 추가
 		info_Btn.setBounds(16, 530, 20, 10);
 		left_Panel.add(info_Btn);
 		info_Btn.addActionListener(new ActionListener() {
-			public void actionPerformed (ActionEvent e) {
+			public void actionPerformed(ActionEvent e) {
 				Information info = new Information();
 			}
 		});

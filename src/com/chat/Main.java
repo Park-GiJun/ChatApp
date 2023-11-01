@@ -16,6 +16,7 @@ public class Main {
 		while (!mainFrame.getPass()) {
 			System.out.println("1");
 		}
+		System.out.println(mainFrame.getPass());
 		// 메시지 수신 스레드 시작
 		Thread messageReceiverThread = new Thread(new Runnable() {
 			public void run() {

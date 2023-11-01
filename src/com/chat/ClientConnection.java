@@ -10,14 +10,22 @@ public class ClientConnection {
 	private int serverPort;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
-	String name, email, phone, dept_num, user_id, user_pwd;
+	private String name;
+	private String email;
+	private String phone;
+	private String dept_num;
+	private String user_id;
+	private String user_pwd;
 
 	public ClientConnection(String serverAddress, int serverPort) {
 		this.serverAddress = serverAddress;
 		this.serverPort = serverPort;
 		connectToServer();
 	}
-	public ClientConnection() {}
+
+	public ClientConnection() {
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -33,11 +41,26 @@ public class ClientConnection {
 	public String getDeptNum() {
 		return dept_num;
 	}
-	public String getUserId() {
-		return user_id;
-	}
+
 	public String getUserPwd() {
 		return user_pwd;
+	}
+
+	public String getUserID() {
+		return user_id;
+	}
+
+	public void pwdUp(String id, String name) {
+		try {
+			out.writeObject("1");
+			out.writeObject(id);
+			out.writeObject(name);
+			System.out.println(id + " () " + name);
+			System.out.println("패스워드 초기화 입력 성공");
+		} catch (Exception e) {
+			System.out.println("패스워드 초기화 입력 오류");
+			e.printStackTrace();
+		}
 	}
 
 	public boolean login(String id, String pwd) throws IOException {
@@ -46,6 +69,7 @@ public class ClientConnection {
 		boolean pass_out = false;
 		this.user_id = id;
 		this.user_pwd = pwd;
+		out.writeObject("2");
 		try {
 			out.writeObject(id);
 			out.writeObject(pwd);

@@ -292,13 +292,17 @@ public class MainFrame extends JFrame {
 				personButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						String message = message_sendBox.getText();
-						showMessageForRecipient(buttonText);
-						sendMessage(message, recipient);
-						saveSendChat(message, recipient, id);
-						try {
-							readTextFile(id, recipient);
-						} catch (IOException e1) {
-							e1.printStackTrace();
+						if (message != null) {
+							showMessageForRecipient(buttonText);
+							sendMessage(message, recipient);
+							saveSendChat(message, recipient, id);
+							try {
+								readTextFile(id, recipient);
+							} catch (IOException e1) {
+								e1.printStackTrace();
+							}
+						}else {
+							message_sendBox.setText("");
 						}
 
 					}

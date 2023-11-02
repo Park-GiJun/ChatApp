@@ -1,5 +1,6 @@
 package com.chat;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class Main {
@@ -31,9 +32,11 @@ public class Main {
 						System.out.println(
 								"메시지 수신: 발신자=" + senderName + ", 메시지=" + receiveMessage + ", 수신자=" + recipient);
 						String id = mainFrame.getId();
-
+						
 						if (recipient.equals(id)) {
+							JOptionPane.showMessageDialog(mainFrame, senderName + "님이 메세지를 발송했습니다.");
 							mainFrame.saveReceiveChat(receiveMessage, recipient, senderName);
+							mainFrame.readTextFile(id, senderName);
 							SwingUtilities.invokeLater(new Runnable() {
 								public void run() {
 									mainFrame.appendMessageToTextArea(senderName + " : " + receiveMessage);

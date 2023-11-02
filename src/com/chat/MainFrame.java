@@ -7,14 +7,21 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -28,6 +35,8 @@ public class MainFrame extends JFrame {
 	// ClientConnection 객체 추가
 	private ClientConnection clientConnection;
 	private Map<String, String> receivedMessages = new HashMap<>();
+
+	LocalDateTime currentDateTime = LocalDateTime.now();
 
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
@@ -99,6 +108,7 @@ public class MainFrame extends JFrame {
 		setSize(800, 560);
 		getContentPane().setLayout(mainLayout);
 		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// 로그인 패널
 		add(loginPanel);
@@ -234,7 +244,7 @@ public class MainFrame extends JFrame {
 		message_chatBox.setBounds(90, 0, 610, 520);
 		message_chatBox.setBackground(Color.pink);
 		message_Box.add(message_postBtn);
-		message_postBtn.setSize(90, 70);
+		message_postBtn.setSize(new Dimension(90, 70));
 		message_postBtn.setText("Post");
 		message_chatBox.add(message_sendBox);
 		message_chatBox.setLayout(null);
@@ -265,42 +275,51 @@ public class MainFrame extends JFrame {
 		// message_chatlog에 messageDisplayPanel을 추가합니다.
 		message_chatlog.setViewportView(messageDisplayArea);
 
-		// 사용자 추가
-		Map<String, ChatRoom> chatRooms = new HashMap<>();
+//		// 사용자 추가
+//		Map<String, ChatRoom> chatRooms = new HashMap<>();
 		// 대상자 체크박스를 저장할 Map
-		Map<String, JCheckBox> recipientCheckboxes = new HashMap<>();
+		Map<String, JButton> recipientButtons = new HashMap<>();
 
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String recipient = JOptionPane.showInputDialog("수신자: ");
+				JButton personButton = new JButton(recipient);
+				String buttonText = recipient;
+				personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
+				message_Box.add(personButton);
+				recipientButtons.put(recipient, personButton);
+				message_Box.revalidate(); // 레이아웃을 갱신하여 버튼을 새 위치에 배치
+				personButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						String message = message_sendBox.getText();
+						showMessageForRecipient(buttonText);
+						sendMessage(message, recipient);
+						saveSendChat(message, recipient, id);
+						try {
+							readTextFile(id, recipient);
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
 
-				// 대상자의 채팅방이 이미 있는지 확인하고 없으면 생성합니다.
-				if (!chatRooms.containsKey(recipient)) {
-					chatRooms.put(recipient, new ChatRoom());
-				}
-
-				JCheckBox checkBox = new JCheckBox(recipient);
-				recipientCheckboxes.put(recipient, checkBox); // 대상자와 체크박스를 연결
-				checkBox.setMaximumSize(new Dimension(90, 50));
-				message_Box.add(checkBox);
-				message_Box.revalidate();
-			}
-		});
-
-		message_sendBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String message = message_sendBox.getText();
-
-				for (Map.Entry<String, JCheckBox> entry : recipientCheckboxes.entrySet()) {
-					String recipient = entry.getKey();
-					JCheckBox checkBox = entry.getValue();
-
-					if (checkBox.isSelected()) {
-						sendChatMessage(message, recipient, chatRooms.get(recipient)); // 선택된 대상자의 채팅방에 메시지 전송
 					}
-				}
+				});
 			}
 		});
+
+//		message_sendBtn.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				String message = message_sendBox.getText();
+//
+//				for (Map.Entry<String, JCheckBox> entry : recipientCheckboxes.entrySet()) {
+//					String recipient = entry.getKey();
+//					JCheckBox checkBox = entry.getValue();
+//
+//					if (checkBox.isSelected()) {
+//						sendChatMessage(message, recipient, chatRooms.get(recipient)); // 선택된 대상자의 채팅방에 메시지 전송
+//					}
+//				}
+//			}
+//		});
 
 		home_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -322,45 +341,17 @@ public class MainFrame extends JFrame {
 	// 메시지를 전송하는 메서드
 	private void sendMessage(String message, String recipient) {
 		if (!message.isEmpty()) {
-			// 발신자 정보 추가
-			String messageText = id + " : " + message;
-			JLabel messageLabel = new JLabel(messageText);
-			messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-			messageDisplayArea.add(messageLabel);
 			messageDisplayArea.add(Box.createRigidArea(new Dimension(0, 5)));
 			message_sendBox.setText("");
 			message_chatlog.revalidate();
 			message_chatlog.repaint();
 			clientConnection.sendMessage(id, message, recipient);
 			message_sendBox.setText("");
-
-		}
-	}
-
-	public void receiveMessages() {
-		try {
-			while (true) {
-				ClientConnection.MessageResult messageResult = clientConnection.receiveMessage(); // 서버로부터 메시지 받기
-				if (messageResult != null) {
-					String senderName = messageResult.getSendName();
-					String receivedMessage = messageResult.getReceivedMessage();
-					String recipient = messageResult.getRecipient();
-					String messageText = senderName + " : " + receivedMessage;
-					if (recipient.equals(id)) {
-						appendMessageToTextArea(messageText);
-					}
-					receivedMessages.put(receivedMessage, senderName);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
 	void appendMessageToTextArea(String message) {
-		JLabel messageLabel = new JLabel(message);
-		messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-		messageDisplayArea.add(messageLabel);
+		System.out.println("어펜드 메세지 실행");
 		messageDisplayArea.add(Box.createRigidArea(new Dimension(0, 5)));
 		message_chatlog.revalidate();
 		message_chatlog.repaint();
@@ -368,22 +359,111 @@ public class MainFrame extends JFrame {
 
 	// 수신자에 해당하는 메시지만 표시하는 메서드
 	private void showMessageForRecipient(String recipient) {
+		System.out.println("쇼메세지 실행");
 		messageDisplayArea.setText("");
 		for (String receivedMessage : receivedMessages.keySet()) {
 			String senderName = receivedMessages.get(receivedMessage);
 			if (recipient.equals(senderName)) {
 				String messageText = senderName + " : " + receivedMessage;
 				appendMessageToTextArea(messageText);
+				saveReceiveChat(receivedMessage, recipient, id);
 			}
 		}
 	}
 
-	private void sendChatMessage(String message, String recipient, ChatRoom chatRoom) {
-		if (chatRoom != null) {
-			chatRoom.addMessage(message); // 대상자의 채팅방에 메시지 추가
-			sendMessage(message, recipient);
-		} else {
-			JOptionPane.showMessageDialog(this, "채팅방이 존재하지 않습니다.", "전송 오류", JOptionPane.WARNING_MESSAGE);
+	void saveSendChat(String message, String opposite, String me) {
+		String username = System.getProperty("user.home");
+		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + me + "_" + opposite + ".txt";
+		int year = currentDateTime.getYear();
+		int month = currentDateTime.getMonthValue();
+		int day = currentDateTime.getDayOfMonth();
+		int hour = currentDateTime.getHour();
+		int minute = currentDateTime.getMinute();
+		int second = currentDateTime.getSecond();
+
+		File file = new File(filePath);
+		File parentDir = file.getParentFile();
+
+		try {
+			if (!parentDir.exists()) {
+				// 디렉토리가 존재하지 않으면 생성
+				parentDir.mkdirs();
+			}
+
+			if (!file.exists()) {
+				// 파일이 존재하지 않으면 생성
+				file.createNewFile();
+			}
+
+			FileWriter fileWriter = new FileWriter(filePath, true);
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + me
+					+ " : " + message);
+			bufferedWriter.newLine();
+			bufferedWriter.close();
+			System.out.println("saved Send Message");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	void saveReceiveChat(String message, String opposite, String me) {
+		String username = System.getProperty("user.home");
+		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + opposite + "_" + me + ".txt";
+		int year = currentDateTime.getYear();
+		int month = currentDateTime.getMonthValue();
+		int day = currentDateTime.getDayOfMonth();
+		int hour = currentDateTime.getHour();
+		int minute = currentDateTime.getMinute();
+		int second = currentDateTime.getSecond();
+
+		File file = new File(filePath);
+		File parentDir = file.getParentFile();
+
+		try {
+			if (!parentDir.exists()) {
+				// 디렉토리가 존재하지 않으면 생성
+				parentDir.mkdirs();
+			}
+
+			if (!file.exists()) {
+				// 파일이 존재하지 않으면 생성
+				file.createNewFile();
+			}
+
+			FileWriter fileWriter = new FileWriter(filePath, true);
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + me
+					+ " : " + message);
+			bufferedWriter.newLine();
+			bufferedWriter.close();
+			System.out.println("saved Receive Message");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	void readTextFile(String me, String opposite) throws IOException {
+		System.out.println("Reading Text...");
+		List<Message> messages = new ArrayList<>();
+		try {
+
+			// 파일 경로
+			String username = System.getProperty("user.home");
+			String filePath = username + "/git/ChatApp/src/com/chat/chats/" + id + "_" + opposite + ".txt";
+
+			// 파일을 읽어올 BufferedReader 생성
+			BufferedReader reader = new BufferedReader(new FileReader(filePath));
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				// 한 줄씩 읽어와서 JTextArea에 추가
+				messageDisplayArea.append(line + "\n");
+			}
+			// BufferedReader 닫기
+			reader.close();
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 	}
 

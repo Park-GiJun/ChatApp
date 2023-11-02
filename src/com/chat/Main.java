@@ -14,7 +14,7 @@ public class Main {
 		mainFrame.setVisible(true);
 		System.out.println(mainFrame.getPass());
 		while (!mainFrame.getPass()) {
-			System.out.println("1");
+			System.out.println("Loading...");
 		}
 		System.out.println(mainFrame.getPass());
 		// 메시지 수신 스레드 시작
@@ -31,7 +31,9 @@ public class Main {
 						System.out.println(
 								"메시지 수신: 발신자=" + senderName + ", 메시지=" + receiveMessage + ", 수신자=" + recipient);
 						String id = mainFrame.getId();
+
 						if (recipient.equals(id)) {
+							mainFrame.saveReceiveChat(receiveMessage, recipient, senderName);
 							SwingUtilities.invokeLater(new Runnable() {
 								public void run() {
 									mainFrame.appendMessageToTextArea(senderName + " : " + receiveMessage);

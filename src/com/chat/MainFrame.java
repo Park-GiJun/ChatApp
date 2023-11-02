@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,8 +25,8 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 
 public class MainFrame extends JFrame {
-
-	private ClientConnection clientConnection; // ClientConnection 객체 추가
+	// ClientConnection 객체 추가
+	private ClientConnection clientConnection;
 	private Map<String, String> receivedMessages = new HashMap<>();
 
 	// 로그인 패널 및 로그인 정보 필드
@@ -44,7 +45,6 @@ public class MainFrame extends JFrame {
 	JButton search_Btn = new JButton();
 	JButton message_Btn = new JButton();
 	JButton info_Btn = new JButton();
-
 	CardLayout panelLayout = new CardLayout();
 	JPanel card_Panel = new JPanel();
 
@@ -92,12 +92,8 @@ public class MainFrame extends JFrame {
 //		name = home_name.getText();
 //		return name;
 //	}
-	public MainFrame() {
-	}
-
 	public MainFrame(ClientConnection clientConnection) {
 		this.clientConnection = clientConnection; // ClientConnection 초기화
-
 		CardLayout mainLayout = new CardLayout();
 		setLayout(mainLayout);
 		setSize(800, 560);
@@ -145,17 +141,16 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		pwdAdminSet.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PasswordSet_admin pwdSet = new PasswordSet_admin();
-				if (pwdSet.getPass()) {
-					clientConnection.pwdUp(pwdSet.getnum_refer(), pwdSet.getname_refer());
-					System.out.println(pwdSet.getnum_refer() + "&&" + pwdSet.getname_refer());
-				}
-			}
-		});
-
+//		pwdAdminSet.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				PasswordSet_admin pwdSet = new PasswordSet_admin();
+//				if (pwdSet.getPass()) {
+//					clientConnection.pwdUp(pwdSet.getnum_refer(), pwdSet.getname_refer());
+//					System.out.println(pwdSet.getnum_refer() + "&&" + pwdSet.getname_refer());
+//				}
+//			}
+//		});
 		setTitle(id);
 
 		// 메인 패널
@@ -177,7 +172,6 @@ public class MainFrame extends JFrame {
 		message_Btn.setSize(100, 100);
 
 		// 변경 패널
-
 		main_Panel.add(card_Panel);
 		card_Panel.setLayout(panelLayout);
 		card_Panel.setBounds(100, 0, 700, 560);
@@ -192,7 +186,6 @@ public class MainFrame extends JFrame {
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 210);
-
 		home_Panel.add(home_name);
 		home_name.setBounds(290, 250, 200, 20);
 		home_Panel.add(home_num);
@@ -201,7 +194,6 @@ public class MainFrame extends JFrame {
 		home_email.setBounds(290, 300, 200, 20);
 		home_Panel.add(home_deptNum);
 		home_deptNum.setBounds(290, 325, 100, 20);
-
 		home_Panel.add(home_todo);
 		home_todo.setBounds(195, 356, 310, 170);
 		home_todo.add(home_todo_list);
@@ -252,10 +244,11 @@ public class MainFrame extends JFrame {
 		message_sendPanel.setBounds(0, 485, 610, 40);
 		// 메세지 입력창
 		message_sendPanel.add(message_sendBox);
-		message_sendBox.setBounds(0, 0, 610, 40);
-		/// 메세지 전송 버튼
-//		message_sendPanel.add(message_sendBtn);
-//		message_sendBtn.setBounds(520, 0, 90, 40);
+		message_sendBox.setBounds(0, 0, 520, 40);
+		// 메세지 전송 버튼
+		message_sendPanel.add(message_sendBtn);
+		message_sendBtn.setBounds(520, 0, 90, 40);
+
 		// 메세지 로그
 		message_chatBox.add(message_chatlog);
 		message_chatlog.setBounds(0, 0, 610, 520);
@@ -272,33 +265,40 @@ public class MainFrame extends JFrame {
 		// message_chatlog에 messageDisplayPanel을 추가합니다.
 		message_chatlog.setViewportView(messageDisplayArea);
 
-		// 메세지 입력 필드와 전송 버튼 리스너
-//		message_sendBtn.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				String message = message_sendBox.getText();
-//				sendMessage(message);
-//			}
-//		});
-
-//		// 채팅목록
 		// 사용자 추가
+		Map<String, ChatRoom> chatRooms = new HashMap<>();
+		// 대상자 체크박스를 저장할 Map
+		Map<String, JCheckBox> recipientCheckboxes = new HashMap<>();
+
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String recipient = JOptionPane.showInputDialog("수신자: ");
-				JButton personButton = new JButton(recipient);
-				String buttonText = recipient;
-				personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
-				message_Box.add(personButton);
-				message_Box.revalidate(); // 레이아웃을 갱신하여 버튼을 새 위치에 배치
-				personButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						String message = message_sendBox.getText();
-						showMessageForRecipient(buttonText);
-						sendMessage(message, recipient);
 
+				// 대상자의 채팅방이 이미 있는지 확인하고 없으면 생성합니다.
+				if (!chatRooms.containsKey(recipient)) {
+					chatRooms.put(recipient, new ChatRoom());
+				}
+
+				JCheckBox checkBox = new JCheckBox(recipient);
+				recipientCheckboxes.put(recipient, checkBox); // 대상자와 체크박스를 연결
+				checkBox.setMaximumSize(new Dimension(90, 50));
+				message_Box.add(checkBox);
+				message_Box.revalidate();
+			}
+		});
+
+		message_sendBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String message = message_sendBox.getText();
+
+				for (Map.Entry<String, JCheckBox> entry : recipientCheckboxes.entrySet()) {
+					String recipient = entry.getKey();
+					JCheckBox checkBox = entry.getValue();
+
+					if (checkBox.isSelected()) {
+						sendChatMessage(message, recipient, chatRooms.get(recipient)); // 선택된 대상자의 채팅방에 메시지 전송
 					}
-				});
-
+				}
 			}
 		});
 
@@ -312,7 +312,6 @@ public class MainFrame extends JFrame {
 				panelLayout.show(card_Panel, "searchPanel");
 			}
 		});
-
 		message_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "messagePanel");
@@ -324,8 +323,7 @@ public class MainFrame extends JFrame {
 	private void sendMessage(String message, String recipient) {
 		if (!message.isEmpty()) {
 			// 발신자 정보 추가
-			String messageText = id + " - send: " + message;
-
+			String messageText = id + " : " + message;
 			JLabel messageLabel = new JLabel(messageText);
 			messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			messageDisplayArea.add(messageLabel);
@@ -333,13 +331,9 @@ public class MainFrame extends JFrame {
 			message_sendBox.setText("");
 			message_chatlog.revalidate();
 			message_chatlog.repaint();
+			clientConnection.sendMessage(id, message, recipient);
+			message_sendBox.setText("");
 
-			if (recipient != null && !recipient.isEmpty()) {
-				clientConnection.sendMessage(id, message, recipient);
-				message_sendBox.setText("");
-			} else {
-				JOptionPane.showMessageDialog(this, "수신자의 이름을 입력하세요.", "전송 오류", JOptionPane.WARNING_MESSAGE);
-			}
 		}
 	}
 
@@ -351,12 +345,10 @@ public class MainFrame extends JFrame {
 					String senderName = messageResult.getSendName();
 					String receivedMessage = messageResult.getReceivedMessage();
 					String recipient = messageResult.getRecipient();
-					String messageText = senderName + " - receive: " + receivedMessage;
-
+					String messageText = senderName + " : " + receivedMessage;
 					if (recipient.equals(id)) {
 						appendMessageToTextArea(messageText);
 					}
-
 					receivedMessages.put(receivedMessage, senderName);
 				}
 			}
@@ -376,14 +368,22 @@ public class MainFrame extends JFrame {
 
 	// 수신자에 해당하는 메시지만 표시하는 메서드
 	private void showMessageForRecipient(String recipient) {
-		messageDisplayArea.setText(""); // 기존 메시지 지우기
-
+		messageDisplayArea.setText("");
 		for (String receivedMessage : receivedMessages.keySet()) {
 			String senderName = receivedMessages.get(receivedMessage);
 			if (recipient.equals(senderName)) {
-				String messageText = senderName + " - receive: " + receivedMessage;
+				String messageText = senderName + " : " + receivedMessage;
 				appendMessageToTextArea(messageText);
 			}
+		}
+	}
+
+	private void sendChatMessage(String message, String recipient, ChatRoom chatRoom) {
+		if (chatRoom != null) {
+			chatRoom.addMessage(message); // 대상자의 채팅방에 메시지 추가
+			sendMessage(message, recipient);
+		} else {
+			JOptionPane.showMessageDialog(this, "채팅방이 존재하지 않습니다.", "전송 오류", JOptionPane.WARNING_MESSAGE);
 		}
 	}
 

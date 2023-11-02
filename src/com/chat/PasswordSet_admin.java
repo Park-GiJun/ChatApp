@@ -179,25 +179,25 @@ public class PasswordSet_admin {
 		login_WarningPanel.add(login_WarningText);
 		login_WarningText.setBounds(60, 25, 330, 63);
 
-		// 창 닫기
-		pwd_MainFrame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				info_Frame.dispose();
-				reset_Frame.dispose();
-				admin_WarningFrame.dispose();
-				login_WarningFrame.dispose();
-			}
-		});
-
-		// 초기화 종료 시 메인 프레임 종료
-		reset_Frame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				pwd_MainFrame.dispose();
-				info_Frame.dispose();
-				admin_WarningFrame.dispose();
-				login_WarningFrame.dispose();
-			}
-		});
+//		// 창 닫기
+//		pwd_MainFrame.addWindowListener(new WindowAdapter() {
+//			public void windowClosing(WindowEvent e) {
+//				info_Frame.dispose();
+//				reset_Frame.dispose();
+//				admin_WarningFrame.dispose();
+//				login_WarningFrame.dispose();
+//			}
+//		});
+//
+//		// 초기화 종료 시 메인 프레임 종료
+//		reset_Frame.addWindowListener(new WindowAdapter() {
+//			public void windowClosing(WindowEvent e) {
+//				pwd_MainFrame.dispose();
+//				info_Frame.dispose();
+//				admin_WarningFrame.dispose();
+//				login_WarningFrame.dispose();
+//			}
+//		});
 
 		// 이벤트
 		pwd_Login.addActionListener(new ActionListener() { // 로그인 버튼 클릭 이벤트

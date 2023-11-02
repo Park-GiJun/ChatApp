@@ -34,7 +34,7 @@ public class Main {
 						if (recipient.equals(id)) {
 							SwingUtilities.invokeLater(new Runnable() {
 								public void run() {
-									mainFrame.appendMessageToTextArea(senderName + " - receive: " + receiveMessage);
+									mainFrame.appendMessageToTextArea(senderName + " : " + receiveMessage);
 								}
 							});
 						}

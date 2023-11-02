@@ -123,7 +123,8 @@ public class MainFrame extends JFrame {
 						if (clientConnection.login(id, pwd)) {
 							mainLayout.show(getContentPane(), "mainPanel");
 							pass = true;
-							home_name.setText("이름 : " + clientConnection.getName());
+							name =clientConnection.getName();
+							home_name.setText("이름 : " + name);
 							home_email.setText("이메일 : " + clientConnection.getEmail());
 							home_num.setText("전화번호 : " + clientConnection.getPhone());
 							home_deptNum.setText("내선번호 : " + clientConnection.getDeptNum());
@@ -154,17 +155,17 @@ public class MainFrame extends JFrame {
 		main_Panel.setSize(800, 560);
 		main_Panel.setLayout(null);
 		main_Panel.add(left_Panel);
-		left_Panel.setBounds(0, 0, 100, 300);
-		left_Panel.setLayout(new GridLayout(3, 1));
+		left_Panel.setLayout(null);
+		left_Panel.setBounds(0, 0, 100, 560);
 		left_Panel.add(home_Btn);
 		home_Btn.setText("Home");
-		home_Btn.setSize(100, 100);
+		home_Btn.setBounds(0, 0, 100, 100);
 		left_Panel.add(search_Btn);
 		search_Btn.setText("Search");
-		search_Btn.setSize(100, 100);
+		search_Btn.setBounds(0, 100, 100, 100);
 		left_Panel.add(message_Btn);
 		message_Btn.setText("Message");
-		message_Btn.setSize(100, 100);
+		message_Btn.setBounds(0, 200, 100, 100);
 
 		// 변경 패널
 
@@ -196,12 +197,12 @@ public class MainFrame extends JFrame {
 		home_todo.setBounds(195, 356, 310, 170);
 		home_todo.add(home_todo_list);
 		
-		// 정보수정 버튼 추가 액션 추가 
-		info_Btn.setBounds(16, 530, 20, 10);
+		// 정보수정 버튼 추가 액션 추가
 		left_Panel.add(info_Btn);
+		info_Btn.setBounds(20, 490, 60, 20);
 		info_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed (ActionEvent e) {
-				Information info = new Information();
+				Information info = new Information(id,name);
 			}
 		});
 

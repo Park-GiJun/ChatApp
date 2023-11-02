@@ -10,14 +10,22 @@ public class ClientConnection {
 	private int serverPort;
 	private ObjectOutputStream out;
 	private ObjectInputStream in;
-	String name, email, phone, dept_num, user_id, user_pwd;
+	private String name;
+	private String email;
+	private String phone;
+	private String dept_num;
+	private String user_id;
+	private String user_pwd;
 
 	public ClientConnection(String serverAddress, int serverPort) {
 		this.serverAddress = serverAddress;
 		this.serverPort = serverPort;
 		connectToServer();
 	}
-	public ClientConnection() {}
+
+	public ClientConnection() {
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -33,11 +41,52 @@ public class ClientConnection {
 	public String getDeptNum() {
 		return dept_num;
 	}
-	public String getUserId() {
-		return user_id;
-	}
+
 	public String getUserPwd() {
 		return user_pwd;
+	}
+
+	public String getUserID() {
+		return user_id;
+	}
+	
+	public void setProfile(String setPwd, String setPhone, String setEmail) {
+		System.out.println(setPwd+" == "+setPhone + " == "+ setEmail);
+		try {
+			out.flush();
+			out.writeObject("3");
+			System.out.println("3번 보냈다");
+			out.writeObject(setPwd);
+			System.out.println("setpwd 보냈다");
+			out.writeObject(setPhone);
+			System.out.println("setPhone 보냈다");
+			out.writeObject(setEmail);
+			System.out.println("setEmail 보냈다");
+			setPwd = (String) in.readObject();
+			setPhone = (String) in.readObject();
+			setEmail = (String) in.readObject();
+			System.out.println("-------------------------");
+			System.out.println("pwd : " + setPwd + " phone : " + setPhone + " email : " + setEmail);
+			System.out.println("사원정보 수정 성공");
+			System.out.println("-------------------------");
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("사원정보 수정 실패");
+			System.out.println("-------------------------");
+		}
+	}
+
+	public void pwdUp(String id, String name) {
+		try {
+			out.writeObject("1");
+			out.writeObject(id);
+			out.writeObject(name);
+			System.out.println(id + " () " + name);
+			System.out.println("패스워드 초기화 입력 성공");
+		} catch (Exception e) {
+			System.out.println("패스워드 초기화 입력 오류");
+			e.printStackTrace();
+		}
 	}
 
 	public boolean login(String id, String pwd) throws IOException {
@@ -46,6 +95,7 @@ public class ClientConnection {
 		boolean pass_out = false;
 		this.user_id = id;
 		this.user_pwd = pwd;
+		out.writeObject("2");
 		try {
 			out.writeObject(id);
 			out.writeObject(pwd);
@@ -118,9 +168,9 @@ public class ClientConnection {
 			String inp = (String) in.readObject();
 			System.out.println(inp);
 			String[] arr = inp.split(":");
-			recipient = arr[2];
 			sendName = arr[0];
 			receivedMessage = arr[1];
+			recipient = arr[2];
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}

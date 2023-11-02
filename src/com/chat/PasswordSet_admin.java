@@ -74,7 +74,6 @@ public class PasswordSet_admin {
 		pwd_MainFrame.setVisible(true);
 		pwd_MainFrame.setResizable(false);
 		pwd_MainFrame.setLocationRelativeTo(null);
-//        pwd_MainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 		pwd_MainPanel.setSize(510, 350);
 		pwd_MainPanel.setLayout(null);
@@ -130,14 +129,13 @@ public class PasswordSet_admin {
 		info_NameField.setBounds(132, 104, 150, 25);
 		info_Panel.add(info_NameField);
 
-		info_Pefer.setBounds(310, 70, 70, 60);
+		info_Pefer.setBounds(290, 70, 70, 60);
 		info_Panel.add(info_Pefer);
 
 		info_Message.setBounds(70, 180, 320, 18);
 		info_Panel.add(info_Message);
 
 		// 사원 정보 일치 -> 초기화 비밀번호 안내
-//        reset_Frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		reset_Frame.setLocationRelativeTo(null);
 		reset_Frame.setSize(370, 180);
 		reset_Frame.setVisible(false);
@@ -199,40 +197,34 @@ public class PasswordSet_admin {
 
 		// 이벤트
 		pwd_Login.addActionListener(new ActionListener() { // 로그인 버튼 클릭 이벤트
-			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (e.getSource() == pwd_Login) {
-					String getAdminCode = pwd_Code.getText();
-					String getAdminPwd = pwd_Pwd.getText();
-					if (getAdminCode.equals(admin_ID) && getAdminPwd.equals(admin_PWD)) {
-						info_Frame.setVisible(true);
-						info_Pefer.addActionListener(new ActionListener() { // 조회 버튼 클릭 시
-							@Override
-							public void actionPerformed(ActionEvent e) {
-								if (e.getSource() == info_Pefer) {
-									num = info_NumField.getText();
-									name = info_NameField.getText();
-									// DB 비교 한 값 받아오기
-									if (num.equals("admin") && name.equals("admin")) { // 정보 조회 성공하면
-										// 해당 사원 비밀번호 DB 업데이트
+				String getAdminCode = pwd_Code.getText();
+				String getAdminPwd = pwd_Pwd.getText();
+				if (getAdminCode.equals(admin_ID) && getAdminPwd.equals(admin_PWD)) {
+					info_Frame.setVisible(true);
+					info_Pefer.addActionListener(new ActionListener() { // 조회 버튼 클릭 시
+						public void actionPerformed(ActionEvent e) {
+							num = info_NumField.getText();
+							name = info_NameField.getText();
+							// DB 비교 한 값 받아오기
+							if (num.equals("admin") && name.equals("admin")) { // 정보 조회 성공하면
+								// 해당 사원 비밀번호 DB 업데이트
 
-										reset_Frame.setVisible(true); // 초기화 비밀번호 안내
-									} else {
-										admin_WarningFrame.setVisible(true); // 사원 정보 불일치 경고
-									}
-								}
+								reset_Frame.setVisible(true); // 초기화 비밀번호 안내
+							} else {
+								admin_WarningFrame.setVisible(true); // 사원 정보 불일치 경고
 							}
-						});
+						}
+					});
 
-					} else { // 로그인 실패
-						login_WarningFrame.setVisible(true); // 로그인 정보 확인 경고
-					}
+				} else { // 로그인 실패
+					login_WarningFrame.setVisible(true); // 로그인 정보 확인 경고
 				}
 			}
 		});
 	}
 
 //	public static void main(String[] args) {
-//		PasswordSet_admin pwdAdmin = new PasswordSet_admin();
+//		PasswordSet_admin pwdSet = new PasswordSet_admin();
 //	}
 }

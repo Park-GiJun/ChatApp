@@ -37,6 +37,8 @@ public class MainFrame extends JFrame {
 	private Map<String, String> receivedMessages = new HashMap<>();
 
 	LocalDateTime currentDateTime = LocalDateTime.now();
+	private Adapter adapter;
+
 
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
@@ -88,10 +90,10 @@ public class MainFrame extends JFrame {
 	JTextArea messageDisplayArea = new JTextArea(); // JTextArea를 인스턴스 변수로 선언
 	JButton addPerson = new JButton();
 
-	// 메세지
 	public boolean getPass() {
 		return pass;
 	}
+//	public String 
 
 //	public String getUserEmail() {
 //		UserEmail = home_email.getText();
@@ -131,6 +133,7 @@ public class MainFrame extends JFrame {
 				pwd = pwd_TextField.getText();
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
+					
 					try {
 						if (clientConnection.login(id, pwd)) {
 							mainLayout.show(getContentPane(), "mainPanel");
@@ -138,29 +141,26 @@ public class MainFrame extends JFrame {
 							home_name.setText("이름 : " + clientConnection.getName());
 							home_email.setText("이메일 : " + clientConnection.getEmail());
 							home_num.setText("전화번호 : " + clientConnection.getPhone());
-							home_deptNum.setText("내선번호 : " + clientConnection.getDeptNum());
+							home_deptNum.setText("내선번호 : " + clientConnection.getDeptnum());
 							setTitle(id);
 						} else {
 							JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
 									JOptionPane.WARNING_MESSAGE);
 							mainLayout.show(getContentPane(), "mainPanel");
 						}
-					} catch (IOException ex) {
+					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 				}
 			}
 		});
-//		pwdAdminSet.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				PasswordSet_admin pwdSet = new PasswordSet_admin();
-//				if (pwdSet.getPass()) {
-//					clientConnection.pwdUp(pwdSet.getnum_refer(), pwdSet.getname_refer());
-//					System.out.println(pwdSet.getnum_refer() + "&&" + pwdSet.getname_refer());
-//				}
-//			}
-//		});
+		pwdAdminSet.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
+			}
+		});
 		setTitle(id);
 
 		// 메인 패널

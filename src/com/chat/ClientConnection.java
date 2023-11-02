@@ -16,15 +16,7 @@ public class ClientConnection {
 	private String dept_num;
 	private String user_id;
 	private String user_pwd;
-
-	public ClientConnection(String serverAddress, int serverPort) {
-		this.serverAddress = serverAddress;
-		this.serverPort = serverPort;
-		connectToServer();
-	}
-
-	public ClientConnection() {
-	}
+	private Socket socket;
 
 	public String getName() {
 		return name;
@@ -38,16 +30,14 @@ public class ClientConnection {
 		return phone;
 	}
 
-	public String getDeptNum() {
+	public String getDeptnum() {
 		return dept_num;
 	}
 
-	public String getUserPwd() {
-		return user_pwd;
-	}
-
-	public String getUserID() {
-		return user_id;
+	public ClientConnection(String serverAddress, int serverPort) {
+		this.serverAddress = serverAddress;
+		this.serverPort = serverPort;
+		connectToServer();
 	}
 
 	public void pwdUp(String id, String name) {

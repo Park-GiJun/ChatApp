@@ -22,9 +22,9 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 
 public class MainFrame extends JFrame {
-
+	
 	private ClientConnection clientConnection; // ClientConnection 객체 추가
-
+	private Adapter adapter;
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
 	private JTextField id_TextField = new JTextField();
@@ -111,6 +111,7 @@ public class MainFrame extends JFrame {
 				pwd = pwd_TextField.getText();
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
+					
 					try {
 						if (clientConnection.login(id, pwd)) {
 							mainLayout.show(getContentPane(), "mainPanel");
@@ -118,27 +119,24 @@ public class MainFrame extends JFrame {
 							home_name.setText("이름 : " + clientConnection.getName());
 							home_email.setText("이메일 : " + clientConnection.getEmail());
 							home_num.setText("전화번호 : " + clientConnection.getPhone());
-							home_deptNum.setText("내선번호 : " + clientConnection.getDeptNum());
+							home_deptNum.setText("내선번호 : " + clientConnection.getDeptnum());
 							setTitle(id);
 						} else {
 							JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
 									JOptionPane.WARNING_MESSAGE);
 							mainLayout.show(getContentPane(), "mainPanel");
 						}
-					} catch (IOException ex) {
+					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 				}
 			}
 		});
 		pwdAdminSet.addActionListener(new ActionListener() {
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PasswordSet_admin pwdSet = new PasswordSet_admin();
-				if(pwdSet.getPass()) {
-				clientConnection.pwdUp(pwdSet.getnum_refer(), pwdSet.getname_refer());
-				System.out.println(pwdSet.getnum_refer()+"&&"+ pwdSet.getname_refer());
-				}
+				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
 			}
 		});
 

@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ClientConnection {
+	private Adapter adapter = new Adapter();
 	private String serverAddress;
 	private int serverPort;
 	private ObjectOutputStream out;
@@ -16,44 +17,38 @@ public class ClientConnection {
 	private String dept_num;
 	private String user_id;
 	private String user_pwd;
+	private Socket socket;
 
+	public String getName() {
+		return name;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public String getDeptnum() {
+		return dept_num;
+	}
+	
 	public ClientConnection(String serverAddress, int serverPort) {
 		this.serverAddress = serverAddress;
 		this.serverPort = serverPort;
 		connectToServer();
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public String getDeptNum() {
-		return dept_num;
-	}
-
-	public String getUserID() {
-		return user_id;
-	}
-
-	public String getUserPwd() {
-		return user_pwd;
-	}
-
-	public void pwdUp(String id, String name) {
+	public void pwdUp(String cn, String name) {
 		try {
 			out.writeObject("1");
-			out.writeObject(id);
+			out.writeObject(cn);
 			out.writeObject(name);
-			System.out.println(id+" () "+ name);
+			System.out.println(cn + " () " + name);
 			System.out.println("패스워드 초기화 입력 성공");
+			String DBcn = (String)in.readObject();
+			String DBname = (String)in.readObject();
+			adapter.setDBcn(DBcn);
+			adapter.setDBname(DBname);
 		} catch (Exception e) {
 			System.out.println("패스워드 초기화 입력 오류");
 			e.printStackTrace();
@@ -75,9 +70,16 @@ public class ClientConnection {
 			email = (String) in.readObject();
 			phone = (String) in.readObject();
 			dept_num = (String) in.readObject();
+			adapter.setName(name);
+			adapter.setEmail(email);
+			adapter.setPhone(phone);
+			adapter.setNum(dept_num);
+			
 			System.out.println("정보 읽었냐?");
 			if (pass_in.equals("true")) {
 				pass_out = true;
+				adapter.setPass(pass_out);
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -88,7 +90,7 @@ public class ClientConnection {
 
 	private void connectToServer() {
 		try {
-			Socket socket = new Socket(serverAddress, serverPort);
+			socket = new Socket(serverAddress, serverPort);
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {

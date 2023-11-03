@@ -8,20 +8,21 @@ public class Main {
 		// 클라이언트 연결 관리 클래스 생성
 		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5000);
 
-		// 메인 프레임 생성 및 연결 관리 객체 전달
-		Adapter adapter = new Adapter(clientConnection);
-		MainFrame mainFrame = new MainFrame(clientConnection, adapter);
-		// 메인 프레임 표시
-		mainFrame.setVisible(true);
 		
-		while (!mainFrame.getPass()) {
-//			System.out.println("Loading...");
-			String stop = "stop";
-		}
-		System.out.println(mainFrame.getPass());
 		// 메시지 수신 스레드 시작
 		Thread messageReceiverThread = new Thread(new Runnable() {
 			public void run() {
+				// 메인 프레임 생성 및 연결 관리 객체 전달
+				Adapter adapter = new Adapter(clientConnection);
+				MainFrame mainFrame = new MainFrame(clientConnection, adapter);
+				// 메인 프레임 표시
+				mainFrame.setVisible(true);
+				
+				while (!mainFrame.getPass()) {
+//					System.out.println("Loading...");
+					String stop = "stop";
+				}
+//				System.out.println(mainFrame.getPass());
 				System.out.println("메시지 수신 스레드 시작");
 				while (true) {
 					try {

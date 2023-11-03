@@ -112,7 +112,7 @@ public class ClientConnection {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(pass_out);
+		System.out.println("clientconnection login : "+ pass_out);
 		return pass_out;
 	}
 
@@ -128,8 +128,9 @@ public class ClientConnection {
 
 	public void sendMessage(String userName, String message, String recipient) {
 		try {
-			String inp = "[chat]" + "=0$0=" + userName + ":" + message + ":" + recipient;
+			String inp = userName + ":" + message + ":" + recipient;
 //			String inp = userName + ":" + message + ":" + recipient;
+			out.writeObject("[chat]");
 			out.writeObject(inp);
 			out.flush();
 			System.out.println(" Sent: " + inp);

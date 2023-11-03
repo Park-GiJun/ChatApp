@@ -17,19 +17,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.swing.JScrollBar;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 
 public class MainFrame extends JFrame {
 	// ClientConnection 객체 추가
@@ -38,6 +39,7 @@ public class MainFrame extends JFrame {
 
 	LocalDateTime currentDateTime = LocalDateTime.now();
 	private Adapter adapter;
+
 
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
@@ -61,6 +63,7 @@ public class MainFrame extends JFrame {
 	// HOME 패널
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
+	
 	JLabel home_name = new JLabel();
 	JLabel home_num = new JLabel();
 	JLabel home_email = new JLabel();
@@ -132,14 +135,13 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				id = id_TextField.getText();
 				pwd = pwd_TextField.getText();
-
-				adapter.setId(id);
-				adapter.setPwd(pwd);
+				
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
-
+					
 					try {
-						if (clientConnection.login(id, pwd)) {
+						if (!id.equals("admin")&&!pwd.equals("admin")) {
+							clientConnection.login(id, pwd);
 							mainLayout.show(getContentPane(), "mainPanel");
 							pass = true;
 							name = clientConnection.getName();
@@ -150,21 +152,28 @@ public class MainFrame extends JFrame {
 							home_email.setText("이메일 : " + UserEmail);
 							home_num.setText("전화번호 : " + phone);
 							home_deptNum.setText("내선번호 : " + Dept_num);
-
+							adapter.setId(id);
+							adapter.setPwd(pwd);
 							adapter.setName(name);
 							adapter.setEmail(UserEmail);
 							adapter.setPhone(phone);
 							adapter.setNum(Dept_num);
-
+							
 							setTitle(id);
+						} else if(id.equals("admin")&&pwd.equals("admin")){
+							//관리자 프레임 만들어서 넣기
+//							mainLayout.show(getContentPane(), "mainPanel");
 						} else {
 							JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
 									JOptionPane.WARNING_MESSAGE);
-							mainLayout.show(getContentPane(), "mainPanel");
 						}
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
+	} else {
+					JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
+							JOptionPane.WARNING_MESSAGE);
+				
 				}
 			}
 		});
@@ -210,6 +219,11 @@ public class MainFrame extends JFrame {
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 210);
+ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
+		JLabel home_test = new JLabel("ONE", mario ,SwingConstants.CENTER);
+		
+		home_photo.add(home_test);
+		
 		home_Panel.add(home_name);
 		home_name.setBounds(290, 250, 200, 20);
 		home_Panel.add(home_num);

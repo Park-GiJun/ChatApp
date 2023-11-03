@@ -16,7 +16,7 @@ public class ClientConnection {
 	private String dept_num;
 	private String user_id;
 	private String user_pwd;
-	private Socket socket;
+	String setPwd, setEmail, setPhone;
 
 	public String getName() {
 		return name;
@@ -33,20 +33,56 @@ public class ClientConnection {
 	public String getDeptnum() {
 		return dept_num;
 	}
+	public String getUserPwd() {
+		return user_pwd;
+	}
 
+	public String getUserID() {
+		return user_id;
+	}
+	public ClientConnection() {
+	}
 	public ClientConnection(String serverAddress, int serverPort) {
 		this.serverAddress = serverAddress;
 		this.serverPort = serverPort;
 		connectToServer();
 	}
-
+	
+	public void setProfile(String Pwd, String Phone, String Email) {
+		System.out.println(Pwd+" == "+Phone + " == "+ Email);
+		try {
+			out.writeObject("[setprofile]");
+			System.out.println("[setprofile] 보냈다");
+			out.writeObject(Pwd);
+			System.out.println("setpwd 보냈다");
+			out.writeObject(Phone);
+			System.out.println("setPhone 보냈다");
+			out.writeObject(Email);
+			System.out.println("setEmail 보냈다");
+			setPwd = (String) in.readObject();
+			setPhone = (String) in.readObject();
+			setEmail = (String) in.readObject();
+			System.out.println("-------------------------");
+			System.out.println("pwd : " + setPwd + " phone : " + setPhone + " email : " + setEmail);
+			System.out.println("사원정보 수정 성공");
+			System.out.println("-------------------------");
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("사원정보 수정 실패");
+			System.out.println("-------------------------");
+		}
+	}
+	
 	public void pwdUp(String id, String name) {
 		try {
-			out.writeObject("1");
+			out.writeObject("[reset]");
 			out.writeObject(id);
 			out.writeObject(name);
+			System.out.println((String)in.readObject());
+			System.out.println((String)in.readObject());
 			System.out.println(id + " () " + name);
 			System.out.println("패스워드 초기화 입력 성공");
+			
 		} catch (Exception e) {
 			System.out.println("패스워드 초기화 입력 오류");
 			e.printStackTrace();
@@ -59,10 +95,10 @@ public class ClientConnection {
 		boolean pass_out = false;
 		this.user_id = id;
 		this.user_pwd = pwd;
-		out.writeObject("2");
 		try {
-			out.writeObject(id);
-			out.writeObject(pwd);
+			out.writeObject("[login]");
+			out.writeObject(user_id);
+			out.writeObject(user_pwd);
 			pass_in = (String) in.readObject();
 			name = (String) in.readObject();
 			email = (String) in.readObject();
@@ -91,7 +127,8 @@ public class ClientConnection {
 
 	public void sendMessage(String userName, String message, String recipient) {
 		try {
-			String inp = userName + ":" + message + ":" + recipient;
+			String inp = "[chat]" + "=0$0=" + userName + ":" + message + ":" + recipient;
+//			String inp = userName + ":" + message + ":" + recipient;
 			out.writeObject(inp);
 			out.flush();
 			System.out.println(" Sent: " + inp);

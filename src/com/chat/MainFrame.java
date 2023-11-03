@@ -39,7 +39,6 @@ public class MainFrame extends JFrame {
 	LocalDateTime currentDateTime = LocalDateTime.now();
 	private Adapter adapter;
 
-
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
 	private JTextField id_TextField = new JTextField();
@@ -104,8 +103,9 @@ public class MainFrame extends JFrame {
 //		name = home_name.getText();
 //		return name;
 //	}
-	public MainFrame(ClientConnection clientConnection) {
+	public MainFrame(ClientConnection clientConnection, Adapter adapter) {
 		this.clientConnection = clientConnection; // ClientConnection 초기화
+		this.adapter = adapter;
 		CardLayout mainLayout = new CardLayout();
 		setLayout(mainLayout);
 		setSize(800, 560);
@@ -132,17 +132,30 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				id = id_TextField.getText();
 				pwd = pwd_TextField.getText();
+
+				adapter.setId(id);
+				adapter.setPwd(pwd);
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
-					
+
 					try {
 						if (clientConnection.login(id, pwd)) {
 							mainLayout.show(getContentPane(), "mainPanel");
 							pass = true;
-							home_name.setText("이름 : " + clientConnection.getName());
-							home_email.setText("이메일 : " + clientConnection.getEmail());
-							home_num.setText("전화번호 : " + clientConnection.getPhone());
-							home_deptNum.setText("내선번호 : " + clientConnection.getDeptnum());
+							name = clientConnection.getName();
+							UserEmail = clientConnection.getEmail();
+							String phone = clientConnection.getPhone();
+							String Dept_num = clientConnection.getDeptnum();
+							home_name.setText("이름 : " + name);
+							home_email.setText("이메일 : " + UserEmail);
+							home_num.setText("전화번호 : " + phone);
+							home_deptNum.setText("내선번호 : " + Dept_num);
+
+							adapter.setName(name);
+							adapter.setEmail(UserEmail);
+							adapter.setPhone(phone);
+							adapter.setNum(Dept_num);
+
 							setTitle(id);
 						} else {
 							JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
@@ -156,7 +169,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		pwdAdminSet.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
@@ -210,11 +223,11 @@ public class MainFrame extends JFrame {
 		home_todo.add(home_todo_list);
 
 		// 정보수정 버튼 추가 액션 추가
-		info_Btn.setBounds(16, 530, 20, 10);
+		info_Btn.setBounds(20, 490, 60, 20);
 		left_Panel.add(info_Btn);
 		info_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Information info = new Information();
+				Information info = new Information(adapter);
 			}
 		});
 
@@ -305,7 +318,7 @@ public class MainFrame extends JFrame {
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}
-						}else {
+						} else {
 							message_sendBox.setText("");
 						}
 
@@ -332,6 +345,10 @@ public class MainFrame extends JFrame {
 		home_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
+				System.out.println(adapter.getEmail() + "*" + adapter.getPhone() + "*" + adapter.getNum());
+				home_email.setText("이메일 : " + adapter.getEmail());
+				home_num.setText("전화번호 : " + adapter.getPhone());
+				home_deptNum.setText("내선번호 : " + adapter.getNum());
 			}
 		});
 		search_Btn.addActionListener(new ActionListener() {
@@ -344,11 +361,11 @@ public class MainFrame extends JFrame {
 				panelLayout.show(card_Panel, "messagePanel");
 			}
 		});
-		
+
 		message_postBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 //				sendMessage(message, post);
-				
+
 			}
 		});
 	}
@@ -371,6 +388,7 @@ public class MainFrame extends JFrame {
 		message_chatlog.revalidate();
 		message_chatlog.repaint();
 	}
+
 	// 수신자에 해당하는 메시지만 표시하는 메서드
 	private void showMessageForRecipient(String recipient) {
 		System.out.println("쇼메세지 실행");
@@ -384,6 +402,7 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
+
 	void saveSendChat(String message, String opposite, String me) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + me + "_" + opposite + ".txt";
@@ -415,6 +434,7 @@ public class MainFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
+
 	void saveReceiveChat(String message, String opposite, String me) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + opposite + "_" + me + ".txt";
@@ -447,6 +467,7 @@ public class MainFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
+
 	void readTextFile(String me, String opposite) throws IOException {
 		System.out.println("Reading Text...");
 		List<Message> messages = new ArrayList<>();
@@ -470,6 +491,7 @@ public class MainFrame extends JFrame {
 			e1.printStackTrace();
 		}
 	}
+
 	public String getId() {
 		return id_TextField.getText();
 	}

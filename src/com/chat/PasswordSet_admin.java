@@ -6,6 +6,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class PasswordSet_admin {
+	Adapter adapter = new Adapter();
+	
 	JFrame pwd_MainFrame = new JFrame("비밀번호 초기화");
 	JPanel pwd_MainPanel = new JPanel();
 	JLabel pwd_Title = new JLabel("관리자 로그인");
@@ -52,6 +54,7 @@ public class PasswordSet_admin {
 	String name = "";
 	
 	public PasswordSet_admin(Adapter adapter) {
+		this.adapter = adapter;
 		// 관리자 로그인
 		pwd_MainFrame.setSize(530, 300);
 		pwd_MainFrame.setVisible(true);
@@ -179,7 +182,7 @@ public class PasswordSet_admin {
 								if (e.getSource() == reset_Refer) {
 									num = reset_NumField.getText();
 									name = reset_NameField.getText();
-									Adapter adapter = new Adapter(name,num);
+									adapter.pwdUP(num, name);
 									System.out.println(num + "^^" + name);
 									// DB 비교 한 값 받아오기
 									if (num.equals(adapter.getDBcn()) && name.equals(adapter.getDBname())) { // 정보 조회 성공하면

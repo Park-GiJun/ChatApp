@@ -17,6 +17,7 @@ public class ClientConnection {
 	private String user_id;
 	private String user_pwd;
 	private Socket socket;
+	String setPwd, setEmail, setPhone;
 
 	public String getName() {
 		return name;
@@ -33,13 +34,46 @@ public class ClientConnection {
 	public String getDeptnum() {
 		return dept_num;
 	}
+	public String getUserPwd() {
+		return user_pwd;
+	}
 
+	public String getUserID() {
+		return user_id;
+	}
+	public ClientConnection() {
+	}
 	public ClientConnection(String serverAddress, int serverPort) {
 		this.serverAddress = serverAddress;
 		this.serverPort = serverPort;
 		connectToServer();
 	}
-
+	
+	public void setProfile(String Pwd, String Phone, String Email) {
+		System.out.println(Pwd+" == "+Phone + " == "+ Email);
+		try {
+			out.writeObject("3");
+			System.out.println("3번 보냈다");
+			out.writeObject(Pwd);
+			System.out.println("setpwd 보냈다");
+			out.writeObject(Phone);
+			System.out.println("setPhone 보냈다");
+			out.writeObject(Email);
+			System.out.println("setEmail 보냈다");
+			setPwd = (String) in.readObject();
+			setPhone = (String) in.readObject();
+			setEmail = (String) in.readObject();
+			System.out.println("-------------------------");
+			System.out.println("pwd : " + setPwd + " phone : " + setPhone + " email : " + setEmail);
+			System.out.println("사원정보 수정 성공");
+			System.out.println("-------------------------");
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("사원정보 수정 실패");
+			System.out.println("-------------------------");
+		}
+	}
+	
 	public void pwdUp(String id, String name) {
 		try {
 			out.writeObject("1");
@@ -47,6 +81,7 @@ public class ClientConnection {
 			out.writeObject(name);
 			System.out.println(id + " () " + name);
 			System.out.println("패스워드 초기화 입력 성공");
+			
 		} catch (Exception e) {
 			System.out.println("패스워드 초기화 입력 오류");
 			e.printStackTrace();

@@ -103,8 +103,9 @@ public class MainFrame extends JFrame {
 //		name = home_name.getText();
 //		return name;
 //	}
-	public MainFrame(ClientConnection clientConnection) {
+	public MainFrame(ClientConnection clientConnection, Adapter adapter) {
 		this.clientConnection = clientConnection; // ClientConnection 초기화
+		this.adapter = adapter;
 		CardLayout mainLayout = new CardLayout();
 		setLayout(mainLayout);
 		setSize(800, 560);
@@ -131,6 +132,9 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				id = id_TextField.getText();
 				pwd = pwd_TextField.getText();
+				
+				adapter.setId(id);
+				adapter.setPwd(pwd);
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
 					
@@ -138,10 +142,20 @@ public class MainFrame extends JFrame {
 						if (clientConnection.login(id, pwd)) {
 							mainLayout.show(getContentPane(), "mainPanel");
 							pass = true;
-							home_name.setText("이름 : " + clientConnection.getName());
-							home_email.setText("이메일 : " + clientConnection.getEmail());
-							home_num.setText("전화번호 : " + clientConnection.getPhone());
-							home_deptNum.setText("내선번호 : " + clientConnection.getDeptnum());
+							name = clientConnection.getName();
+							UserEmail = clientConnection.getEmail();
+							String phone = clientConnection.getPhone();
+							String Dept_num = clientConnection.getDeptnum();
+							home_name.setText("이름 : " + name);
+							home_email.setText("이메일 : " + UserEmail);
+							home_num.setText("전화번호 : " + phone);
+							home_deptNum.setText("내선번호 : " + Dept_num);
+							
+							adapter.setName(name);
+							adapter.setEmail(UserEmail);
+							adapter.setPhone(phone);
+							adapter.setNum(Dept_num);
+							
 							setTitle(id);
 						} else {
 							JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
@@ -159,6 +173,8 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
+				
+				
 			}
 		});
 		setTitle(id);
@@ -209,11 +225,11 @@ public class MainFrame extends JFrame {
 		home_todo.add(home_todo_list);
 
 		// 정보수정 버튼 추가 액션 추가
-		info_Btn.setBounds(16, 530, 20, 10);
+		info_Btn.setBounds(20, 490, 60, 20);
 		left_Panel.add(info_Btn);
 		info_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Information info = new Information();
+				Information info = new Information(adapter);
 			}
 		});
 

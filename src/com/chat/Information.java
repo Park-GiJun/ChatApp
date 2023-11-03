@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,18 +18,20 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 public class Information {
+	Adapter adapter = new Adapter();
+	
 	// 1. 메인 프레임
 	JFrame main_Frame = new JFrame("정보 수정");
 	JPanel main_Panel = new JPanel();
 	JLabel main_Title = new JLabel("사원 정보 수정"); // 타이틀
 	JLabel main_NumberLabel = new JLabel("사번"); // 사번 라벨
-	JLabel main_Number = new JLabel(""); // 사번 필드
+	JLabel main_Number = new JLabel(); // 사번 필드
 	JLabel main_NameLabel = new JLabel("이름");
-	JLabel main_Name = new JLabel("");
+	JLabel main_Name = new JLabel();
 	JLabel main_PwdLabel = new JLabel("비밀번호"); // 비밀번호 라벨
-	JPasswordField main_Pwd = new JPasswordField("", 20); // 비밀번호 수정 필드
+	JTextField main_Pwd = new JTextField("", 20); // 비밀번호 수정 필드
 	JLabel main_PwdCheckLabel = new JLabel("비밀번호 확인"); // 비밀번호 확인 라벨
-	JPasswordField main_PwdCheck = new JPasswordField("", 20); // 비밀번호 확인 필드
+	JTextField main_PwdCheck = new JTextField("", 20); // 비밀번호 확인 필드
 	JLabel main_PwdMessage = new JLabel("특수문자를 포함해야 안전합니다."); // 비밀번호 작성 안내
 	JLabel main_PhoneLabel = new JLabel("휴대폰 번호"); // 핸드폰 번호 라벨
 	JTextField main_Phone = new JTextField(13); // 핸드폰 번호 수정 필드
@@ -42,13 +45,17 @@ public class Information {
 	JLabel modify_Text = new JLabel("입력한 정보로 변경하시겠습니까?");
 	JButton modify_Button_Yes = new JButton("변경");
 	JButton modify_Button_No = new JButton("아니요");
+	String setPwd;
+	String setPhone;
+	String setEmail;
+	
 
 	// 3. 수정 완료
 	JFrame save_Frame = new JFrame();
 	JPanel save_Panel = new JPanel();
 	JLabel save_Message = new JLabel("회원 정보 수정 완료되었습니다.");
-
-	public Information() {
+	public Information(Adapter adapter) {
+		this.adapter = adapter;
 		// 1. 메인 프레임
 		main_Frame.setSize(450, 480);
 		main_Frame.setVisible(true);
@@ -69,11 +76,11 @@ public class Information {
 		main_Name.setBounds(171, 133, 180, 25);
 
 		main_PwdLabel.setBounds(66, 173, 250, 25);
-		main_Pwd.setEchoChar('*');
+//		main_Pwd.setEchoChar('*');
 		main_Pwd.setBounds(171, 171, 150, 25);
 
 		main_PwdCheckLabel.setBounds(66, 213, 250, 25);
-		main_PwdCheck.setEchoChar('*');
+//		main_PwdCheck.setEchoChar('*');
 		main_PwdCheck.setBounds(171, 211, 150, 25);
 		main_PwdMessage.setBounds(171, 239, 200, 15);
 
@@ -84,6 +91,27 @@ public class Information {
 		main_Email.setBounds(171, 303, 150, 25);
 
 		main_Button.setBounds(330, 365, 60, 30);
+
+		// 1-1. 로그인 정보 각 필드에 배치
+		
+		try {
+			
+		String db_Number = adapter.getId();
+		String db_Name = adapter.getName();
+		String db_Pwd = adapter.getPwd();
+		String db_Phone = adapter.getPhone();
+		String db_Email = adapter.getEmail();
+		System.out.println(db_Number+"/"+db_Name+"/"+db_Pwd+"/"+db_Phone+"/"+db_Email);
+		
+		main_Number.setText(db_Number);
+		main_Name.setText(db_Name);
+//		main_Pwd.setText(db_Pwd);
+//		main_PwdCheck.setText(db_Pwd);
+//		main_Phone.setText(db_Phone);
+//		main_Email.setText(db_Email);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		// 2. 정보 수정 확인창
 		modify_Frame.setSize(300, 180);
@@ -106,17 +134,14 @@ public class Information {
 
 		// 2-1. 비밀번호 체크 메세지
 		main_PwdCheck.getDocument().addDocumentListener(new DocumentListener() {
-			@Override
 			public void insertUpdate(DocumentEvent e) {
 				pwdCheckMessage();
 			}
 
-			@Override
 			public void removeUpdate(DocumentEvent e) {
 				pwdCheckMessage();
 			}
 
-			@Override
 			public void changedUpdate(DocumentEvent e) {
 				pwdCheckMessage();
 			}
@@ -131,7 +156,7 @@ public class Information {
 				}
 			}
 		});
-
+		
 		// 메인 창 닫기
 		main_Frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -159,7 +184,10 @@ public class Information {
 		modify_Button_Yes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// DB 업데이트
+				System.out.println("변경 버튼 눌렀다");
 				save_Frame.setVisible(true);
+				clientSend();
+				adapter.setInfo(setPwd, setPhone, setEmail);
 			}
 		});
 
@@ -167,6 +195,7 @@ public class Information {
 		modify_Button_No.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				modify_Frame.dispose();
+				adapter.setInfo(setPwd, setPhone, setEmail);
 			}
 		});
 
@@ -199,4 +228,40 @@ public class Information {
 		save_Panel.add(save_Message);
 
 	}
+	public void clientSend () {
+		System.out.println("clientSend 불렀다");
+		String pwd1 = main_Pwd.getText();
+		String phone = main_Phone.getText();
+		String email = main_Email.getText();
+		String pwdSet;
+		
+		if (main_PwdMessage.getText().equals("비밀번호 일치")) {
+			pwdSet = pwd1;
+		} else {
+			pwdSet = " ";
+		}
+		
+		if (pwdSet != null) {
+			setPwd = pwdSet;
+		} else {
+			setPwd = " ";
+		}
+		
+		if (phone != null) {
+			setPhone = phone;
+		} else {
+			setPhone = " ";
+		}
+		
+		if (email != null) {
+			setEmail = email;
+		} else {
+			setEmail = " ";
+		}
+		System.out.println(setPwd+" == "+setPhone + " == "+ setEmail);
+		System.out.println("clientsend 끝났다");
+	}
+//	public static void main(String[] args) {
+//		Information info = new Information();
+//	}
 }

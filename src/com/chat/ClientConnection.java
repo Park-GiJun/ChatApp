@@ -79,6 +79,8 @@ public class ClientConnection {
 			out.writeObject("1");
 			out.writeObject(id);
 			out.writeObject(name);
+			System.out.println((String)in.readObject());
+			System.out.println((String)in.readObject());
 			System.out.println(id + " () " + name);
 			System.out.println("패스워드 초기화 입력 성공");
 			

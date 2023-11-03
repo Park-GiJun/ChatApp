@@ -19,10 +19,10 @@ public class Main {
 				mainFrame.setVisible(true);
 				
 				while (!mainFrame.getPass()) {
-//					System.out.println("Loading...");
+					System.out.println("Loading...");
 					String stop = "stop";
 				}
-//				System.out.println(mainFrame.getPass());
+				System.out.println("main getpass : " + mainFrame.getPass());
 				System.out.println("메시지 수신 스레드 시작");
 				while (true) {
 					try {

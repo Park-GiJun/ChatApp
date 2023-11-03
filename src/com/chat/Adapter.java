@@ -60,6 +60,9 @@ public class Adapter {
 		client.setProfile(pwd, phone, email);
 		System.out.println("adapter setInfo 실행");
 		System.out.println(client.setPwd+" "+client.setPhone+" "+client.setEmail);
+		setPwd(client.setPwd);
+		setPhone(client.setPhone);
+		setEmail(client.setEmail);
 	}
 	
 	

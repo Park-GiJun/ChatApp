@@ -344,6 +344,10 @@ public class MainFrame extends JFrame {
 		home_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
+				System.out.println(adapter.getEmail()+"*"+adapter.getPhone()+"*"+adapter.getNum());
+				home_email.setText("이메일 : " + adapter.getEmail());
+				home_num.setText("전화번호 : " + adapter.getPhone());
+				home_deptNum.setText("내선번호 : " + adapter.getNum());
 			}
 		});
 		search_Btn.addActionListener(new ActionListener() {

@@ -52,8 +52,8 @@ public class ClientConnection {
 	public void setProfile(String Pwd, String Phone, String Email) {
 		System.out.println(Pwd+" == "+Phone + " == "+ Email);
 		try {
-			out.writeObject("3");
-			System.out.println("3번 보냈다");
+			out.writeObject("[setprofile]");
+			System.out.println("[setprofile] 보냈다");
 			out.writeObject(Pwd);
 			System.out.println("setpwd 보냈다");
 			out.writeObject(Phone);
@@ -76,7 +76,7 @@ public class ClientConnection {
 	
 	public void pwdUp(String id, String name) {
 		try {
-			out.writeObject("1");
+			out.writeObject("[reset]");
 			out.writeObject(id);
 			out.writeObject(name);
 			System.out.println((String)in.readObject());
@@ -96,10 +96,10 @@ public class ClientConnection {
 		boolean pass_out = false;
 		this.user_id = id;
 		this.user_pwd = pwd;
-		out.writeObject("2");
 		try {
-			out.writeObject(id);
-			out.writeObject(pwd);
+			out.writeObject("[login]");
+			out.writeObject(user_id);
+			out.writeObject(user_pwd);
 			pass_in = (String) in.readObject();
 			name = (String) in.readObject();
 			email = (String) in.readObject();
@@ -128,7 +128,8 @@ public class ClientConnection {
 
 	public void sendMessage(String userName, String message, String recipient) {
 		try {
-			String inp = userName + ":" + message + ":" + recipient;
+			String inp = "[chat]" + "=0$0=" + userName + ":" + message + ":" + recipient;
+//			String inp = userName + ":" + message + ":" + recipient;
 			out.writeObject(inp);
 			out.flush();
 			System.out.println(" Sent: " + inp);

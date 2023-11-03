@@ -188,6 +188,7 @@ public class Information {
 				save_Frame.setVisible(true);
 				clientSend();
 				adapter.setInfo(setPwd, setPhone, setEmail);
+				
 			}
 		});
 

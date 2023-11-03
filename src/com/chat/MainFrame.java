@@ -2,7 +2,6 @@ package com.chat;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -26,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -89,6 +89,7 @@ public class MainFrame extends JFrame {
 	// 채팅방
 	JTextArea messageDisplayArea = new JTextArea(); // JTextArea를 인스턴스 변수로 선언
 	JButton addPerson = new JButton();
+	JScrollBar verticalScrollBar = new JScrollBar();
 
 	public boolean getPass() {
 		return pass;
@@ -261,7 +262,7 @@ public class MainFrame extends JFrame {
 
 		// 메세지 로그
 		message_chatBox.add(message_chatlog);
-		message_chatlog.setBounds(0, 0, 610, 520);
+		message_chatlog.setBounds(0, 0, 610, 495);
 		message_chatlog.setBackground(Color.red);
 		message_Box.add(addPerson);
 		addPerson.setText("Add Person");
@@ -289,6 +290,9 @@ public class MainFrame extends JFrame {
 				message_Box.add(personButton);
 				recipientButtons.put(recipient, personButton);
 				message_Box.revalidate(); // 레이아웃을 갱신하여 버튼을 새 위치에 배치
+				String aMessage = "님이 연결 시도했습니다.";
+				sendMessage(aMessage, recipient);
+				sendMessage(aMessage, recipient);
 				personButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						String message = message_sendBox.getText();
@@ -340,6 +344,13 @@ public class MainFrame extends JFrame {
 				panelLayout.show(card_Panel, "messagePanel");
 			}
 		});
+		
+		message_postBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+//				sendMessage(message, post);
+				
+			}
+		});
 	}
 
 	// 메시지를 전송하는 메서드
@@ -360,7 +371,6 @@ public class MainFrame extends JFrame {
 		message_chatlog.revalidate();
 		message_chatlog.repaint();
 	}
-
 	// 수신자에 해당하는 메시지만 표시하는 메서드
 	private void showMessageForRecipient(String recipient) {
 		System.out.println("쇼메세지 실행");
@@ -374,7 +384,6 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
-
 	void saveSendChat(String message, String opposite, String me) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + me + "_" + opposite + ".txt";
@@ -384,21 +393,17 @@ public class MainFrame extends JFrame {
 		int hour = currentDateTime.getHour();
 		int minute = currentDateTime.getMinute();
 		int second = currentDateTime.getSecond();
-
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
-
 		try {
 			if (!parentDir.exists()) {
 				// 디렉토리가 존재하지 않으면 생성
 				parentDir.mkdirs();
 			}
-
 			if (!file.exists()) {
 				// 파일이 존재하지 않으면 생성
 				file.createNewFile();
 			}
-
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + me
@@ -410,7 +415,6 @@ public class MainFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
-
 	void saveReceiveChat(String message, String opposite, String me) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + opposite + "_" + me + ".txt";
@@ -420,7 +424,6 @@ public class MainFrame extends JFrame {
 		int hour = currentDateTime.getHour();
 		int minute = currentDateTime.getMinute();
 		int second = currentDateTime.getSecond();
-
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
 
@@ -429,12 +432,10 @@ public class MainFrame extends JFrame {
 				// 디렉토리가 존재하지 않으면 생성
 				parentDir.mkdirs();
 			}
-
 			if (!file.exists()) {
 				// 파일이 존재하지 않으면 생성
 				file.createNewFile();
 			}
-
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + me
@@ -446,12 +447,10 @@ public class MainFrame extends JFrame {
 			e.printStackTrace();
 		}
 	}
-
 	void readTextFile(String me, String opposite) throws IOException {
 		System.out.println("Reading Text...");
 		List<Message> messages = new ArrayList<>();
 		try {
-
 			// 파일 경로
 			String username = System.getProperty("user.home");
 			String filePath = username + "/git/ChatApp/src/com/chat/chats/" + id + "_" + opposite + ".txt";
@@ -463,6 +462,7 @@ public class MainFrame extends JFrame {
 			while ((line = reader.readLine()) != null) {
 				// 한 줄씩 읽어와서 JTextArea에 추가
 				messageDisplayArea.append(line + "\n");
+				verticalScrollBar.setValue(verticalScrollBar.getMaximum());
 			}
 			// BufferedReader 닫기
 			reader.close();
@@ -470,7 +470,6 @@ public class MainFrame extends JFrame {
 			e1.printStackTrace();
 		}
 	}
-
 	public String getId() {
 		return id_TextField.getText();
 	}

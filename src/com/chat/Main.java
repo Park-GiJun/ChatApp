@@ -7,13 +7,10 @@ public class Main {
 	public static void main(String[] args) {
 		// 클라이언트 연결 관리 클래스 생성
 		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5010);
-
 		// 메인 프레임 생성 및 연결 관리 객체 전달
 		MainFrame mainFrame = new MainFrame(clientConnection);
-
 		// 메인 프레임 표시
 		mainFrame.setVisible(true);
-		
 		while (!mainFrame.getPass()) {
 			System.out.println("Loading...");
 			String stop = "stop";
@@ -33,7 +30,7 @@ public class Main {
 						System.out.println(
 								"메시지 수신: 발신자=" + senderName + ", 메시지=" + receiveMessage + ", 수신자=" + recipient);
 						String id = mainFrame.getId();
-						
+
 						if (recipient.equals(id)) {
 							JOptionPane.showMessageDialog(mainFrame, senderName + "님이 메세지를 발송했습니다.");
 							mainFrame.saveReceiveChat(receiveMessage, recipient, senderName);
@@ -50,8 +47,6 @@ public class Main {
 				}
 			}
 		});
-
 		messageReceiverThread.start();
-
 	}
 }

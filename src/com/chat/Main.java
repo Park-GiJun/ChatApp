@@ -22,7 +22,7 @@ public class Main {
 				}
 				System.out.println(mainFrame.getPass());
 				// 메시지 수신 스레드 시작
-				System.out.println("메시지 수신 스레드 시작");
+				System.out.println("수신 스레드 시작");
 				while (true) {
 					String check = clientConnection.selectMethod();
 					if (check.equals("[chat]")) {

@@ -130,6 +130,7 @@ public class ClientConnection {
 		String pass_in = null;
 		boolean pass_out = false;
 		try {
+
 			out.writeObject("[login]");
 			this.user_id = id;
 			this.user_pwd = pwd;
@@ -140,8 +141,8 @@ public class ClientConnection {
 			email = (String) in.readObject();
 			phone = (String) in.readObject();
 			dept_num = (String) in.readObject();
-			System.out.println("client loginStart method - pass_in : "+ pass_in +" name : "+ 
-			name +" Email : "+ email + " phone : "+ phone + " dept_num: "+ dept_num);
+			System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
+					+ email + " phone : " + phone + " dept_num: " + dept_num);
 			System.out.println("정보를 읽었습니다.");
 			if (pass_in.equals("true")) {
 				pass_out = true;
@@ -149,7 +150,7 @@ public class ClientConnection {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("clientconnection login : "+ pass_out);
+		System.out.println("clientconnection login : " + pass_out);
 		return pass_out;
 	}
 
@@ -166,10 +167,11 @@ public class ClientConnection {
 	public void sendMessage(String userName, String message, String recipient) {
 		try {
 			String inp = userName + ":" + message + ":" + recipient;
+			System.out.println(inp);
 			out.writeObject("[chat]");
 			out.writeObject(inp);
 			out.flush();
-			System.out.println(" Sent: " + inp);
+			System.out.println(" ClientConnection.java : " + inp);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -215,4 +217,5 @@ public class ClientConnection {
 		}
 		return new MessageResult(sendName, receivedMessage, recipient);
 	}
+
 }

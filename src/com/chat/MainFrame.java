@@ -305,7 +305,6 @@ public class MainFrame extends JFrame {
 		message_chatlog.setViewportView(messageDisplayArea);
 
 //		// 사용자 추가
-		Map<String, ChatRoom> chatRooms = new HashMap<>();
 		clickedRecipient = null;
 
 		// 대상자 체크박스를 저장할 Map

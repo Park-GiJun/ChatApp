@@ -34,6 +34,7 @@ import javax.swing.JTree;
 import javax.swing.SwingConstants;
 
 public class MainFrame extends JFrame {
+	private static final long serialVersionUID = 1L;
 	// ClientConnection 객체 추가
 	private ClientConnection clientConnection;
 	private Map<String, String> receivedMessages = new HashMap<>();

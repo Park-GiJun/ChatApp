@@ -13,6 +13,7 @@ public class Adapter {
 	private String DBname;
 	private boolean pass;
 	private ClientConnection client;
+
 	// 입력없이 저장된 정보를 불러오기 위한 생성자
 //	public Adapter(ClientConnection clientConnection) {
 //		this.clientConnection = clientConnection;
@@ -38,37 +39,39 @@ public class Adapter {
 //		setPhone(phone);
 //	}
 	public Adapter() {
-		
+
 	}
+
 	public Adapter(ClientConnection clientconnection) {
 		this.client = clientconnection;
 	}
+
 	public Adapter(String name, String num) {
 		this.name = name;
 		this.cn = num;
-		System.out.println(name+"---"+cn);
+		System.out.println(name + "---" + cn);
 	}
-	
+
 	public void pwdUP(String id, String name) {
 		client.pwdUp(id, name);
 		System.out.println("adapter pwdup 실행");
 		setDBcn(id);
 		setDBname(name);
 	}
-	
+
 	public void setInfo(String pwd, String phone, String email) {
 		client.setProfile(pwd, phone, email);
 		System.out.println("adapter setInfo 실행");
-		System.out.println(client.setPwd+" "+client.setPhone+" "+client.setEmail);
+		System.out.println(client.setPwd + " " + client.setPhone + " " + client.setEmail);
 		setPwd(client.setPwd);
 		setPhone(client.setPhone);
 		setEmail(client.setEmail);
 	}
-	
-	
+
 	public void setDBcn(String cn) {
 		this.DBcn = cn;
-}
+	}
+
 	public void setDBname(String name) {
 		this.DBname = name;
 	}
@@ -92,16 +95,19 @@ public class Adapter {
 	public void setNum(String num) {
 		this.num = num;
 	}
+
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
+
 	public void setId(String id) {
 		this.user_id = id;
 	}
+
 	public void setPwd(String pwd) {
 		this.user_pwd = pwd;
 	}
-	
+
 	public String getDBcn() {
 		return DBcn;
 	}

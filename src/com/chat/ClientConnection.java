@@ -129,7 +129,6 @@ public class ClientConnection {
 	public void sendMessage(String userName, String message, String recipient) {
 		try {
 			String inp = userName + ":" + message + ":" + recipient;
-//			String inp = userName + ":" + message + ":" + recipient;
 			out.writeObject("[chat]");
 			out.writeObject(inp);
 			out.flush();

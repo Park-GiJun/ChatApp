@@ -9,7 +9,6 @@ public class Main {
 		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5000);
 
 		
-		// 메시지 수신 스레드 시작
 		Thread messageReceiverThread = new Thread(new Runnable() {
 			public void run() {
 				// 메인 프레임 생성 및 연결 관리 객체 전달
@@ -22,7 +21,8 @@ public class Main {
 					System.out.println("Loading...");
 					String stop = "stop";
 				}
-				System.out.println("main getpass : " + mainFrame.getPass());
+				System.out.println(mainFrame.getPass());
+				// 메시지 수신 스레드 시작
 				System.out.println("메시지 수신 스레드 시작");
 				while (true) {
 					try {

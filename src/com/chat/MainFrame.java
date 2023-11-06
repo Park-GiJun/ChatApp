@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,11 +15,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import javax.swing.JScrollBar;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -36,10 +37,8 @@ public class MainFrame extends JFrame {
 	// ClientConnection 객체 추가
 	private ClientConnection clientConnection;
 	private Map<String, String> receivedMessages = new HashMap<>();
-
-	LocalDateTime currentDateTime = LocalDateTime.now();
 	private Adapter adapter;
-
+	LocalDateTime currentDateTime = LocalDateTime.now();
 
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
@@ -63,7 +62,7 @@ public class MainFrame extends JFrame {
 	// HOME 패널
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
-	
+
 	JLabel home_name = new JLabel();
 	JLabel home_num = new JLabel();
 	JLabel home_email = new JLabel();
@@ -92,6 +91,7 @@ public class MainFrame extends JFrame {
 	JTextArea messageDisplayArea = new JTextArea(); // JTextArea를 인스턴스 변수로 선언
 	JButton addPerson = new JButton();
 	JScrollBar verticalScrollBar = new JScrollBar();
+	String clickedRecipient;
 
 	public boolean getPass() {
 		return pass;
@@ -135,12 +135,12 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				id = id_TextField.getText();
 				pwd = pwd_TextField.getText();
-				
+
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
-					
+
 					try {
-						if (!id.equals("admin")&&!pwd.equals("admin")) {
+						if (!id.equals("admin") && !pwd.equals("admin")) {
 							clientConnection.login(id, pwd);
 							mainLayout.show(getContentPane(), "mainPanel");
 							pass = true;
@@ -158,10 +158,10 @@ public class MainFrame extends JFrame {
 							adapter.setEmail(UserEmail);
 							adapter.setPhone(phone);
 							adapter.setNum(Dept_num);
-							
+
 							setTitle(id);
-						} else if(id.equals("admin")&&pwd.equals("admin")){
-							//관리자 프레임 만들어서 넣기
+						} else if (id.equals("admin") && pwd.equals("admin")) {
+							// 관리자 프레임 만들어서 넣기
 //							mainLayout.show(getContentPane(), "mainPanel");
 						} else {
 							JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
@@ -170,10 +170,10 @@ public class MainFrame extends JFrame {
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
-	} else {
+				} else {
 					JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
 							JOptionPane.WARNING_MESSAGE);
-				
+
 				}
 			}
 		});
@@ -193,7 +193,7 @@ public class MainFrame extends JFrame {
 		main_Panel.setLayout(null);
 		main_Panel.add(left_Panel);
 		left_Panel.setBounds(0, 0, 100, 300);
-		left_Panel.setLayout(new GridLayout(3, 1));
+		left_Panel.setLayout(new GridLayout(4, 1));
 		left_Panel.add(home_Btn);
 		home_Btn.setText("Home");
 		home_Btn.setSize(100, 100);
@@ -219,11 +219,11 @@ public class MainFrame extends JFrame {
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 210);
-ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
-		JLabel home_test = new JLabel("ONE", mario ,SwingConstants.CENTER);
-		
+		ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
+		JLabel home_test = new JLabel("ONE", mario, SwingConstants.CENTER);
+
 		home_photo.add(home_test);
-		
+
 		home_Panel.add(home_name);
 		home_name.setBounds(290, 250, 200, 20);
 		home_Panel.add(home_num);
@@ -237,8 +237,9 @@ ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 		home_todo.add(home_todo_list);
 
 		// 정보수정 버튼 추가 액션 추가
-		info_Btn.setBounds(20, 490, 60, 20);
+		info_Btn.setSize(100,100);
 		left_Panel.add(info_Btn);
+		info_Btn.setText("SetInfo");
 		info_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Information info = new Information(adapter);
@@ -277,12 +278,12 @@ ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 		message_chatBox.add(message_sendBox);
 		message_chatBox.setLayout(null);
 		message_chatBox.add(message_sendPanel);
-		CardLayout chatlistLayout = new CardLayout();
 		message_sendPanel.setLayout(null);
 		message_sendPanel.setBounds(0, 485, 610, 40);
+
 		// 메세지 입력창
 		message_sendPanel.add(message_sendBox);
-		message_sendBox.setBounds(0, 0, 520, 40);
+		message_sendBox.setBounds(0, 0, 520, 50);
 		// 메세지 전송 버튼
 		message_sendPanel.add(message_sendBtn);
 		message_sendBtn.setBounds(520, 0, 90, 40);
@@ -304,7 +305,9 @@ ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 		message_chatlog.setViewportView(messageDisplayArea);
 
 //		// 사용자 추가
-//		Map<String, ChatRoom> chatRooms = new HashMap<>();
+		Map<String, ChatRoom> chatRooms = new HashMap<>();
+		clickedRecipient = null;
+
 		// 대상자 체크박스를 저장할 Map
 		Map<String, JButton> recipientButtons = new HashMap<>();
 
@@ -322,7 +325,9 @@ ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 				sendMessage(aMessage, recipient);
 				personButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						messageDisplayArea.setText("");
 						String message = message_sendBox.getText();
+						clickedRecipient = recipient;
 						if (message != null) {
 							showMessageForRecipient(buttonText);
 							sendMessage(message, recipient);
@@ -341,20 +346,40 @@ ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 			}
 		});
 
-//		message_sendBtn.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				String message = message_sendBox.getText();
-//
-//				for (Map.Entry<String, JCheckBox> entry : recipientCheckboxes.entrySet()) {
-//					String recipient = entry.getKey();
-//					JCheckBox checkBox = entry.getValue();
-//
-//					if (checkBox.isSelected()) {
-//						sendChatMessage(message, recipient, chatRooms.get(recipient)); // 선택된 대상자의 채팅방에 메시지 전송
-//					}
-//				}
-//			}
-//		});
+		message_sendBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				messageDisplayArea.setText("");
+				String message = message_sendBox.getText();
+				if (message != null) {
+					sendMessage(message, clickedRecipient);
+					saveSendChat(message, clickedRecipient, id);
+				}
+				try {
+					readTextFile(id, clickedRecipient);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+
+		message_sendBox.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					messageDisplayArea.setText("");
+					String message = message_sendBox.getText();
+
+					if (message != null) {
+						sendMessage(message, clickedRecipient);
+						saveSendChat(message, clickedRecipient, id);
+					}
+					try {
+						readTextFile(id, clickedRecipient);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 
 		home_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -484,7 +509,7 @@ ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 
 	void readTextFile(String me, String opposite) throws IOException {
 		System.out.println("Reading Text...");
-		List<Message> messages = new ArrayList<>();
+		messageDisplayArea.setText("");
 		try {
 			// 파일 경로
 			String username = System.getProperty("user.home");

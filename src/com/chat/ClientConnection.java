@@ -189,6 +189,7 @@ public class ClientConnection {
 			return sendName;
 		}
 
+
 		public String getReceivedMessage() {
 			return receivedMessage;
 		}
@@ -204,7 +205,7 @@ public class ClientConnection {
 		String sendName = null;
 		try {
 			String inp = (String) in.readObject();
-			System.out.println(inp);
+			System.out.println("메세지 결과 : " + inp);
 			String[] arr = inp.split(":");
 			sendName = arr[0];
 			receivedMessage = arr[1];

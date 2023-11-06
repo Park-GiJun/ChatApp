@@ -92,6 +92,7 @@ public class MainFrame extends JFrame {
 	JButton addPerson = new JButton();
 	JScrollBar verticalScrollBar = new JScrollBar();
 	String clickedRecipient;
+	Map<String, JButton> recipientButtons = new HashMap<>();
 
 	public boolean getPass() {
 		return pass;
@@ -228,7 +229,7 @@ public class MainFrame extends JFrame {
 		home_todo.add(home_todo_list);
 
 		// 정보수정 버튼 추가 액션 추가
-		info_Btn.setSize(100,100);
+		info_Btn.setSize(100, 100);
 		left_Panel.add(info_Btn);
 		info_Btn.setText("SetInfo");
 		info_Btn.addActionListener(new ActionListener() {
@@ -298,9 +299,6 @@ public class MainFrame extends JFrame {
 //		// 사용자 추가
 		clickedRecipient = null;
 
-		// 대상자 체크박스를 저장할 Map
-		Map<String, JButton> recipientButtons = new HashMap<>();
-
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String recipient = JOptionPane.showInputDialog("수신자: ");
@@ -357,7 +355,6 @@ public class MainFrame extends JFrame {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					messageDisplayArea.setText("");
 					String message = message_sendBox.getText();
-
 					if (message != null) {
 						sendMessage(message, clickedRecipient);
 						saveSendChat(message, clickedRecipient, id);
@@ -396,10 +393,10 @@ public class MainFrame extends JFrame {
 				String message = message_sendBox.getText();
 				String post = "post";
 				sendMessage(message, post);
-				saveSendChat(message, post, post);
 				try {
-					readTextFile(post, post);
-				} catch (IOException e1) {
+					sendPostSave(post, message);
+					readPost();
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -527,6 +524,7 @@ public class MainFrame extends JFrame {
 			e1.printStackTrace();
 		}
 	}
+
 	void sendPostSave(String post, String message) throws IOException {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
@@ -554,7 +552,7 @@ public class MainFrame extends JFrame {
 		bufferedWriter.close();
 		System.out.println("saved Send Post Message");
 	}
-	
+
 	void readPost() throws Exception {
 		messageDisplayArea.setText("");
 		String username = System.getProperty("user.home");
@@ -571,9 +569,9 @@ public class MainFrame extends JFrame {
 		}
 		// BufferedReader 닫기
 		reader.close();
-		
+
 	}
-	
+
 	void receivePost(String message) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
@@ -597,16 +595,54 @@ public class MainFrame extends JFrame {
 			}
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + "post"
-					+ " : " + message);
+			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // "
+					+ "post" + " : " + message);
 			bufferedWriter.newLine();
 			bufferedWriter.close();
 			System.out.println("saved Receive Post Message");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
+
+	void makeBtn(String recipient) {
+
+		if (recipientButtons.containsKey(recipient)) {
+			System.out.println("이미 같은 이름의 버튼이 존재합니다.");
+			return; // 이미 존재하면 더 이상 진행하지 않음
+		}
+		JButton personButton = new JButton(recipient);
+		String buttonText = recipient;
+		personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
+		message_Box.add(personButton);
+		recipientButtons.put(recipient, personButton);
+		message_Box.revalidate(); // 레이아웃을 갱신하여 버튼을 새 위치에 배치
+		String aMessage = "님이 연결 시도했습니다.";
+		sendMessage(aMessage, recipient);
+		sendMessage(aMessage, recipient);
+		personButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				messageDisplayArea.setText("");
+				String message = message_sendBox.getText();
+				clickedRecipient = recipient;
+				if (message != null) {
+					showMessageForRecipient(buttonText);
+					sendMessage(message, recipient);
+					saveSendChat(message, recipient, id);
+					try {
+						readTextFile(id, recipient);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				} else {
+					message_sendBox.setText("");
+				}
+
+			}
+		});
+	}
+
 	public String getId() {
 		return id_TextField.getText();
 	}

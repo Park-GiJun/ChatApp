@@ -33,18 +33,20 @@ public class Main {
 							System.out.println(
 									"메시지 수신: 발신자=" + senderName + ", 메시지=" + receiveMessage + ", 수신자=" + recipient);
 							String id = mainFrame.getId();
-							if (recipient.equals(id)) {
-								JOptionPane.showMessageDialog(mainFrame, senderName + "님이 메세지를 발송했습니다.");
-								mainFrame.saveReceiveChat(receiveMessage, recipient, senderName);
-								mainFrame.readTextFile(id, senderName);
+							if (recipient.equals("post")) {
+								System.out.println("공지사항 수신");
+								JOptionPane.showMessageDialog(mainFrame, "공지사항이 있습니다.\n");
+								mainFrame.receivePost(receiveMessage);
+								mainFrame.readPost();
 								SwingUtilities.invokeLater(new Runnable() {
 									public void run() {
 									}
 								});
-							} else if (recipient.equals("post")) {
-								JOptionPane.showMessageDialog(mainFrame, "공지사항이 있습니다.\n");
-								mainFrame.receivePost(receiveMessage);
-								mainFrame.readPost();
+							} else if (recipient.equals(id)) {
+								JOptionPane.showMessageDialog(mainFrame, senderName + "님이 메세지를 발송했습니다.");
+								mainFrame.saveReceiveChat(receiveMessage, recipient, senderName);
+								mainFrame.readTextFile(id, senderName);
+								mainFrame.makeBtn(senderName);
 								SwingUtilities.invokeLater(new Runnable() {
 									public void run() {
 									}

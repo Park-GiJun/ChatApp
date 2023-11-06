@@ -96,16 +96,7 @@ public class MainFrame extends JFrame {
 	public boolean getPass() {
 		return pass;
 	}
-//	public String 
 
-//	public String getUserEmail() {
-//		UserEmail = home_email.getText();
-//		return UserEmail;
-//	}
-//	public String getName() {
-//		name = home_name.getText();
-//		return name;
-//	}
 	public MainFrame(ClientConnection clientConnection, Adapter adapter) {
 		this.clientConnection = clientConnection; // ClientConnection 초기화
 		this.adapter = adapter;
@@ -402,8 +393,15 @@ public class MainFrame extends JFrame {
 
 		message_postBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				sendMessage(message, post);
-
+				String message = message_sendBox.getText();
+				String post = "post";
+				sendMessage(message, post);
+				saveSendChat(message, post, post);
+				try {
+					readTextFile(post, post);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 	}
@@ -529,7 +527,86 @@ public class MainFrame extends JFrame {
 			e1.printStackTrace();
 		}
 	}
+	void sendPostSave(String post, String message) throws IOException {
+		String username = System.getProperty("user.home");
+		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
+		File file = new File(filePath);
+		File parentDir = file.getParentFile();
+		if (!parentDir.exists()) {
+			// 디렉토리가 존재하지 않으면 생성
+			parentDir.mkdirs();
+		}
+		if (!file.exists()) {
+			// 파일이 존재하지 않으면 생성
+			file.createNewFile();
+		}
+		int year = currentDateTime.getYear();
+		int month = currentDateTime.getMonthValue();
+		int day = currentDateTime.getDayOfMonth();
+		int hour = currentDateTime.getHour();
+		int minute = currentDateTime.getMinute();
+		int second = currentDateTime.getSecond();
+		FileWriter fileWriter = new FileWriter(filePath, true);
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + "post"
+				+ " : " + message);
+		bufferedWriter.newLine();
+		bufferedWriter.close();
+		System.out.println("saved Send Post Message");
+	}
+	
+	void readPost() throws Exception {
+		messageDisplayArea.setText("");
+		String username = System.getProperty("user.home");
+		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
 
+		// 파일을 읽어올 BufferedReader 생성
+		BufferedReader reader = new BufferedReader(new FileReader(filePath));
+
+		String line;
+		while ((line = reader.readLine()) != null) {
+			// 한 줄씩 읽어와서 JTextArea에 추가
+			messageDisplayArea.append(line + "\n");
+			verticalScrollBar.setValue(verticalScrollBar.getMaximum());
+		}
+		// BufferedReader 닫기
+		reader.close();
+		
+	}
+	
+	void receivePost(String message) {
+		String username = System.getProperty("user.home");
+		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
+		int year = currentDateTime.getYear();
+		int month = currentDateTime.getMonthValue();
+		int day = currentDateTime.getDayOfMonth();
+		int hour = currentDateTime.getHour();
+		int minute = currentDateTime.getMinute();
+		int second = currentDateTime.getSecond();
+		File file = new File(filePath);
+		File parentDir = file.getParentFile();
+
+		try {
+			if (!parentDir.exists()) {
+				// 디렉토리가 존재하지 않으면 생성
+				parentDir.mkdirs();
+			}
+			if (!file.exists()) {
+				// 파일이 존재하지 않으면 생성
+				file.createNewFile();
+			}
+			FileWriter fileWriter = new FileWriter(filePath, true);
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + "post"
+					+ " : " + message);
+			bufferedWriter.newLine();
+			bufferedWriter.close();
+			System.out.println("saved Receive Post Message");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	public String getId() {
 		return id_TextField.getText();
 	}

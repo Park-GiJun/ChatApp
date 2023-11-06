@@ -153,6 +153,33 @@ public class ClientConnection {
 		System.out.println("clientconnection login : " + pass_out);
 		return pass_out;
 	}
+	
+	public int nameTreeNum() {
+		System.out.println("nameTreeNum 시작");
+		int treeNum = 0;
+		try {
+			out.writeObject("[nameTreeNum]");
+			treeNum = (Integer)in.readObject();
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("nameTreeNum 오류");
+		}
+		return treeNum;
+	}
+	public void nameTree() {
+		System.out.println("nameTree 시작");
+		try {
+			String name [] = new String[nameTreeNum()];
+			out.writeObject("[nameTree]");
+			for(int i =0; i<name.length; i++) {
+				name[i] = (String)in.readObject();
+			}
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("nameTree 오류");
+		}
+	}
 
 	private void connectToServer() {
 		try {

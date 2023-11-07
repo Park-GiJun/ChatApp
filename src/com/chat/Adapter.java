@@ -68,6 +68,10 @@ public class Adapter {
 		setPhone(client.setPhone);
 		setEmail(client.setEmail);
 	}
+	public String [] getDeptList() {
+		String DeptList [] = client.SignUpDept();
+		return DeptList;
+	}
 	public void setNameTree(String [] ar) {
 		this.arr = ar;
 	}

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientConnection {
 	private String serverAddress;
@@ -18,6 +19,9 @@ public class ClientConnection {
 	private String user_pwd;
 	private Socket socket;
 	String setPwd, setEmail, setPhone;
+	private String nameTree[];
+	private String inpNameTree;
+	private String Dept[];
 
 	public String getName() {
 		return name;
@@ -43,6 +47,10 @@ public class ClientConnection {
 		return user_id;
 	}
 
+	public String[] getNameTree() {
+		return nameTree;
+	}
+
 	public ClientConnection() {
 	}
 
@@ -56,6 +64,7 @@ public class ClientConnection {
 		System.out.println("selectMethod 시작");
 		try {
 			String inp = (String) in.readObject();
+			System.out.println(inp);
 			if (inp.equals("[setprofile]")) {
 				setProfileStart();
 				return "[setprofile]";
@@ -63,6 +72,9 @@ public class ClientConnection {
 				return "[chat]";
 			} else if (inp.equals("[onlinecheck]")) {
 				return "[onlinecheck]";
+			} else if (inp.equals("[nameTree]")) {
+				nameTree();
+				return "[nameTree]";
 			} else {
 				return " ";
 			}
@@ -156,34 +168,60 @@ public class ClientConnection {
 		System.out.println("clientconnection login : " + pass_out);
 		return pass_out;
 	}
-	
-	public int nameTreeNum() {
-		System.out.println("nameTreeNum 시작");
-		int treeNum = 0;
+
+	public String[] SignUpDept() {
+		System.out.println("Client SignUpDept 실행");
 		try {
-			out.writeObject("[nameTreeNum]");
-			treeNum = (Integer)in.readObject();
-		}catch(Exception e) {
-			e.printStackTrace();
-			System.out.println("nameTreeNum 오류");
-		}
-		return treeNum;
-	}
-	public void nameTree() {
-		System.out.println("nameTree 시작");
-		try {
-			String name [] = new String[nameTreeNum()];
-			out.writeObject("[nameTree]");
-			for(int i =0; i<name.length; i++) {
-				name[i] = (String)in.readObject();
+			out.writeObject("[SignUpDept]");
+			int ctDept = (Integer) in.readObject();
+			Dept = new String[ctDept];
+			System.out.println("signupdept ctdept : " + ctDept);
+			for (int i = 0; i < Dept.length; i++) {
+				Dept[i] = (String) in.readObject();
+				System.out.println(Dept[i]);
 			}
-			
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("nameTree 오류");
+			System.out.println("Client SignUpDept 오류");
+		}
+		return Dept;
+	}
+
+	public void nameTreeStart(String name) {
+		System.out.println("nameTreeStart 시작");
+		try {
+			out.writeObject("[nameTree]");
+			System.out.println("[nameTree] 전송");
+			this.inpNameTree = name;
+			nameTree();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("nameTree stater 오류");
 		}
 	}
 
+	public String [] nameTree() {
+		System.out.println("nameTree 시작");
+		String nameList []=null;
+		try {
+			System.out.println(in.readObject());
+			out.writeObject(inpNameTree);
+			int innum = (Integer) in.readObject();
+			System.out.println(innum);
+			nameList = new String[innum];
+			for (int i = 0; i < innum; i++) {
+				String inpnametest = (String) in.readObject();
+				nameList[i] = inpnametest;
+				System.out.println("inpnametest" + inpnametest);
+			}
+			System.out.println("nameTree 끝났다");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("nameTree 오류");
+		}
+		return nameList;
+	}
 
 	private void connectToServer() {
 		try {

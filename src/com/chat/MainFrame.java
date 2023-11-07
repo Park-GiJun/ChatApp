@@ -99,6 +99,8 @@ public class MainFrame extends JFrame {
 	Map<String, JButton> recipientButtons = new HashMap<>();
 	
 
+	// 관리자 시스템
+	String [] Dept;
 
 	public boolean getPass() {
 		return pass;
@@ -181,7 +183,8 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
-
+				SignUp admin = new SignUp(adapter);
+				
 			}
 		});
 		setTitle(id);
@@ -270,7 +273,9 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String search = search_bar.getText();
 				System.out.println(search);
-				
+				clientConnection.nameTreeStart(search);
+				String nameList []= clientConnection.nameTree();
+				search_DBlist = new JList(nameList);
 			}
 		});
 		

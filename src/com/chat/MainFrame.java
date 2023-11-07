@@ -79,7 +79,8 @@ public class MainFrame extends JFrame {
 	JTextField search_bar = new JTextField(12);
 	JButton search_btnclick = new JButton();
 	JTree search_Tree = new JTree();
-	JList search_DBlist = new JList();
+	JList<String> search_DBlist = new JList<String>(new String[] {"item1", "item2"});
+	JScrollPane search_listPanel = new JScrollPane();
 
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
@@ -97,8 +98,6 @@ public class MainFrame extends JFrame {
 	JScrollBar verticalScrollBar = new JScrollBar();
 	String clickedRecipient;
 	Map<String, JButton> recipientButtons = new HashMap<>();
-	
-
 
 	public boolean getPass() {
 		return pass;
@@ -127,7 +126,6 @@ public class MainFrame extends JFrame {
 		login_Btn.setBounds(496, 326, 86, 86);
 		loginPanel.add(pwdAdminSet);
 		pwdAdminSet.setBounds(218, 417, 80, 20);
-		
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -238,7 +236,7 @@ public class MainFrame extends JFrame {
 		home_todo.add(home_todo_list);
 
 		// 정보수정 버튼 추가 액션 추가
-		info_Btn.setSize(100,100);
+		info_Btn.setSize(100, 100);
 		left_Panel.add(info_Btn);
 		info_Btn.setText("SetInfo");
 		info_Btn.addActionListener(new ActionListener() {
@@ -250,30 +248,57 @@ public class MainFrame extends JFrame {
 		// 서치패널
 		search_Panel.setLayout(null);
 		search_Panel.setBounds(0, 0, 700, 560);
-		search_Panel.add(search_List);
+
+		// 검색 리스트 패널 (search_List) 설정
 		search_List.setBackground(Color.darkGray);
+		search_List.setLayout(null);
 		search_List.setBounds(0, 0, 230, 560);
-		search_Panel.add(search_Page);
+
+		// 검색 바 설정
+		search_bar.setText("");
+		search_bar.setBounds(10, 20, 150, 40);
+		search_List.add(search_bar);
+
+		// 검색 버튼 설정
+		search_btnclick.setBounds(170, 20, 50, 40);
+		search_btnclick.setText("검색");
+		search_List.add(search_btnclick);
+
+		// 검색 결과 페이지 (search_Page) 설정
 		search_Page.setBounds(230, 0, 470, 560);
 		search_Page.setBackground(Color.green);
+
+		// 검색 리스트 패널 (search_listPanel) 설정
+		search_listPanel.setBounds(0, 80, 230, 450);
+		search_listPanel.setBackground(Color.red);
+
+		
+
+		// search_Panel에 모든 컴포넌트를 추가합니다.
+		search_Panel.add(search_List);
+		search_Panel.add(search_Page);
+		
+		// search_List 패널에 search_bar와 search_btnclick를 추가합니다.
 		search_List.add(search_bar);
-		search_bar.setText("");
-		search_bar.setBounds(0, 28, 200, 50);
 		search_List.add(search_btnclick);
-		search_btnclick.setBounds(50,28,30,30);
-		search_btnclick.setText("검색");
-		search_Panel.add(search_DBlist);
-		search_DBlist.setBounds(0,40,200,500);
+		search_List.add(search_DBlist);
+		search_DBlist.setBounds(10, 90, 210, 350);
 		
+//		JButton example = new JButton("12");
+//		search_List.add(example);
+//		example.setBounds(10, 90, 210, 350);
 		
+	
 		search_btnclick.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String search = search_bar.getText();
-				System.out.println(search);
-				
-			}
+		    public void actionPerformed(ActionEvent e) {
+		        String search = search_bar.getText();
+		        
+		        System.out.println(search);
+		    }
 		});
-		
+
+
+
 //		search_List.add(search_Tree);
 //		search_List.setBounds(0, 81, 230, 450);
 
@@ -323,8 +348,6 @@ public class MainFrame extends JFrame {
 
 //		// 사용자 추가
 		clickedRecipient = null;
-
-
 
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

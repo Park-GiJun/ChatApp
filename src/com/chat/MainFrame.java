@@ -35,6 +35,7 @@ import javax.swing.JTree;
 import javax.swing.SwingConstants;
 
 public class MainFrame extends JFrame {
+	private static final long serialVersionUID = 1L;
 	// ClientConnection 객체 추가
 	private ClientConnection clientConnection;
 	private Map<String, String> receivedMessages = new HashMap<>();
@@ -77,9 +78,9 @@ public class MainFrame extends JFrame {
 	JPanel search_Page = new JPanel();
 	JTextField search_bar = new JTextField(12);
 	JButton search_btnclick = new JButton();
-	JTree search_Tree = new JTree();
+//	JTree search_Tree = new JTree();
 	JList search_DBlist = new JList();
-	
+
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
 	JPanel message_Box = new JPanel();
@@ -95,20 +96,14 @@ public class MainFrame extends JFrame {
 	JButton addPerson = new JButton();
 	JScrollBar verticalScrollBar = new JScrollBar();
 	String clickedRecipient;
+	Map<String, JButton> recipientButtons = new HashMap<>();
+	
+
 
 	public boolean getPass() {
 		return pass;
 	}
-//	public String 
 
-//	public String getUserEmail() {
-//		UserEmail = home_email.getText();
-//		return UserEmail;
-//	}
-//	public String getName() {
-//		name = home_name.getText();
-//		return name;
-//	}
 	public MainFrame(ClientConnection clientConnection, Adapter adapter) {
 		this.clientConnection = clientConnection; // ClientConnection 초기화
 		this.adapter = adapter;
@@ -243,7 +238,7 @@ public class MainFrame extends JFrame {
 		home_todo.add(home_todo_list);
 
 		// 정보수정 버튼 추가 액션 추가
-		info_Btn.setSize(100,100);
+		info_Btn.setSize(100, 100);
 		left_Panel.add(info_Btn);
 		info_Btn.setText("SetInfo");
 		info_Btn.addActionListener(new ActionListener() {
@@ -280,7 +275,8 @@ public class MainFrame extends JFrame {
 		});
 		
 //		search_List.add(search_Tree);
-//		search_List.setBounds(0, 81, 230, 450);
+		search_List.setBounds(0, 81, 230, 450);
+
 
 		// 메세지 패널
 		message_Panel.setLayout(null);
@@ -295,7 +291,7 @@ public class MainFrame extends JFrame {
 		message_chatBox.setBounds(90, 0, 610, 520);
 		message_chatBox.setBackground(Color.pink);
 		message_Box.add(message_postBtn);
-		message_postBtn.setSize(new Dimension(90, 70));
+		message_postBtn.setMaximumSize(new Dimension(90, 50));
 		message_postBtn.setText("Post");
 		message_chatBox.add(message_sendBox);
 		message_chatBox.setLayout(null);
@@ -329,8 +325,7 @@ public class MainFrame extends JFrame {
 //		// 사용자 추가
 		clickedRecipient = null;
 
-		// 대상자 체크박스를 저장할 Map
-		Map<String, JButton> recipientButtons = new HashMap<>();
+
 
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -424,8 +419,15 @@ public class MainFrame extends JFrame {
 
 		message_postBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				sendMessage(message, post);
-
+				String message = message_sendBox.getText();
+				String post = "post";
+				sendMessage(message, post);
+				try {
+					sendPostSave(post, message);
+					readPost();
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 	}
@@ -551,6 +553,124 @@ public class MainFrame extends JFrame {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+	}
+
+	void sendPostSave(String post, String message) throws IOException {
+		String username = System.getProperty("user.home");
+		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
+		File file = new File(filePath);
+		File parentDir = file.getParentFile();
+		if (!parentDir.exists()) {
+			// 디렉토리가 존재하지 않으면 생성
+			parentDir.mkdirs();
+		}
+		if (!file.exists()) {
+			// 파일이 존재하지 않으면 생성
+			file.createNewFile();
+		}
+		int year = currentDateTime.getYear();
+		int month = currentDateTime.getMonthValue();
+		int day = currentDateTime.getDayOfMonth();
+		int hour = currentDateTime.getHour();
+		int minute = currentDateTime.getMinute();
+		int second = currentDateTime.getSecond();
+		FileWriter fileWriter = new FileWriter(filePath, true);
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + "post"
+				+ " : " + message);
+		bufferedWriter.newLine();
+		bufferedWriter.close();
+		System.out.println("saved Send Post Message");
+	}
+
+	void readPost() throws Exception {
+		messageDisplayArea.setText("");
+		String username = System.getProperty("user.home");
+		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
+
+		// 파일을 읽어올 BufferedReader 생성
+		BufferedReader reader = new BufferedReader(new FileReader(filePath));
+
+		String line;
+		while ((line = reader.readLine()) != null) {
+			// 한 줄씩 읽어와서 JTextArea에 추가
+			messageDisplayArea.append(line + "\n");
+			verticalScrollBar.setValue(verticalScrollBar.getMaximum());
+		}
+		// BufferedReader 닫기
+		reader.close();
+
+	}
+
+	void receivePost(String message) {
+		String username = System.getProperty("user.home");
+		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
+		int year = currentDateTime.getYear();
+		int month = currentDateTime.getMonthValue();
+		int day = currentDateTime.getDayOfMonth();
+		int hour = currentDateTime.getHour();
+		int minute = currentDateTime.getMinute();
+		int second = currentDateTime.getSecond();
+		File file = new File(filePath);
+		File parentDir = file.getParentFile();
+
+		try {
+			if (!parentDir.exists()) {
+				// 디렉토리가 존재하지 않으면 생성
+				parentDir.mkdirs();
+			}
+			if (!file.exists()) {
+				// 파일이 존재하지 않으면 생성
+				file.createNewFile();
+			}
+			FileWriter fileWriter = new FileWriter(filePath, true);
+			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // "
+					+ "post" + " : " + message);
+			bufferedWriter.newLine();
+			bufferedWriter.close();
+			System.out.println("saved Receive Post Message");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	void makeBtn(String recipient) {
+
+		if (recipientButtons.containsKey(recipient)) {
+			System.out.println("이미 같은 이름의 버튼이 존재합니다.");
+			return; // 이미 존재하면 더 이상 진행하지 않음
+		}
+		JButton personButton = new JButton(recipient);
+		String buttonText = recipient;
+		personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
+		message_Box.add(personButton);
+		recipientButtons.put(recipient, personButton);
+		message_Box.revalidate(); // 레이아웃을 갱신하여 버튼을 새 위치에 배치
+		String aMessage = "님이 연결 시도했습니다.";
+		sendMessage(aMessage, recipient);
+		sendMessage(aMessage, recipient);
+		personButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				messageDisplayArea.setText("");
+				String message = message_sendBox.getText();
+				clickedRecipient = recipient;
+				if (message != null) {
+					showMessageForRecipient(buttonText);
+					sendMessage(message, recipient);
+					saveSendChat(message, recipient, id);
+					try {
+						readTextFile(id, recipient);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				} else {
+					message_sendBox.setText("");
+				}
+
+			}
+		});
 	}
 
 	public String getId() {

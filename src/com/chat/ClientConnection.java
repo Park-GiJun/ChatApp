@@ -61,8 +61,11 @@ public class ClientConnection {
 				return "[setprofile]";
 			} else if (inp.equals("[chat]")) {
 				return "[chat]";
-			} else
+			} else if (inp.equals("[onlinecheck]")) {
+				return "[onlinecheck]";
+			} else {
 				return " ";
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("selectMethod 오류");
@@ -181,6 +184,7 @@ public class ClientConnection {
 		}
 	}
 
+
 	private void connectToServer() {
 		try {
 			Socket socket = new Socket(serverAddress, serverPort);
@@ -234,7 +238,7 @@ public class ClientConnection {
 		String sendName = null;
 		try {
 			String inp = (String) in.readObject();
-			System.out.println(inp);
+			System.out.println("메세지 결과 : " + inp);
 			String[] arr = inp.split(":");
 			sendName = arr[0];
 			receivedMessage = arr[1];

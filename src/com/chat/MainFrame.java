@@ -76,6 +76,7 @@ public class MainFrame extends JFrame {
 	JPanel card_Panel = new JPanel();
 
 	// HOME 패널
+	String state = "";
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
 	JLabel home_name = new JLabel();
@@ -495,25 +496,31 @@ public class MainFrame extends JFrame {
 
 		// 할 일 목록을 관리할 리스트
 		List<JCheckBox> todoList = new ArrayList<>();
-
+		
 		home_todo.addMouseListener(new MouseAdapter() {
+			
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (SwingUtilities.isLeftMouseButton(e)) { // 좌클릭
 					String todoStr = JOptionPane.showInputDialog("할일");
+					
 					if (todoStr != null && !todoStr.isEmpty()) {
 						JCheckBox todoBox = new JCheckBox(todoStr);
 						todoBox.setBackground(eColor);
 						todoBox.setForeground(Color.white);
 						todoList.add(todoBox);
-
+						state = "add";
 						// 할 일 목록을 그리드 레이아웃에 추가
 						home_todo.add(todoBox);
+						
+						clientConnection.sendTodo(id, todoStr,state);
 
 						todoBox.addItemListener(new ItemListener() {
 							@Override
 							public void itemStateChanged(ItemEvent event) {
 								if (event.getStateChange() == ItemEvent.SELECTED) {
+									state = "delete";
+									clientConnection.sendTodo(id, todoStr, state);
 									// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
 									home_todo.remove(todoBox);
 									home_todo.revalidate();

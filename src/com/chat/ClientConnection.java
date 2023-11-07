@@ -16,15 +16,9 @@ public class ClientConnection {
 	private String dept_num;
 	private String user_id;
 	private String user_pwd;
-
-	public ClientConnection(String serverAddress, int serverPort) {
-		this.serverAddress = serverAddress;
-		this.serverPort = serverPort;
-		connectToServer();
-	}
-
-	public ClientConnection() {
-	}
+	private String doing;
+	private Socket socket;
+	String setPwd, setEmail, setPhone;
 
 	public String getName() {
 		return name;
@@ -38,7 +32,7 @@ public class ClientConnection {
 		return phone;
 	}
 
-	public String getDeptNum() {
+	public String getDeptnum() {
 		return dept_num;
 	}
 
@@ -49,40 +43,100 @@ public class ClientConnection {
 	public String getUserID() {
 		return user_id;
 	}
-	
-	public void setProfile(String setPwd, String setPhone, String setEmail) {
-		System.out.println(setPwd+" == "+setPhone + " == "+ setEmail);
+
+	public ClientConnection() {
+	}
+
+	public ClientConnection(String serverAddress, int serverPort) {
+		this.serverAddress = serverAddress;
+		this.serverPort = serverPort;
+		connectToServer();
+	}
+
+	public String selectMethod() {
+		System.out.println("selectMethod 시작");
 		try {
-			out.flush();
-			out.writeObject("3");
-			System.out.println("3번 보냈다");
+			String inp = (String) in.readObject();
+			if (inp.equals("[setprofile]")) {
+				setProfileStart();
+				return "[setprofile]";
+			} else if (inp.equals("[chat]")) {
+				return "[chat]";
+			} else if (inp.equals("[onlinecheck]")) {
+				return "[onlinecheck]";
+			} else {
+				return " ";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("selectMethod 오류");
+		}
+		return " ";
+	}
+
+	public void setProfile(String Pwd, String Phone, String Email) {
+		System.out.println("setProfile 시작");
+		try {
+			out.writeObject("[setprofile]");
+			System.out.println("[setprofile] 보냄");
+			this.setPwd = Pwd;
+			this.setPhone = Phone;
+			this.setEmail = Email;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("setprofile 오류");
+		}
+	}
+
+	public void setProfileStart() {
+		System.out.println("setProfileStart 시작");
+		try {
 			out.writeObject(setPwd);
 			System.out.println("setpwd 보냈다");
 			out.writeObject(setPhone);
 			System.out.println("setPhone 보냈다");
 			out.writeObject(setEmail);
 			System.out.println("setEmail 보냈다");
-			setPwd = (String) in.readObject();
-			setPhone = (String) in.readObject();
-			setEmail = (String) in.readObject();
+			String setDonePwd = (String) in.readObject();
+			String setDonePhone = (String) in.readObject();
+			String setDoneEmail = (String) in.readObject();
 			System.out.println("-------------------------");
-			System.out.println("pwd : " + setPwd + " phone : " + setPhone + " email : " + setEmail);
+			System.out.println("pwd : " + setDonePwd + " phone : " + setDonePhone + " email : " + setDoneEmail);
 			System.out.println("사원정보 수정 성공");
 			System.out.println("-------------------------");
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("사원정보 수정 실패");
 			System.out.println("-------------------------");
 		}
 	}
 
+	public void sendTodo(String id, String doing,String state) {
+		try {
+			out.writeObject("[Todo]");
+			out.writeObject(id);
+			out.writeObject(doing);
+			out.writeObject(state);
+			System.out.println("Todo : id, doing 서버 전송");
+
+		} catch (Exception e) {
+			System.out.println("Todo Error : id" + id + ", doing : " + doing +", state : " + state);
+			e.printStackTrace();
+		}
+	}
+
 	public void pwdUp(String id, String name) {
 		try {
-			out.writeObject("1");
-			out.writeObject(id);
+			out.writeObject("[reset]");
+			this.user_id = id;
+			this.name = name;
+			out.writeObject(user_id);
 			out.writeObject(name);
-			System.out.println(id + " () " + name);
+			System.out.println("pwdUpStart method" + (String) in.readObject());
+			System.out.println("pwdUpStart method" + (String) in.readObject());
+			System.out.println(user_id + " () " + name);
 			System.out.println("패스워드 초기화 입력 성공");
+
 		} catch (Exception e) {
 			System.out.println("패스워드 초기화 입력 오류");
 			e.printStackTrace();
@@ -93,25 +147,27 @@ public class ClientConnection {
 		// 서버로 아이디와 비밀번호 전송
 		String pass_in = null;
 		boolean pass_out = false;
-		this.user_id = id;
-		this.user_pwd = pwd;
-		out.writeObject("2");
 		try {
-			out.writeObject(id);
-			out.writeObject(pwd);
+			out.writeObject("[login]");
+			this.user_id = id;
+			this.user_pwd = pwd;
+			out.writeObject(user_id);
+			out.writeObject(user_pwd);
 			pass_in = (String) in.readObject();
 			name = (String) in.readObject();
 			email = (String) in.readObject();
 			phone = (String) in.readObject();
 			dept_num = (String) in.readObject();
-			System.out.println("정보 읽었냐?");
+			System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
+					+ email + " phone : " + phone + " dept_num: " + dept_num);
+			System.out.println("정보를 읽었습니다.");
 			if (pass_in.equals("true")) {
 				pass_out = true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(pass_out);
+		System.out.println("clientconnection login : " + pass_out);
 		return pass_out;
 	}
 
@@ -128,9 +184,11 @@ public class ClientConnection {
 	public void sendMessage(String userName, String message, String recipient) {
 		try {
 			String inp = userName + ":" + message + ":" + recipient;
+			System.out.println(inp);
+			out.writeObject("[chat]");
 			out.writeObject(inp);
 			out.flush();
-			System.out.println(" Sent: " + inp);
+			System.out.println(" ClientConnection.java : " + inp);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -166,7 +224,7 @@ public class ClientConnection {
 		String sendName = null;
 		try {
 			String inp = (String) in.readObject();
-			System.out.println(inp);
+			System.out.println("메세지 결과 : " + inp);
 			String[] arr = inp.split(":");
 			sendName = arr[0];
 			receivedMessage = arr[1];
@@ -176,4 +234,5 @@ public class ClientConnection {
 		}
 		return new MessageResult(sendName, receivedMessage, recipient);
 	}
+
 }

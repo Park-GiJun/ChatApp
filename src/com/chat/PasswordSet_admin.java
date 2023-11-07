@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class PasswordSet_admin {
+	private Adapter adapter;
 	// 1. 메인 프레임
 	JFrame pwd_MainFrame = new JFrame("비밀번호 초기화");
 	JPanel pwd_MainPanel = new JPanel();
@@ -60,52 +61,46 @@ public class PasswordSet_admin {
 	JLabel login_WarningText = new JLabel("<html><div style='text-align:center;'>"
 			+ "권한이 없습니다.<br/>코드를 다시 확인하거나 관리자가 아닌 경우<br/>정보 수정 권한이 있는 관리자에게 문의하세요." + "</div></html>");
 
-	public String getnum_refer(String num) {
-		return num;
-	}
 
-	public String getname_refer(String name) {
-		return name;
-	}
-
-	public PasswordSet_admin() {
+	public PasswordSet_admin(Adapter adapter) {
+		this.adapter = adapter;
 		// 관리자 로그인
 		pwd_MainFrame.setSize(530, 300);
-		pwd_MainFrame.setVisible(true);
+		pwd_MainFrame.setVisible(false);
 		pwd_MainFrame.setResizable(false);
 		pwd_MainFrame.setLocationRelativeTo(null);
 
 		pwd_MainPanel.setSize(510, 350);
 		pwd_MainPanel.setLayout(null);
 		pwd_MainPanel.setBackground(Color.WHITE);
-		pwd_MainFrame.add(pwd_MainPanel);
+//		pwd_MainFrame.add(pwd_MainPanel);
 
-		pwd_MainPanel.add(pwd_Title);
+//		pwd_MainPanel.add(pwd_Title);
 		pwd_Title.setFont(new Font("Gothic", Font.BOLD, 20));
 		pwd_Title.setBounds(198, 40, 130, 25);
 
 		pwd_CodeLabel.setBounds(68, 126, 60, 18);
 		pwd_CodeLabel.setFont(labelFont);
-		pwd_MainPanel.add(pwd_CodeLabel);
+//		pwd_MainPanel.add(pwd_CodeLabel);
 
 		pwd_Code.setBounds(138, 120, 200, 35);
-		pwd_MainPanel.add(pwd_Code);
+//		pwd_MainPanel.add(pwd_Code);
 
 		pwd_PwdLabel.setBounds(68, 166, 60, 18);
 		pwd_PwdLabel.setFont(labelFont);
-		pwd_MainPanel.add(pwd_PwdLabel);
+//		pwd_MainPanel.add(pwd_PwdLabel);
 
 //		pwd_Pwd.setEchoChar('*');
 		pwd_Pwd.setBounds(138, 160, 200, 35);
-		pwd_MainPanel.add(pwd_Pwd);
+//		pwd_MainPanel.add(pwd_Pwd);
 
 		pwd_Login.setBounds(350, 120, 80, 75);
 		pwd_Login.setOpaque(true);
-		pwd_MainPanel.add(pwd_Login);
+//		pwd_MainPanel.add(pwd_Login);
 
 		// 관리자 로그인 성공 -> 사원 정보 조회
 		info_Frame.setSize(450, 210);
-		info_Frame.setVisible(false);
+		info_Frame.setVisible(true);
 		info_Frame.setResizable(false);
 		info_Frame.setLocationRelativeTo(null);
 		info_Frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -206,10 +201,11 @@ public class PasswordSet_admin {
 						public void actionPerformed(ActionEvent e) {
 							num = info_NumField.getText();
 							name = info_NameField.getText();
+							adapter.pwdUP(num, name);
 							// DB 비교 한 값 받아오기
-							if (num.equals("admin") && name.equals("admin")) { // 정보 조회 성공하면
+							if (num.equals(adapter.getDBcn()) && name.equals(adapter.getDBname())) { // 정보 조회 성공하면
 								// 해당 사원 비밀번호 DB 업데이트
-
+								System.out.println("패스워드 초기화 DB 데이터 조회 완료");
 								reset_Frame.setVisible(true); // 초기화 비밀번호 안내
 							} else {
 								admin_WarningFrame.setVisible(true); // 사원 정보 불일치 경고

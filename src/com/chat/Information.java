@@ -6,18 +6,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 public class Information {
+	Adapter adapter = new Adapter();
+	
 	// 1. 메인 프레임
 	JFrame main_Frame = new JFrame("정보 수정");
 	JPanel main_Panel = new JPanel();
@@ -52,7 +52,8 @@ public class Information {
 	JFrame save_Frame = new JFrame();
 	JPanel save_Panel = new JPanel();
 	JLabel save_Message = new JLabel("회원 정보 수정 완료되었습니다.");
-	public Information(String id, String name) {
+	public Information(Adapter adapter) {
+		this.adapter = adapter;
 		// 1. 메인 프레임
 		main_Frame.setSize(450, 480);
 		main_Frame.setVisible(true);
@@ -90,21 +91,22 @@ public class Information {
 		main_Button.setBounds(330, 365, 60, 30);
 
 		// 1-1. 로그인 정보 각 필드에 배치
-		ClientConnection client = new ClientConnection();
+		
 		try {
 			
-		String db_Number = id;
-		String db_Name = name;
-		String db_Pwd = client.getUserPwd();
-		String db_Phone = client.getPhone();
-		String db_Email = client.getEmail();
+		String db_Number = adapter.getId();
+		String db_Name = adapter.getName();
+		String db_Pwd = adapter.getPwd();
+		String db_Phone = adapter.getPhone();
+		String db_Email = adapter.getEmail();
+		System.out.println(db_Number+"/"+db_Name+"/"+db_Pwd+"/"+db_Phone+"/"+db_Email);
 		
 		main_Number.setText(db_Number);
 		main_Name.setText(db_Name);
-		main_Pwd.setText(db_Pwd);
-		main_PwdCheck.setText(db_Pwd);
-		main_Phone.setText(db_Phone);
-		main_Email.setText(db_Email);
+//		main_Pwd.setText(db_Pwd);
+//		main_PwdCheck.setText(db_Pwd);
+//		main_Phone.setText(db_Phone);
+//		main_Email.setText(db_Email);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -183,7 +185,8 @@ public class Information {
 				System.out.println("변경 버튼 눌렀다");
 				save_Frame.setVisible(true);
 				clientSend();
-				client.setProfile(setPwd, setPhone, setEmail);
+				adapter.setInfo(setPwd, setPhone, setEmail);
+				
 			}
 		});
 
@@ -191,6 +194,7 @@ public class Information {
 		modify_Button_No.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				modify_Frame.dispose();
+				adapter.setInfo(setPwd, setPhone, setEmail);
 			}
 		});
 

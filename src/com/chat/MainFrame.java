@@ -6,8 +6,12 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,13 +19,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,6 +40,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -50,6 +59,11 @@ public class MainFrame extends JFrame {
 	private String id, pwd, UserEmail, name;
 	private boolean pass = false;
 	private JButton pwdAdminSet = new JButton();
+	Color aColor = new Color(121, 144, 163);
+	Color bColor = new Color(193, 223, 249);
+	Color cColor = new Color(116, 140, 219);
+	Color dColor = new Color(22, 59, 136);
+	Color eColor = new Color(25, 45, 69);
 
 	// 메인패널
 	JPanel main_Panel = new JPanel();
@@ -64,7 +78,6 @@ public class MainFrame extends JFrame {
 	// HOME 패널
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
-
 	JLabel home_name = new JLabel();
 	JLabel home_num = new JLabel();
 	JLabel home_email = new JLabel();
@@ -79,7 +92,7 @@ public class MainFrame extends JFrame {
 	JTextField search_bar = new JTextField(12);
 	JButton search_btnclick = new JButton();
 	JTree search_Tree = new JTree();
-	JList<String> search_DBlist = new JList<String>(new String[] {"item1", "item2"});
+	JList<String> search_DBlist = new JList<String>(new String[] { "item1", "item2" });
 	JScrollPane search_listPanel = new JScrollPane();
 
 	// 메세지 패널
@@ -202,26 +215,42 @@ public class MainFrame extends JFrame {
 		message_Btn.setText("Message");
 		message_Btn.setSize(100, 100);
 
+		// 색상
+		home_Btn.setBackground(aColor);
+		home_Btn.setBorder(null);
+		search_Btn.setBackground(aColor);
+		search_Btn.setBorder(null);
+		message_Btn.setBackground(aColor);
+		message_Btn.setBorder(null);
+		info_Btn.setBackground(aColor);
+		info_Btn.setBorder(null);
+		main_Panel.setBackground(aColor);
+		message_postBtn.setBackground(cColor);
+		addPerson.setBackground(cColor);
+		message_postBtn.setBorder(null);
+		addPerson.setBorder(null);
+		home_todo.setBackground(eColor);
+
 		// 변경 패널
 		main_Panel.add(card_Panel);
 		card_Panel.setLayout(panelLayout);
 		card_Panel.setBounds(100, 0, 700, 560);
-		card_Panel.setBackground(Color.red);
 		card_Panel.add(home_Panel, "homePanel");
 		card_Panel.add(search_Panel, "searchPanel");
 		card_Panel.add(message_Panel, "messagePanel");
 
 		// 홈패널
 		home_Panel.setLayout(null);
-		home_Panel.setBackground(Color.gray);
+		home_Panel.setBackground(dColor);
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
-		home_photo.setBounds(268, 25, 165, 210);
+		home_photo.setBounds(268, 25, 165, 190);
 
 		ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 		JLabel home_test = new JLabel("ONE", mario, SwingConstants.CENTER);
 
 		home_photo.add(home_test);
+		home_photo.setBackground(dColor);
 
 		home_Panel.add(home_name);
 		home_name.setBounds(290, 250, 200, 20);
@@ -234,6 +263,7 @@ public class MainFrame extends JFrame {
 		home_Panel.add(home_todo);
 		home_todo.setBounds(195, 356, 310, 170);
 		home_todo.add(home_todo_list);
+		home_todo.setBorder(new LineBorder(eColor, 30, true));
 
 		// 정보수정 버튼 추가 액션 추가
 		info_Btn.setSize(100, 100);
@@ -250,7 +280,7 @@ public class MainFrame extends JFrame {
 		search_Panel.setBounds(0, 0, 700, 560);
 
 		// 검색 리스트 패널 (search_List) 설정
-		search_List.setBackground(Color.darkGray);
+		search_List.setBackground(bColor);
 		search_List.setLayout(null);
 		search_List.setBounds(0, 0, 230, 560);
 
@@ -266,38 +296,32 @@ public class MainFrame extends JFrame {
 
 		// 검색 결과 페이지 (search_Page) 설정
 		search_Page.setBounds(230, 0, 470, 560);
-		search_Page.setBackground(Color.green);
+		search_Page.setBackground(dColor);
 
 		// 검색 리스트 패널 (search_listPanel) 설정
 		search_listPanel.setBounds(0, 80, 230, 450);
-		search_listPanel.setBackground(Color.red);
-
-		
 
 		// search_Panel에 모든 컴포넌트를 추가합니다.
 		search_Panel.add(search_List);
 		search_Panel.add(search_Page);
-		
+
 		// search_List 패널에 search_bar와 search_btnclick를 추가합니다.
 		search_List.add(search_bar);
 		search_List.add(search_btnclick);
 		search_List.add(search_DBlist);
 		search_DBlist.setBounds(10, 90, 210, 350);
-		
+
 //		JButton example = new JButton("12");
 //		search_List.add(example);
 //		example.setBounds(10, 90, 210, 350);
-		
-	
+
 		search_btnclick.addActionListener(new ActionListener() {
-		    public void actionPerformed(ActionEvent e) {
-		        String search = search_bar.getText();
-		        
-		        System.out.println(search);
-		    }
+			public void actionPerformed(ActionEvent e) {
+				String search = search_bar.getText();
+
+				System.out.println(search);
+			}
 		});
-
-
 
 //		search_List.add(search_Tree);
 //		search_List.setBounds(0, 81, 230, 450);
@@ -305,15 +329,14 @@ public class MainFrame extends JFrame {
 		// 메세지 패널
 		message_Panel.setLayout(null);
 		message_Panel.setBounds(100, 0, 700, 500);
-		message_Panel.setBackground(Color.blue);
+		message_Panel.setBackground(dColor);
 		message_Panel.add(message_Box);
-		message_Box.setBounds(0, 0, 90, 520);
-		message_Box.setBackground(Color.orange);
+		message_Box.setBounds(0, 0, 90, 540);
+		message_Box.setBackground(bColor);
 		BoxLayout boxLayoutY = new BoxLayout(message_Box, BoxLayout.Y_AXIS);
 		message_Box.setLayout(boxLayoutY);
 		message_Panel.add(message_chatBox);
 		message_chatBox.setBounds(90, 0, 610, 520);
-		message_chatBox.setBackground(Color.pink);
 		message_Box.add(message_postBtn);
 		message_postBtn.setMaximumSize(new Dimension(90, 50));
 		message_postBtn.setText("Post");
@@ -326,17 +349,20 @@ public class MainFrame extends JFrame {
 		// 메세지 입력창
 		message_sendPanel.add(message_sendBox);
 		message_sendBox.setBounds(0, 0, 520, 50);
+		message_sendBox.setBorder(null);
+
 		// 메세지 전송 버튼
 		message_sendPanel.add(message_sendBtn);
 		message_sendBtn.setBounds(520, 0, 90, 40);
+		message_sendBtn.setText("Send");
 
 		// 메세지 로그
 		message_chatBox.add(message_chatlog);
-		message_chatlog.setBounds(0, 0, 610, 495);
+		message_chatlog.setBounds(0, 0, 610, 490);
 		message_chatlog.setBackground(Color.red);
 		message_Box.add(addPerson);
 		addPerson.setText("Add Person");
-		addPerson.setSize(90, 70);
+		addPerson.setMaximumSize(new Dimension(90, 70));
 
 		// 새로운 JPanel을 만들어서 메시지를 표시할 것입니다.
 		messageDisplayArea = new JTextArea();
@@ -353,6 +379,7 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String recipient = JOptionPane.showInputDialog("수신자: ");
 				JButton personButton = new JButton(recipient);
+				personButton.setBackground(cColor);
 				String buttonText = recipient;
 				personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
 				message_Box.add(personButton);
@@ -366,6 +393,7 @@ public class MainFrame extends JFrame {
 						messageDisplayArea.setText("");
 						String message = message_sendBox.getText();
 						clickedRecipient = recipient;
+						message_sendBtn.setText(recipient);
 						if (message != null) {
 							showMessageForRecipient(buttonText);
 							sendMessage(message, recipient);
@@ -426,16 +454,25 @@ public class MainFrame extends JFrame {
 				home_email.setText("이메일 : " + adapter.getEmail());
 				home_num.setText("전화번호 : " + adapter.getPhone());
 				home_deptNum.setText("내선번호 : " + adapter.getNum());
+				search_Btn.setBackground(aColor);
+				home_Btn.setBackground(bColor);
+				message_Btn.setBackground(aColor);
 			}
 		});
 		search_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "searchPanel");
+				search_Btn.setBackground(bColor);
+				home_Btn.setBackground(aColor);
+				message_Btn.setBackground(aColor);
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "messagePanel");
+				search_Btn.setBackground(aColor);
+				home_Btn.setBackground(aColor);
+				message_Btn.setBackground(bColor);
 			}
 		});
 
@@ -449,6 +486,46 @@ public class MainFrame extends JFrame {
 					readPost();
 				} catch (Exception e1) {
 					e1.printStackTrace();
+				}
+			}
+		});
+
+		// home_todo 패널의 레이아웃을 GridLayout(0, 2)로 설정
+		home_todo.setLayout(new BoxLayout(home_todo, BoxLayout.Y_AXIS));
+
+		// 할 일 목록을 관리할 리스트
+		List<JCheckBox> todoList = new ArrayList<>();
+
+		home_todo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (SwingUtilities.isLeftMouseButton(e)) { // 좌클릭
+					String todoStr = JOptionPane.showInputDialog("할일");
+					if (todoStr != null && !todoStr.isEmpty()) {
+						JCheckBox todoBox = new JCheckBox(todoStr);
+						todoBox.setBackground(eColor);
+						todoBox.setForeground(Color.white);
+						todoList.add(todoBox);
+
+						// 할 일 목록을 그리드 레이아웃에 추가
+						home_todo.add(todoBox);
+
+						todoBox.addItemListener(new ItemListener() {
+							@Override
+							public void itemStateChanged(ItemEvent event) {
+								if (event.getStateChange() == ItemEvent.SELECTED) {
+									// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
+									home_todo.remove(todoBox);
+									home_todo.revalidate();
+									home_todo.repaint();
+								}
+							}
+						});
+						home_todo.setAlignmentY(CENTER_ALIGNMENT);
+						// 패널을 다시 그리도록 요청
+						home_todo.revalidate();
+						home_todo.repaint();
+					}
 				}
 			}
 		});

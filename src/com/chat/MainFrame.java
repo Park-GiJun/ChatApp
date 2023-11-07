@@ -24,6 +24,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -74,9 +75,11 @@ public class MainFrame extends JFrame {
 	JPanel search_Panel = new JPanel();
 	JPanel search_List = new JPanel();
 	JPanel search_Page = new JPanel();
-	JTextField search_bar = new JTextField();
+	JTextField search_bar = new JTextField(12);
+	JButton search_btnclick = new JButton();
 	JTree search_Tree = new JTree();
-
+	JList search_DBlist = new JList();
+	
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
 	JPanel message_Box = new JPanel();
@@ -129,6 +132,7 @@ public class MainFrame extends JFrame {
 		login_Btn.setBounds(496, 326, 86, 86);
 		loginPanel.add(pwdAdminSet);
 		pwdAdminSet.setBounds(218, 417, 80, 20);
+		
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -258,9 +262,25 @@ public class MainFrame extends JFrame {
 		search_Page.setBounds(230, 0, 470, 560);
 		search_Page.setBackground(Color.green);
 		search_List.add(search_bar);
+		search_bar.setText("");
 		search_bar.setBounds(0, 28, 200, 50);
-		search_List.add(search_Tree);
-		search_List.setBounds(0, 81, 230, 450);
+		search_List.add(search_btnclick);
+		search_btnclick.setBounds(50,28,30,30);
+		search_btnclick.setText("검색");
+		search_Panel.add(search_DBlist);
+		search_DBlist.setBounds(0,40,200,500);
+		
+		
+		search_btnclick.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String search = search_bar.getText();
+				System.out.println(search);
+				
+			}
+		});
+		
+//		search_List.add(search_Tree);
+//		search_List.setBounds(0, 81, 230, 450);
 
 		// 메세지 패널
 		message_Panel.setLayout(null);

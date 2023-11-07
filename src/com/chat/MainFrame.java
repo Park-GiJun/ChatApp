@@ -24,6 +24,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollBar;
@@ -76,7 +77,9 @@ public class MainFrame extends JFrame {
 	JPanel search_List = new JPanel();
 	JPanel search_Page = new JPanel();
 	JTextField search_bar = new JTextField();
-	JTree search_Tree = new JTree();
+	JButton search_btnclick = new JButton();
+//	JTree search_Tree = new JTree();
+	JList search_DBlist = new JList();
 
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
@@ -94,6 +97,8 @@ public class MainFrame extends JFrame {
 	JScrollBar verticalScrollBar = new JScrollBar();
 	String clickedRecipient;
 	Map<String, JButton> recipientButtons = new HashMap<>();
+	
+
 
 	public boolean getPass() {
 		return pass;
@@ -122,6 +127,7 @@ public class MainFrame extends JFrame {
 		login_Btn.setBounds(496, 326, 86, 86);
 		loginPanel.add(pwdAdminSet);
 		pwdAdminSet.setBounds(218, 417, 80, 20);
+		
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -175,6 +181,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
+
 			}
 		});
 		setTitle(id);
@@ -212,6 +219,7 @@ public class MainFrame extends JFrame {
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 210);
+
 		ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 		JLabel home_test = new JLabel("ONE", mario, SwingConstants.CENTER);
 
@@ -249,8 +257,24 @@ public class MainFrame extends JFrame {
 		search_Page.setBounds(230, 0, 470, 560);
 		search_Page.setBackground(Color.green);
 		search_List.add(search_bar);
+		search_bar.setText("");
 		search_bar.setBounds(0, 28, 200, 50);
-		search_List.add(search_Tree);
+		search_List.add(search_btnclick);
+		search_btnclick.setBounds(50,28,30,30);
+		search_btnclick.setText("검색");
+		search_Panel.add(search_DBlist);
+		search_DBlist.setBounds(0,40,200,500);
+		
+		
+		search_btnclick.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String search = search_bar.getText();
+				System.out.println(search);
+				
+			}
+		});
+		
+//		search_List.add(search_Tree);
 		search_List.setBounds(0, 81, 230, 450);
 
 		// 메세지 패널
@@ -266,7 +290,7 @@ public class MainFrame extends JFrame {
 		message_chatBox.setBounds(90, 0, 610, 520);
 		message_chatBox.setBackground(Color.pink);
 		message_Box.add(message_postBtn);
-		message_postBtn.setSize(new Dimension(90, 70));
+		message_postBtn.setMaximumSize(new Dimension(90, 50));
 		message_postBtn.setText("Post");
 		message_chatBox.add(message_sendBox);
 		message_chatBox.setLayout(null);
@@ -299,6 +323,8 @@ public class MainFrame extends JFrame {
 
 //		// 사용자 추가
 		clickedRecipient = null;
+
+
 
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -356,6 +382,7 @@ public class MainFrame extends JFrame {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					messageDisplayArea.setText("");
 					String message = message_sendBox.getText();
+
 					if (message != null) {
 						sendMessage(message, clickedRecipient);
 						saveSendChat(message, clickedRecipient, id);
@@ -518,6 +545,7 @@ public class MainFrame extends JFrame {
 				// 한 줄씩 읽어와서 JTextArea에 추가
 				messageDisplayArea.append(line + "\n");
 				verticalScrollBar.setValue(verticalScrollBar.getMaximum());
+
 			}
 			// BufferedReader 닫기
 			reader.close();

@@ -78,7 +78,7 @@ public class MainFrame extends JFrame {
 	JPanel search_Page = new JPanel();
 	JTextField search_bar = new JTextField(12);
 	JButton search_btnclick = new JButton();
-//	JTree search_Tree = new JTree();
+	JTree search_Tree = new JTree();
 	JList search_DBlist = new JList();
 
 	// 메세지 패널
@@ -238,7 +238,7 @@ public class MainFrame extends JFrame {
 		home_todo.add(home_todo_list);
 
 		// 정보수정 버튼 추가 액션 추가
-		info_Btn.setSize(100, 100);
+		info_Btn.setSize(100,100);
 		left_Panel.add(info_Btn);
 		info_Btn.setText("SetInfo");
 		info_Btn.addActionListener(new ActionListener() {
@@ -275,7 +275,7 @@ public class MainFrame extends JFrame {
 		});
 		
 //		search_List.add(search_Tree);
-		search_List.setBounds(0, 81, 230, 450);
+//		search_List.setBounds(0, 81, 230, 450);
 
 
 		// 메세지 패널

@@ -12,6 +12,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -59,7 +61,7 @@ public class MainFrame extends JFrame {
 	private JButton login_Btn = new JButton();
 	private String id, pwd, UserEmail, name;
 	private boolean pass = false;
-	private JButton pwdAdminSet = new JButton();
+//	private JButton pwdAdminSet = new JButton();
 	Color aColor = new Color(121, 144, 163);
 	Color bColor = new Color(193, 223, 249);
 	Color cColor = new Color(116, 140, 219);
@@ -80,6 +82,7 @@ public class MainFrame extends JFrame {
 	String state = "";
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
+
 	JLabel home_name = new JLabel();
 	JLabel home_num = new JLabel();
 	JLabel home_email = new JLabel();
@@ -145,8 +148,8 @@ public class MainFrame extends JFrame {
 		id_TextField.setBounds(218, 326, 251, 38);
 		pwd_TextField.setBounds(218, 374, 251, 38);
 		login_Btn.setBounds(496, 326, 86, 86);
-		loginPanel.add(pwdAdminSet);
-		pwdAdminSet.setBounds(218, 417, 80, 20);
+//		loginPanel.add(pwdAdminSet);
+//		pwdAdminSet.setBounds(218, 417, 80, 20);
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -240,15 +243,24 @@ public class MainFrame extends JFrame {
 				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
 			}
 		});
-
-		pwdAdminSet.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
-
+		
+		// 관리자 화면 닫기 버튼 시 프로그램 종료
+		admin_Frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+				System.out.println("@관리자 접속 종료");
 			}
 		});
+
+//		pwdAdminSet.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
+//				SignUp admin = new SignUp(adapter);
+//
+//			}
+//		});
 		setTitle(id);
 
 		// 메인 패널
@@ -289,6 +301,7 @@ public class MainFrame extends JFrame {
 		main_Panel.add(card_Panel);
 		card_Panel.setLayout(panelLayout);
 		card_Panel.setBounds(100, 0, 700, 560);
+		card_Panel.setBackground(Color.red);
 		card_Panel.add(home_Panel, "homePanel");
 		card_Panel.add(search_Panel, "searchPanel");
 		card_Panel.add(message_Panel, "messagePanel");
@@ -381,20 +394,21 @@ public class MainFrame extends JFrame {
 		search_List.add(search_DBlist);
 		search_DBlist.setBounds(10, 90, 210, 350);
 
-//		JButton example = new JButton("12");
-//		search_List.add(example);
-//		example.setBounds(10, 90, 210, 350);
+//      JButton example = new JButton("12");
+//      search_List.add(example);
+//      example.setBounds(10, 90, 210, 350);
 
 		search_btnclick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String search = search_bar.getText();
-
 				System.out.println(search);
+				clientConnection.nameTree(search);
+				System.out.println("search 버튼 이벤트 끝났다");
 			}
 		});
 
-//		search_List.add(search_Tree);
-//		search_List.setBounds(0, 81, 230, 450);
+//      search_List.add(search_Tree);
+//      search_List.setBounds(0, 81, 230, 450);
 
 		// 메세지 패널
 		message_Panel.setLayout(null);
@@ -521,9 +535,6 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
 				System.out.println(adapter.getEmail() + "*" + adapter.getPhone() + "*" + adapter.getNum());
-				home_email.setText("이메일 : " + adapter.getEmail());
-				home_num.setText("전화번호 : " + adapter.getPhone());
-				home_deptNum.setText("내선번호 : " + adapter.getNum());
 				search_Btn.setBackground(aColor);
 				home_Btn.setBackground(bColor);
 				message_Btn.setBackground(aColor);
@@ -576,14 +587,17 @@ public class MainFrame extends JFrame {
 						todoBox.setBackground(eColor);
 						todoBox.setForeground(Color.white);
 						todoList.add(todoBox);
-
+						state = "add";
 						// 할 일 목록을 그리드 레이아웃에 추가
 						home_todo.add(todoBox);
+						clientConnection.sendTodo(id, todoStr, state);
 
 						todoBox.addItemListener(new ItemListener() {
 							@Override
 							public void itemStateChanged(ItemEvent event) {
 								if (event.getStateChange() == ItemEvent.SELECTED) {
+									state = "delete";
+									clientConnection.sendTodo(id, todoStr, state);
 									// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
 									home_todo.remove(todoBox);
 									home_todo.revalidate();

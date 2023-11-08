@@ -6,8 +6,12 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,13 +19,16 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,6 +40,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.border.LineBorder;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -41,6 +50,7 @@ public class MainFrame extends JFrame {
 	private Map<String, String> receivedMessages = new HashMap<>();
 	private Adapter adapter;
 	LocalDateTime currentDateTime = LocalDateTime.now();
+	List<JCheckBox> todoList = new ArrayList<>();
 
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
@@ -50,6 +60,11 @@ public class MainFrame extends JFrame {
 	private String id, pwd, UserEmail, name;
 	private boolean pass = false;
 	private JButton pwdAdminSet = new JButton();
+	Color aColor = new Color(121, 144, 163);
+	Color bColor = new Color(193, 223, 249);
+	Color cColor = new Color(116, 140, 219);
+	Color dColor = new Color(22, 59, 136);
+	Color eColor = new Color(25, 45, 69);
 
 	// 메인패널
 	JPanel main_Panel = new JPanel();
@@ -62,6 +77,7 @@ public class MainFrame extends JFrame {
 	JPanel card_Panel = new JPanel();
 
 	// HOME 패널
+	String state = "";
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
 
@@ -79,7 +95,8 @@ public class MainFrame extends JFrame {
 	JTextField search_bar = new JTextField(12);
 	JButton search_btnclick = new JButton();
 	JTree search_Tree = new JTree();
-	JList search_DBlist = new JList();
+	JList<String> search_DBlist = new JList<String>(new String[] { "item1", "item2" });
+	JScrollPane search_listPanel = new JScrollPane();
 
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
@@ -97,10 +114,13 @@ public class MainFrame extends JFrame {
 	JScrollBar verticalScrollBar = new JScrollBar();
 	String clickedRecipient;
 	Map<String, JButton> recipientButtons = new HashMap<>();
-	
 
-	// 관리자 시스템
-	String [] Dept;
+
+	// 관리자
+	JFrame admin_Frame = new JFrame();
+	JPanel admin_Panel = new JPanel();
+	JButton signUp_Btn = new JButton();
+	JButton pwdSet_Btn = new JButton();
 
 	public boolean getPass() {
 		return pass;
@@ -129,7 +149,6 @@ public class MainFrame extends JFrame {
 		login_Btn.setBounds(496, 326, 86, 86);
 		loginPanel.add(pwdAdminSet);
 		pwdAdminSet.setBounds(218, 417, 80, 20);
-		
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -139,7 +158,6 @@ public class MainFrame extends JFrame {
 
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
-
 					try {
 						if (!id.equals("admin") && !pwd.equals("admin")) {
 							clientConnection.login(id, pwd);
@@ -149,10 +167,42 @@ public class MainFrame extends JFrame {
 							UserEmail = clientConnection.getEmail();
 							String phone = clientConnection.getPhone();
 							String Dept_num = clientConnection.getDeptnum();
+							String[] todoarr = clientConnection.getDoing().split("//");
+							for (String a : todoarr) {
+								sop(a);
+							}
 							home_name.setText("이름 : " + name);
 							home_email.setText("이메일 : " + UserEmail);
 							home_num.setText("전화번호 : " + phone);
 							home_deptNum.setText("내선번호 : " + Dept_num);
+							for (int i = 0; i < todoarr.length; i++) {
+								String todoStr = todoarr[i];
+								JCheckBox todoBox = new JCheckBox(todoStr);
+								todoBox.setBackground(eColor);
+								todoBox.setForeground(Color.white);
+								todoList.add(todoBox);
+
+								// 할 일 목록을 그리드 레이아웃에 추가
+								home_todo.add(todoBox);
+
+								todoBox.addItemListener(new ItemListener() {
+									@Override
+									public void itemStateChanged(ItemEvent event) {
+										if (event.getStateChange() == ItemEvent.SELECTED) {
+											state = "delete";
+											clientConnection.sendTodo(id, todoStr, state);
+											// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
+											home_todo.remove(todoBox);
+											home_todo.revalidate();
+											home_todo.repaint();
+										}
+									}
+								});
+								home_todo.setAlignmentY(CENTER_ALIGNMENT);
+								// 패널을 다시 그리도록 요청
+								home_todo.revalidate();
+								home_todo.repaint();
+							}
 							adapter.setId(id);
 							adapter.setPwd(pwd);
 							adapter.setName(name);
@@ -162,8 +212,9 @@ public class MainFrame extends JFrame {
 
 							setTitle(id);
 						} else if (id.equals("admin") && pwd.equals("admin")) {
-							// 관리자 프레임 만들어서 넣기
-//							mainLayout.show(getContentPane(), "mainPanel");
+							System.out.println("관리자 로그인");
+							setVisible(false);
+							admin_Frame.setVisible(true);
 						} else {
 							JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
 									JOptionPane.WARNING_MESSAGE);
@@ -178,15 +229,30 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-		pwdAdminSet.addActionListener(new ActionListener() {
-
-			@Override
+		signUp_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
-				SignUp admin = new SignUp(adapter);
-				
+
+//				MainFrame.DISPOSE();
+				SignUp signup = new SignUp();
 			}
 		});
+
+		// 관리자 액션 리스너
+		pwdSet_Btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
+			}
+		});
+
+//		pwdAdminSet.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
+//				SignUp admin = new SignUp(adapter);
+//
+//			}
+//		});
 		setTitle(id);
 
 		// 메인 패널
@@ -207,6 +273,22 @@ public class MainFrame extends JFrame {
 		message_Btn.setText("Message");
 		message_Btn.setSize(100, 100);
 
+		// 색상
+		home_Btn.setBackground(aColor);
+		home_Btn.setBorder(null);
+		search_Btn.setBackground(aColor);
+		search_Btn.setBorder(null);
+		message_Btn.setBackground(aColor);
+		message_Btn.setBorder(null);
+		info_Btn.setBackground(aColor);
+		info_Btn.setBorder(null);
+		main_Panel.setBackground(aColor);
+		message_postBtn.setBackground(cColor);
+		addPerson.setBackground(cColor);
+		message_postBtn.setBorder(null);
+		addPerson.setBorder(null);
+		home_todo.setBackground(eColor);
+
 		// 변경 패널
 		main_Panel.add(card_Panel);
 		card_Panel.setLayout(panelLayout);
@@ -218,15 +300,16 @@ public class MainFrame extends JFrame {
 
 		// 홈패널
 		home_Panel.setLayout(null);
-		home_Panel.setBackground(Color.gray);
+		home_Panel.setBackground(dColor);
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
-		home_photo.setBounds(268, 25, 165, 210);
+		home_photo.setBounds(268, 25, 165, 190);
 
 		ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
 		JLabel home_test = new JLabel("ONE", mario, SwingConstants.CENTER);
 
 		home_photo.add(home_test);
+		home_photo.setBackground(dColor);
 
 		home_Panel.add(home_name);
 		home_name.setBounds(290, 250, 200, 20);
@@ -239,9 +322,26 @@ public class MainFrame extends JFrame {
 		home_Panel.add(home_todo);
 		home_todo.setBounds(195, 356, 310, 170);
 		home_todo.add(home_todo_list);
+		home_todo.setBorder(new LineBorder(eColor, 30, true));
+
+		// 관리자 패널
+		admin_Frame.setTitle("관리자 로그인");
+		admin_Frame.setSize(350, 200);
+		admin_Frame.setLayout(null);
+		admin_Frame.setVisible(false);
+		admin_Frame.setLocationRelativeTo(null);
+		admin_Frame.setResizable(false);
+		admin_Panel.setBackground(Color.white);
+		signUp_Btn.setText("등록");
+		signUp_Btn.setBounds(70, 50, 80, 60);
+		pwdSet_Btn.setText("초기화");
+		pwdSet_Btn.setBounds(190, 50, 80, 60);
+
+		admin_Frame.add(signUp_Btn);
+		admin_Frame.add(pwdSet_Btn);
 
 		// 정보수정 버튼 추가 액션 추가
-		info_Btn.setSize(100,100);
+		info_Btn.setSize(100, 100);
 		left_Panel.add(info_Btn);
 		info_Btn.setText("SetInfo");
 		info_Btn.addActionListener(new ActionListener() {
@@ -253,48 +353,68 @@ public class MainFrame extends JFrame {
 		// 서치패널
 		search_Panel.setLayout(null);
 		search_Panel.setBounds(0, 0, 700, 560);
-		search_Panel.add(search_List);
-		search_List.setBackground(Color.darkGray);
+
+		// 검색 리스트 패널 (search_List) 설정
+		search_List.setBackground(bColor);
+		search_List.setLayout(null);
 		search_List.setBounds(0, 0, 230, 560);
-		search_Panel.add(search_Page);
-		search_Page.setBounds(230, 0, 470, 560);
-		search_Page.setBackground(Color.green);
-		search_List.add(search_bar);
+
+		// 검색 바 설정
 		search_bar.setText("");
-		search_bar.setBounds(0, 28, 200, 50);
-		search_List.add(search_btnclick);
-		search_btnclick.setBounds(50,28,30,30);
+		search_bar.setBounds(10, 20, 150, 40);
+		search_List.add(search_bar);
+
+		// 검색 버튼 설정
+		search_btnclick.setBounds(170, 20, 50, 40);
 		search_btnclick.setText("검색");
-		search_Panel.add(search_DBlist);
-		search_DBlist.setBounds(0,40,200,500);
-		
-		
+		search_List.add(search_btnclick);
+
+		// 검색 결과 페이지 (search_Page) 설정
+		search_Page.setBounds(230, 0, 470, 560);
+		search_Page.setBackground(dColor);
+
+		// 검색 리스트 패널 (search_listPanel) 설정
+		search_listPanel.setBounds(0, 80, 230, 450);
+
+		// search_Panel에 모든 컴포넌트를 추가합니다.
+		search_Panel.add(search_List);
+		search_Panel.add(search_Page);
+
+		// search_List 패널에 search_bar와 search_btnclick를 추가합니다.
+		search_List.add(search_bar);
+		search_List.add(search_btnclick);
+		search_List.add(search_DBlist);
+		search_DBlist.setBounds(10, 90, 210, 350);
+
+//      JButton example = new JButton("12");
+//      search_List.add(example);
+//      example.setBounds(10, 90, 210, 350);
+
 		search_btnclick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String search = search_bar.getText();
 				System.out.println(search);
-				clientConnection.nameTreeStart(search);
-				String nameList []= clientConnection.nameTree();
-				search_DBlist = new JList(nameList);
+				clientConnection.nameTree(search);
+				System.out.println("search 버튼 이벤트 끝났다");
+
 			}
 		});
-		
-//		search_List.add(search_Tree);
-//		search_List.setBounds(0, 81, 230, 450);
+
+//      search_List.add(search_Tree);
+//      search_List.setBounds(0, 81, 230, 450);
 
 
 		// 메세지 패널
 		message_Panel.setLayout(null);
 		message_Panel.setBounds(100, 0, 700, 500);
-		message_Panel.setBackground(Color.blue);
+		message_Panel.setBackground(dColor);
 		message_Panel.add(message_Box);
-		message_Box.setBounds(0, 0, 90, 520);
-		message_Box.setBackground(Color.orange);
+		message_Box.setBounds(0, 0, 90, 540);
+		message_Box.setBackground(bColor);
 		BoxLayout boxLayoutY = new BoxLayout(message_Box, BoxLayout.Y_AXIS);
 		message_Box.setLayout(boxLayoutY);
 		message_Panel.add(message_chatBox);
 		message_chatBox.setBounds(90, 0, 610, 520);
-		message_chatBox.setBackground(Color.pink);
 		message_Box.add(message_postBtn);
 		message_postBtn.setMaximumSize(new Dimension(90, 50));
 		message_postBtn.setText("Post");
@@ -307,17 +427,20 @@ public class MainFrame extends JFrame {
 		// 메세지 입력창
 		message_sendPanel.add(message_sendBox);
 		message_sendBox.setBounds(0, 0, 520, 50);
+		message_sendBox.setBorder(null);
+
 		// 메세지 전송 버튼
 		message_sendPanel.add(message_sendBtn);
 		message_sendBtn.setBounds(520, 0, 90, 40);
+		message_sendBtn.setText("Send");
 
 		// 메세지 로그
 		message_chatBox.add(message_chatlog);
-		message_chatlog.setBounds(0, 0, 610, 495);
+		message_chatlog.setBounds(0, 0, 610, 490);
 		message_chatlog.setBackground(Color.red);
 		message_Box.add(addPerson);
 		addPerson.setText("Add Person");
-		addPerson.setSize(90, 70);
+		addPerson.setMaximumSize(new Dimension(90, 70));
 
 		// 새로운 JPanel을 만들어서 메시지를 표시할 것입니다.
 		messageDisplayArea = new JTextArea();
@@ -330,12 +453,11 @@ public class MainFrame extends JFrame {
 //		// 사용자 추가
 		clickedRecipient = null;
 
-
-
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String recipient = JOptionPane.showInputDialog("수신자: ");
 				JButton personButton = new JButton(recipient);
+				personButton.setBackground(cColor);
 				String buttonText = recipient;
 				personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
 				message_Box.add(personButton);
@@ -349,6 +471,7 @@ public class MainFrame extends JFrame {
 						messageDisplayArea.setText("");
 						String message = message_sendBox.getText();
 						clickedRecipient = recipient;
+						message_sendBtn.setText(recipient);
 						if (message != null) {
 							showMessageForRecipient(buttonText);
 							sendMessage(message, recipient);
@@ -406,19 +529,25 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
 				System.out.println(adapter.getEmail() + "*" + adapter.getPhone() + "*" + adapter.getNum());
-				home_email.setText("이메일 : " + adapter.getEmail());
-				home_num.setText("전화번호 : " + adapter.getPhone());
-				home_deptNum.setText("내선번호 : " + adapter.getNum());
+				search_Btn.setBackground(aColor);
+				home_Btn.setBackground(bColor);
+				message_Btn.setBackground(aColor);
 			}
 		});
 		search_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "searchPanel");
+				search_Btn.setBackground(bColor);
+				home_Btn.setBackground(aColor);
+				message_Btn.setBackground(aColor);
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "messagePanel");
+				search_Btn.setBackground(aColor);
+				home_Btn.setBackground(aColor);
+				message_Btn.setBackground(bColor);
 			}
 		});
 
@@ -432,6 +561,49 @@ public class MainFrame extends JFrame {
 					readPost();
 				} catch (Exception e1) {
 					e1.printStackTrace();
+				}
+			}
+		});
+
+		// home_todo 패널의 레이아웃을 GridLayout(0, 2)로 설정
+		home_todo.setLayout(new BoxLayout(home_todo, BoxLayout.Y_AXIS));
+
+		// 할 일 목록을 관리할 리스트
+		List<JCheckBox> todoList = new ArrayList<>();
+
+		home_todo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (SwingUtilities.isLeftMouseButton(e)) { // 좌클릭
+					String todoStr = JOptionPane.showInputDialog("할일");
+					if (todoStr != null && !todoStr.isEmpty()) {
+						JCheckBox todoBox = new JCheckBox(todoStr);
+						todoBox.setBackground(eColor);
+						todoBox.setForeground(Color.white);
+						todoList.add(todoBox);
+						state = "add";
+						// 할 일 목록을 그리드 레이아웃에 추가
+						home_todo.add(todoBox);
+						clientConnection.sendTodo(id, todoStr, state);
+
+						todoBox.addItemListener(new ItemListener() {
+							@Override
+							public void itemStateChanged(ItemEvent event) {
+								if (event.getStateChange() == ItemEvent.SELECTED) {
+									state = "delete";
+									clientConnection.sendTodo(id, todoStr, state);
+									// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
+									home_todo.remove(todoBox);
+									home_todo.revalidate();
+									home_todo.repaint();
+								}
+							}
+						});
+						home_todo.setAlignmentY(CENTER_ALIGNMENT);
+						// 패널을 다시 그리도록 요청
+						home_todo.revalidate();
+						home_todo.repaint();
+					}
 				}
 			}
 		});
@@ -680,5 +852,9 @@ public class MainFrame extends JFrame {
 
 	public String getId() {
 		return id_TextField.getText();
+	}
+
+	void sop(String a) {
+		System.out.println(a);
 	}
 }

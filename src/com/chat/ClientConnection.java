@@ -17,11 +17,13 @@ public class ClientConnection {
 	private String dept_num;
 	private String user_id;
 	private String user_pwd;
+	private String doing;
 	private Socket socket;
 	String setPwd, setEmail, setPhone;
-	private String nameTree[];
-	private String inpNameTree;
-	private String Dept[];
+	String nameTree[];
+	String treeName;
+	private String[] Dept = { "테스트" };
+	String[] searchName;
 
 	public String getName() {
 		return name;
@@ -45,6 +47,10 @@ public class ClientConnection {
 
 	public String getUserID() {
 		return user_id;
+	}
+
+	public String getDoing() {
+		return doing;
 	}
 
 	public String[] getNameTree() {
@@ -73,7 +79,8 @@ public class ClientConnection {
 			} else if (inp.equals("[onlinecheck]")) {
 				return "[onlinecheck]";
 			} else if (inp.equals("[nameTree]")) {
-				nameTree();
+				System.out.println("select method nametree");
+				searchName = nameTreeStart();
 				return "[nameTree]";
 			} else {
 				return " ";
@@ -122,6 +129,20 @@ public class ClientConnection {
 		}
 	}
 
+	public void sendTodo(String id, String doing, String state) {
+		try {
+			out.writeObject("[Todo]");
+			out.writeObject(id);
+			out.writeObject(doing);
+			out.writeObject(state);
+			System.out.println("Todo : id, doing 서버 전송");
+
+		} catch (Exception e) {
+			System.out.println("Todo Error : id" + id + ", doing : " + doing + ", state : " + state);
+			e.printStackTrace();
+		}
+	}
+
 	public void pwdUp(String id, String name) {
 		try {
 			out.writeObject("[reset]");
@@ -156,6 +177,7 @@ public class ClientConnection {
 			email = (String) in.readObject();
 			phone = (String) in.readObject();
 			dept_num = (String) in.readObject();
+			doing = (String) in.readObject();
 			System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
 					+ email + " phone : " + phone + " dept_num: " + dept_num);
 			System.out.println("정보를 읽었습니다.");
@@ -187,41 +209,37 @@ public class ClientConnection {
 		return Dept;
 	}
 
-	public void nameTreeStart(String name) {
-		System.out.println("nameTreeStart 시작");
-		try {
-			out.writeObject("[nameTree]");
-			System.out.println("[nameTree] 전송");
-			this.inpNameTree = name;
-			nameTree();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("nameTree stater 오류");
-		}
-	}
+   public void nameTree(String name) {
+      System.out.println("nameTree 시작");
+      try {
+         out.writeObject("[nameTree]");
+         System.out.println("[nameTree] 전송");
+         out.writeObject(name);
+         System.out.println("nameTree 끝났다");
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("nameTree 오류");
+      }
+   }
 
-	public String [] nameTree() {
-		System.out.println("nameTree 시작");
-		String nameList []=null;
-		try {
-			System.out.println(in.readObject());
-			out.writeObject(inpNameTree);
-			int innum = (Integer) in.readObject();
-			System.out.println(innum);
-			nameList = new String[innum];
-			for (int i = 0; i < innum; i++) {
-				String inpnametest = (String) in.readObject();
-				nameList[i] = inpnametest;
-				System.out.println("inpnametest" + inpnametest);
-			}
-			System.out.println("nameTree 끝났다");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.out.println("nameTree 오류");
-		}
-		return nameList;
-	}
+   public String [] nameTreeStart() {
+      System.out.println("nameTreeStart 메소드 시작");
+      try {
+         int listSize = (Integer)in.readObject();
+         System.out.println("listsize 받음 listSize : "+ listSize);
+         searchName = new String [listSize];
+         for(int i = 0; i<listSize; i++) {
+            searchName[i] = (String)in.readObject();
+            System.out.println("배열에 넣기 "+ i +"번째 "+searchName[i]);
+         }
+         System.out.println("배열넣기 끝났다");
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("nameTreeStart 오류");
+      }
+      System.out.println("return 배열 간다");
+      return searchName;
+   }
 
 	private void connectToServer() {
 		try {

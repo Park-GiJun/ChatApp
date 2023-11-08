@@ -8,9 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,7 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SignUp extends JFrame {
-	private Adapter adapter;
+//	private Adapter adapter;
+
 
 	// 1. 메인 프레임
 	JPanel signPanel = new JPanel();
@@ -30,7 +28,9 @@ public class SignUp extends JFrame {
 	JLabel signName_Label = new JLabel();
 	JLabel signImg_Label = new JLabel();
 	JLabel signDept_Label = new JLabel();
-	JComboBox<String> dept_Box;
+
+	JComboBox<String> dept_Box = new JComboBox<String>();
+
 	JLabel signCN_Label = new JLabel();
 	JTextField signName = new JTextField();
 	JTextField signImg = new JTextField();
@@ -67,16 +67,15 @@ public class SignUp extends JFrame {
 
 	Font mainFont = new Font("Gothic", Font.BOLD, 20);
 
-//   public SignUp() { 
-	public SignUp(Adapter adapter) {
-		this.adapter = adapter;
-		String DeptList[] = adapter.getDeptList();
-		dept_Box = new JComboBox<String>(DeptList);
+	public SignUp() { // public SignUp(Adapter adapter) {
+//		this.adapter = adapter;
+
 		// 1. 메인 프레임
 		setTitle("사원 정보 등록");
 		setSize(450, 400);
 		setVisible(true);
-//      setResizable(false);
+
+//		setResizable(false);
 		setLocationRelativeTo(null);
 
 		signPanel.setBackground(Color.white);
@@ -102,6 +101,23 @@ public class SignUp extends JFrame {
 		signCN.setBounds(130, 213, 145, 25);
 		signOK_Btn.setText("등록");
 		signOK_Btn.setBounds(300, 280, 80, 40);
+		
+		// 1-*. 중복 시 확인 메세지 / 입력 안 된 필드 확인 메세지
+		overlap_Frame.setTitle("중복 확인");
+		overlap_Frame.setSize(380, 150);
+		overlap_Frame.setLocationRelativeTo(null);
+		overlap_Frame.setLayout(null);
+		overlap_Frame.setVisible(false);
+		overlap_Message.setText("중복된 사번입니다. 다시 확인하세요.");
+		overlap_Message.setBounds(80, 50, 250, 25);
+		
+		null_Frame.setTitle("입력 확인");
+		null_Frame.setSize(380, 150);
+		null_Frame.setLocationRelativeTo(null);
+		null_Frame.setLayout(null);
+		null_Frame.setVisible(false);
+		null_Message.setText("입력되지 않은 정보가 있습니다.");
+		null_Message.setBounds(80, 50, 250, 25);
 
 		// 1-*. 중복 시 확인 메세지 / 입력 안 된 필드 확인 메세지
 		overlap_Frame.setTitle("중복 확인");
@@ -137,6 +153,7 @@ public class SignUp extends JFrame {
 		saveFrame.setSize(330, 200);
 		saveFrame.setResizable(false);
 		saveFrame.setLocationRelativeTo(null);
+		saveFrame.setVisible(false);
 
 		savePanel.setBackground(Color.white);
 		savePanel.setLayout(null);
@@ -161,6 +178,11 @@ public class SignUp extends JFrame {
 		signPanel.add(signCN);
 		signPanel.add(signOK_Btn);
 		signPanel.add(signImg_Btn);
+		signPanel.revalidate();
+		signPanel.repaint();
+		
+		overlap_Frame.add(overlap_Message);
+		null_Frame.add(null_Message);
 
 		overlap_Frame.add(overlap_Message, BorderLayout.CENTER);
 		null_Frame.add(null_Message, BorderLayout.CENTER);
@@ -184,7 +206,7 @@ public class SignUp extends JFrame {
 		sign_fc.setAcceptAllFileFilterUsed(false); // 확장자 필터 "모든 파일" 제외
 		sign_fc.setMultiSelectionEnabled(false); // 파일 다중 선택 불가
 
-		// * 버튼 이벤트 + 로그 출력
+// * 버튼 이벤트 + 로그 출력
 		// 이미지 불러오기
 		signImg_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -208,15 +230,15 @@ public class SignUp extends JFrame {
 				System.out.println("등록 버튼 클릭");
 				name = signName.getText();
 				cn = signCN.getText();
-				if (name.equals("null") || cn.equals("null")) { // 비어있는 필드
+				
+				if (name.isEmpty() || cn.isEmpty()) { // 비어있는 필드 있으면
 					null_Frame.setVisible(true);
 					System.out.println("---누락된 정보 발견");
-				}
-				if (cn.equals(dbCN)) { // 입력된 정보와 DB 비교
+				} else if (cn.equals(dbCN)) { // 입력된 정보와 DB 비교
 					System.out.println("---입력된 정보 DB와 중복됨");
-					overlap_Frame.setVisible(true); // 중복 경고
+					overlap_Frame.setVisible(true); // 중복 경고 프레임 오픈
 				} else {
-					System.out.println("중복된 정보 없음 -- 입력한 정보 확인");
+					System.out.println("입력 완료 --- 정보 확인");
 					checkFrame.setVisible(true);
 				}
 			}
@@ -258,7 +280,7 @@ public class SignUp extends JFrame {
 
 	}
 
-//   public static void main(String[] args) {
-//      SignUp sign = new SignUp();
-//   }
+//	public static void main(String[] args) {
+//		SignUp sign = new SignUp();
+//	}
 }

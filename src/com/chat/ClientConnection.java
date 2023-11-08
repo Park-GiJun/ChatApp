@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class ClientConnection {
 	private String serverAddress;
@@ -19,6 +20,10 @@ public class ClientConnection {
 	private String doing;
 	private Socket socket;
 	String setPwd, setEmail, setPhone;
+	String nameTree[];
+	String treeName;
+	private String[] Dept = { "테스트" };
+	String[] searchName;
 
 	public String getName() {
 		return name;
@@ -43,11 +48,15 @@ public class ClientConnection {
 	public String getUserID() {
 		return user_id;
 	}
-	
-	public String getDoing(){
+
+	public String getDoing() {
 		return doing;
 	}
-	
+
+	public String[] getNameTree() {
+		return nameTree;
+	}
+
 	public ClientConnection() {
 	}
 
@@ -61,6 +70,7 @@ public class ClientConnection {
 		System.out.println("selectMethod 시작");
 		try {
 			String inp = (String) in.readObject();
+			System.out.println(inp);
 			if (inp.equals("[setprofile]")) {
 				setProfileStart();
 				return "[setprofile]";
@@ -68,6 +78,11 @@ public class ClientConnection {
 				return "[chat]";
 			} else if (inp.equals("[onlinecheck]")) {
 				return "[onlinecheck]";
+			} else if (inp.equals("[nameTree]")) {
+				System.out.println("select method nametree");
+				searchName = nameTreeStart();
+
+				return "[nameTree]";
 			} else {
 				return " ";
 			}
@@ -115,7 +130,7 @@ public class ClientConnection {
 		}
 	}
 
-	public void sendTodo(String id, String doing,String state) {
+	public void sendTodo(String id, String doing, String state) {
 		try {
 			out.writeObject("[Todo]");
 			out.writeObject(id);
@@ -124,7 +139,7 @@ public class ClientConnection {
 			System.out.println("Todo : id, doing 서버 전송");
 
 		} catch (Exception e) {
-			System.out.println("Todo Error : id" + id + ", doing : " + doing +", state : " + state);
+			System.out.println("Todo Error : id" + id + ", doing : " + doing + ", state : " + state);
 			e.printStackTrace();
 		}
 	}
@@ -175,6 +190,56 @@ public class ClientConnection {
 		System.out.println("clientconnection login : " + pass_out);
 		return pass_out;
 	}
+
+	public String[] SignUpDept() {
+		System.out.println("Client SignUpDept 실행");
+		try {
+			out.writeObject("[SignUpDept]");
+			int ctDept = (Integer) in.readObject();
+			Dept = new String[ctDept];
+			System.out.println("signupdept ctdept : " + ctDept);
+			for (int i = 0; i < Dept.length; i++) {
+				Dept[i] = (String) in.readObject();
+				System.out.println(Dept[i]);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Client SignUpDept 오류");
+		}
+		return Dept;
+	}
+
+   public void nameTree(String name) {
+      System.out.println("nameTree 시작");
+      try {
+         out.writeObject("[nameTree]");
+         System.out.println("[nameTree] 전송");
+         out.writeObject(name);
+         System.out.println("nameTree 끝났다");
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("nameTree 오류");
+      }
+   }
+
+   public String [] nameTreeStart() {
+      System.out.println("nameTreeStart 메소드 시작");
+      try {
+         int listSize = (Integer)in.readObject();
+         System.out.println("listsize 받음 listSize : "+ listSize);
+         searchName = new String [listSize];
+         for(int i = 0; i<listSize; i++) {
+            searchName[i] = (String)in.readObject();
+            System.out.println("배열에 넣기 "+ i +"번째 "+searchName[i]);
+         }
+         System.out.println("배열넣기 끝났다");
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.out.println("nameTreeStart 오류");
+      }
+      System.out.println("return 배열 간다");
+      return searchName;
+   }
 
 	private void connectToServer() {
 		try {

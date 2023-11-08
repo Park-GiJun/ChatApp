@@ -13,6 +13,7 @@ public class Adapter {
 	private String DBname;
 	private boolean pass;
 	private ClientConnection client;
+	private String [] arr;
 
 	// 입력없이 저장된 정보를 불러오기 위한 생성자
 //	public Adapter(ClientConnection clientConnection) {
@@ -67,7 +68,13 @@ public class Adapter {
 		setPhone(client.setPhone);
 		setEmail(client.setEmail);
 	}
-
+	public String [] getDeptList() {
+		String DeptList [] = client.SignUpDept();
+		return DeptList;
+	}
+	public void setNameTree(String [] ar) {
+		this.arr = ar;
+	}
 	public void setDBcn(String cn) {
 		this.DBcn = cn;
 	}
@@ -108,6 +115,9 @@ public class Adapter {
 		this.user_pwd = pwd;
 	}
 
+	public String [] getArr() {
+		return arr;
+	}
 	public String getDBcn() {
 		return DBcn;
 	}

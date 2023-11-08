@@ -26,7 +26,6 @@ import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -39,7 +38,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
@@ -80,7 +78,8 @@ public class MainFrame extends JFrame {
 	String state = "";
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
-
+	JLabel home_test = null;
+	
 	JLabel home_name = new JLabel();
 	JLabel home_num = new JLabel();
 	JLabel home_email = new JLabel();
@@ -176,6 +175,8 @@ public class MainFrame extends JFrame {
 								home_email.setText("이메일 : " + UserEmail);
 								home_num.setText("전화번호 : " + phone);
 								home_deptNum.setText("내선번호 : " + Dept_num);
+								home_test.imageUpdate(clientConnection.userImage(), 0, 0, 0, 165, 190);
+								home_photo.add(home_test);
 								for (int i = 0; i < todoarr.length; i++) {
 									String todoStr = todoarr[i];
 									JCheckBox todoBox = new JCheckBox(todoStr);
@@ -306,10 +307,6 @@ public class MainFrame extends JFrame {
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 190);
 
-		ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
-		JLabel home_test = new JLabel("ONE", mario, SwingConstants.CENTER);
-
-		home_photo.add(home_test);
 		home_photo.setBackground(dColor);
 
 		home_Panel.add(home_name);

@@ -59,6 +59,11 @@ public class Adapter {
 		setDBcn(id);
 		setDBname(name);
 	}
+	
+	public void setnewUser(String name, String cn, String dept) {
+		client.newUser(name, cn, dept);
+		System.out.println("adapter setnewUser 실행");
+	}
 
 	public void setInfo(String pwd, String phone, String email) {
 		client.setProfile(pwd, phone, email);

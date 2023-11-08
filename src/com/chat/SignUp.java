@@ -230,7 +230,9 @@ public class SignUp extends JFrame {
 				System.out.println("등록 버튼 클릭");
 				name = signName.getText();
 				cn = signCN.getText();
-
+				dept = (String) dept_Box.getSelectedItem();
+				System.out.println("server로 정보 전송"+name+", "+cn+", "+dept);
+				
 				if (name.isEmpty() || cn.isEmpty()) { // 비어있는 필드 있으면
 					null_Frame.setVisible(true);
 					System.out.println("---누락된 정보 발견");
@@ -239,6 +241,9 @@ public class SignUp extends JFrame {
 					overlap_Frame.setVisible(true); // 중복 경고 프레임 오픈
 				} else {
 					System.out.println("입력 완료 --- 정보 확인");
+					adapter.setnewUser(name,cn,dept);
+					checkText.setText("<html><div style='text-align: center;'>" + "이름 : " + name + ", 부서 : " + dept + ", 사번 : " + cn
+							+ "<br/>" + "위 정보로 등록할까요?" + "</div></html>");
 					checkFrame.setVisible(true);
 				}
 			}

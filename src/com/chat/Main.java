@@ -18,7 +18,7 @@ public class Main {
 				mainFrame.setVisible(true);
 
             while (!mainFrame.getPass()) {
-               System.out.println("Loading...");
+//               System.out.println("Loading...");
             }
             System.out.println(mainFrame.getPass());
             // 메시지 수신 스레드 시작

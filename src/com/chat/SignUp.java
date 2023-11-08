@@ -1,6 +1,5 @@
 package com.chat;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -8,10 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -76,7 +71,6 @@ public class SignUp extends JFrame {
 		setVisible(true);
 //		setResizable(false);
 		setLocationRelativeTo(null);
-
 		signPanel.setBackground(Color.white);
 		signPanel.setLayout(null);
 
@@ -106,6 +100,7 @@ public class SignUp extends JFrame {
 		overlap_Frame.setSize(380, 150);
 		overlap_Frame.setLocationRelativeTo(null);
 		overlap_Frame.setLayout(null);
+		overlap_Frame.setVisible(false);
 		overlap_Message.setText("중복된 사번입니다. 다시 확인하세요.");
 		overlap_Message.setBounds(80, 50, 250, 25);
 		
@@ -113,6 +108,7 @@ public class SignUp extends JFrame {
 		null_Frame.setSize(380, 150);
 		null_Frame.setLocationRelativeTo(null);
 		null_Frame.setLayout(null);
+		null_Frame.setVisible(false);
 		null_Message.setText("입력되지 않은 정보가 있습니다.");
 		null_Message.setBounds(80, 50, 250, 25);
 
@@ -137,6 +133,7 @@ public class SignUp extends JFrame {
 		saveFrame.setSize(330, 200);
 		saveFrame.setResizable(false);
 		saveFrame.setLocationRelativeTo(null);
+		saveFrame.setVisible(false);
 
 		savePanel.setBackground(Color.white);
 		savePanel.setLayout(null);
@@ -161,6 +158,8 @@ public class SignUp extends JFrame {
 		signPanel.add(signCN);
 		signPanel.add(signOK_Btn);
 		signPanel.add(signImg_Btn);
+		signPanel.revalidate();
+		signPanel.repaint();
 		
 		overlap_Frame.add(overlap_Message);
 		null_Frame.add(null_Message);

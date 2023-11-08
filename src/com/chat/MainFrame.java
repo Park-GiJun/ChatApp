@@ -110,7 +110,12 @@ public class MainFrame extends JFrame {
 	JButton addPerson = new JButton();
 	JScrollBar verticalScrollBar = new JScrollBar();
 	String clickedRecipient;
-	Map<String, JButton> recipientButtons = new HashMap<>();
+	Map<String, JButton> recipientButtons = new HashMap<>();	
+	// 관리자
+	JFrame admin_Frame = new JFrame();
+	JPanel admin_Panel = new JPanel();
+	JButton signUp_Btn = new JButton();
+	JButton pwdSet_Btn = new JButton();
 
 	public boolean getPass() {
 		return pass;
@@ -171,8 +176,9 @@ public class MainFrame extends JFrame {
 
 							setTitle(id);
 						} else if (id.equals("admin") && pwd.equals("admin")) {
-							// 관리자 프레임 만들어서 넣기
-//							mainLayout.show(getContentPane(), "mainPanel");
+							System.out.println("관리자 로그인");
+							setVisible(false);
+							admin_Frame.setVisible(true);
 						} else {
 							JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
 									JOptionPane.WARNING_MESSAGE);
@@ -187,6 +193,20 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
+		signUp_Btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+//				MainFrame.DISPOSE();
+				SignUp signup = new SignUp();
+			}
+		});
+		
+		// 관리자 액션 리스너
+		pwdSet_Btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
+			}
+		});
+
 		pwdAdminSet.addActionListener(new ActionListener() {
 
 			@Override
@@ -264,6 +284,22 @@ public class MainFrame extends JFrame {
 		home_todo.setBounds(195, 356, 310, 170);
 		home_todo.add(home_todo_list);
 		home_todo.setBorder(new LineBorder(eColor, 30, true));
+		
+		// 관리자 패널
+		admin_Frame.setTitle("관리자 로그인");
+		admin_Frame.setSize(350, 200);
+		admin_Frame.setLayout(null);
+		admin_Frame.setVisible(false);
+		admin_Frame.setLocationRelativeTo(null);
+		admin_Frame.setResizable(false);
+		admin_Panel.setBackground(Color.white);
+		signUp_Btn.setText("등록");
+		signUp_Btn.setBounds(70, 50, 80, 60);
+		pwdSet_Btn.setText("초기화");
+		pwdSet_Btn.setBounds(190, 50, 80, 60);
+		
+		admin_Frame.add(signUp_Btn);
+		admin_Frame.add(pwdSet_Btn);
 
 		// 정보수정 버튼 추가 액션 추가
 		info_Btn.setSize(100, 100);

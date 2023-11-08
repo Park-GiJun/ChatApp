@@ -16,6 +16,7 @@ public class ClientConnection {
 	private String dept_num;
 	private String user_id;
 	private String user_pwd;
+	private String doing;
 	private Socket socket;
 	String setPwd, setEmail, setPhone;
 
@@ -107,6 +108,20 @@ public class ClientConnection {
 			e.printStackTrace();
 			System.out.println("사원정보 수정 실패");
 			System.out.println("-------------------------");
+	}
+	}
+
+	public void sendTodo(String id, String doing,String state) {
+		try {
+			out.writeObject("[Todo]");
+			out.writeObject(id);
+			out.writeObject(doing);
+			out.writeObject(state);
+			System.out.println("Todo : id, doing 서버 전송");
+
+		} catch (Exception e) {
+			System.out.println("Todo Error : id" + id + ", doing : " + doing +", state : " + state);
+			e.printStackTrace();
 		}
 	}
 

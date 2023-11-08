@@ -66,41 +66,41 @@ public class PasswordSet_admin {
 		this.adapter = adapter;
 		// 관리자 로그인
 		pwd_MainFrame.setSize(530, 300);
-		pwd_MainFrame.setVisible(true);
+		pwd_MainFrame.setVisible(false);
 		pwd_MainFrame.setResizable(false);
 		pwd_MainFrame.setLocationRelativeTo(null);
 
 		pwd_MainPanel.setSize(510, 350);
 		pwd_MainPanel.setLayout(null);
 		pwd_MainPanel.setBackground(Color.WHITE);
-		pwd_MainFrame.add(pwd_MainPanel);
+//		pwd_MainFrame.add(pwd_MainPanel);
 
-		pwd_MainPanel.add(pwd_Title);
+//		pwd_MainPanel.add(pwd_Title);
 		pwd_Title.setFont(new Font("Gothic", Font.BOLD, 20));
 		pwd_Title.setBounds(198, 40, 130, 25);
 
 		pwd_CodeLabel.setBounds(68, 126, 60, 18);
 		pwd_CodeLabel.setFont(labelFont);
-		pwd_MainPanel.add(pwd_CodeLabel);
+//		pwd_MainPanel.add(pwd_CodeLabel);
 
 		pwd_Code.setBounds(138, 120, 200, 35);
-		pwd_MainPanel.add(pwd_Code);
+//		pwd_MainPanel.add(pwd_Code);
 
 		pwd_PwdLabel.setBounds(68, 166, 60, 18);
 		pwd_PwdLabel.setFont(labelFont);
-		pwd_MainPanel.add(pwd_PwdLabel);
+//		pwd_MainPanel.add(pwd_PwdLabel);
 
 //		pwd_Pwd.setEchoChar('*');
 		pwd_Pwd.setBounds(138, 160, 200, 35);
-		pwd_MainPanel.add(pwd_Pwd);
+//		pwd_MainPanel.add(pwd_Pwd);
 
 		pwd_Login.setBounds(350, 120, 80, 75);
 		pwd_Login.setOpaque(true);
-		pwd_MainPanel.add(pwd_Login);
+//		pwd_MainPanel.add(pwd_Login);
 
 		// 관리자 로그인 성공 -> 사원 정보 조회
 		info_Frame.setSize(450, 210);
-		info_Frame.setVisible(false);
+		info_Frame.setVisible(true);
 		info_Frame.setResizable(false);
 		info_Frame.setLocationRelativeTo(null);
 		info_Frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

@@ -50,6 +50,7 @@ public class MainFrame extends JFrame {
 	private Map<String, String> receivedMessages = new HashMap<>();
 	private Adapter adapter;
 	LocalDateTime currentDateTime = LocalDateTime.now();
+	List<JCheckBox> todoList = new ArrayList<>();
 
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
@@ -76,6 +77,7 @@ public class MainFrame extends JFrame {
 	JPanel card_Panel = new JPanel();
 
 	// HOME 패널
+	String state = "";
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
 	JLabel home_name = new JLabel();
@@ -110,7 +112,8 @@ public class MainFrame extends JFrame {
 	JButton addPerson = new JButton();
 	JScrollBar verticalScrollBar = new JScrollBar();
 	String clickedRecipient;
-	Map<String, JButton> recipientButtons = new HashMap<>();	
+	Map<String, JButton> recipientButtons = new HashMap<>();
+	
 	// 관리자
 	JFrame admin_Frame = new JFrame();
 	JPanel admin_Panel = new JPanel();
@@ -153,7 +156,6 @@ public class MainFrame extends JFrame {
 
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
-
 					try {
 						if (!id.equals("admin") && !pwd.equals("admin")) {
 							clientConnection.login(id, pwd);
@@ -163,10 +165,42 @@ public class MainFrame extends JFrame {
 							UserEmail = clientConnection.getEmail();
 							String phone = clientConnection.getPhone();
 							String Dept_num = clientConnection.getDeptnum();
+							String[] todoarr = clientConnection.getDoing().split("//");
+							for(String a : todoarr) {
+								sop(a);
+							}
 							home_name.setText("이름 : " + name);
 							home_email.setText("이메일 : " + UserEmail);
 							home_num.setText("전화번호 : " + phone);
 							home_deptNum.setText("내선번호 : " + Dept_num);
+							for(int i = 0 ; i < todoarr.length; i++) {
+								String todoStr = todoarr[i];
+								JCheckBox todoBox = new JCheckBox(todoStr);
+								todoBox.setBackground(eColor);
+								todoBox.setForeground(Color.white);
+								todoList.add(todoBox);
+							
+								// 할 일 목록을 그리드 레이아웃에 추가
+								home_todo.add(todoBox);
+
+								todoBox.addItemListener(new ItemListener() {
+									@Override
+									public void itemStateChanged(ItemEvent event) {
+										if (event.getStateChange() == ItemEvent.SELECTED) {
+											state = "delete";
+											clientConnection.sendTodo(id, todoStr, state);
+											// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
+											home_todo.remove(todoBox);
+											home_todo.revalidate();
+											home_todo.repaint();
+										}
+									}
+								});
+								home_todo.setAlignmentY(CENTER_ALIGNMENT);
+								// 패널을 다시 그리도록 요청
+								home_todo.revalidate();
+								home_todo.repaint();
+							}
 							adapter.setId(id);
 							adapter.setPwd(pwd);
 							adapter.setName(name);
@@ -810,5 +844,9 @@ public class MainFrame extends JFrame {
 
 	public String getId() {
 		return id_TextField.getText();
+	}
+	
+	void sop(String a) {
+		System.out.println(a);
 	}
 }

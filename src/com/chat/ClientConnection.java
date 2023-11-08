@@ -43,7 +43,11 @@ public class ClientConnection {
 	public String getUserID() {
 		return user_id;
 	}
-
+	
+	public String getDoing(){
+		return doing;
+	}
+	
 	public ClientConnection() {
 	}
 
@@ -158,6 +162,7 @@ public class ClientConnection {
 			email = (String) in.readObject();
 			phone = (String) in.readObject();
 			dept_num = (String) in.readObject();
+			doing = (String) in.readObject();
 			System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
 					+ email + " phone : " + phone + " dept_num: " + dept_num);
 			System.out.println("정보를 읽었습니다.");

@@ -61,6 +61,7 @@ public class MainFrame extends JFrame {
 	private JButton login_Btn = new JButton();
 	private String id, pwd, UserEmail, name;
 	private boolean pass = false;
+	private JButton pwdAdminSet = new JButton();
 	Color aColor = new Color(121, 144, 163);
 	Color bColor = new Color(193, 223, 249);
 	Color cColor = new Color(116, 140, 219);
@@ -148,6 +149,8 @@ public class MainFrame extends JFrame {
 		id_TextField.setBounds(218, 326, 251, 38);
 		pwd_TextField.setBounds(218, 374, 251, 38);
 		login_Btn.setBounds(496, 326, 86, 86);
+		loginPanel.add(pwdAdminSet);
+		pwdAdminSet.setBounds(218, 417, 80, 20);
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -175,6 +178,8 @@ public class MainFrame extends JFrame {
 								home_email.setText("이메일 : " + UserEmail);
 								home_num.setText("전화번호 : " + phone);
 								home_deptNum.setText("내선번호 : " + Dept_num);
+//								home_test.imageUpdate(clientConnection.userImage(), 0, 0, 0, 165, 190);
+//								home_photo.add(home_test);
 								for (int i = 0; i < todoarr.length; i++) {
 									String todoStr = todoarr[i];
 									JCheckBox todoBox = new JCheckBox(todoStr);
@@ -234,9 +239,7 @@ public class MainFrame extends JFrame {
 		});
 		signUp_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-//				MainFrame.DISPOSE();
-					SignUp signup = new SignUp();
+					SignUp signup = new SignUp(adapter);
 			}
 		});
 
@@ -389,10 +392,6 @@ public class MainFrame extends JFrame {
 		search_List.add(search_DBlist);
 		search_DBlist.setBounds(10, 90, 210, 350);
 
-//      JButton example = new JButton("12");
-//      search_List.add(example);
-//      example.setBounds(10, 90, 210, 350);
-
 		search_btnclick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String search = search_bar.getText();
@@ -401,10 +400,6 @@ public class MainFrame extends JFrame {
 				System.out.println("search 버튼 이벤트 끝났다");
 			}
 		});
-
-//      search_List.add(search_Tree);
-//      search_List.setBounds(0, 81, 230, 450);
-
 
 		// 메세지 패널
 		message_Panel.setLayout(null);

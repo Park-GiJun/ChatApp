@@ -66,6 +66,32 @@ public class ClientConnection {
 		connectToServer();
 	}
 
+	public void newUser(String name, String cn, String dept) {
+		System.out.println("newUser 시작");
+		try {
+			out.writeObject("[newUser]");
+			out.writeObject(name);
+			out.writeObject(cn);
+			out.writeObject(dept);
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("newUser 오류");
+		}
+	}
+//	public Image userImage() {
+//		System.out.println("이미지 시작");
+//		Image image = null;
+//		try {
+//			out.writeObject("[image]");
+//			image = (Image)in.readObject();
+//			System.out.println("서버에서 이미지 받음");
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//			System.out.println("이미지 오류");
+//		}
+//		return image;
+//	}
+	
 	public String selectMethod() {
 		System.out.println("selectMethod 시작");
 		try {
@@ -80,7 +106,7 @@ public class ClientConnection {
 				return "[onlinecheck]";
 			} else if (inp.equals("[nameTree]")) {
 				System.out.println("select method nametree");
-				searchName = nameTreeStart();
+				nameTreeStart();
 				return "[nameTree]";
 			} else {
 				return " ";

@@ -81,7 +81,6 @@ public class ClientConnection {
 			} else if (inp.equals("[nameTree]")) {
 				System.out.println("select method nametree");
 				searchName = nameTreeStart();
-
 				return "[nameTree]";
 			} else {
 				return " ";
@@ -167,22 +166,23 @@ public class ClientConnection {
 		String pass_in = null;
 		boolean pass_out = false;
 		try {
+
 			out.writeObject("[login]");
 			this.user_id = id;
 			this.user_pwd = pwd;
 			out.writeObject(user_id);
 			out.writeObject(user_pwd);
 			pass_in = (String) in.readObject();
-			name = (String) in.readObject();
-			email = (String) in.readObject();
-			phone = (String) in.readObject();
-			dept_num = (String) in.readObject();
-			doing = (String) in.readObject();
-			System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
-					+ email + " phone : " + phone + " dept_num: " + dept_num);
-			System.out.println("정보를 읽었습니다.");
 			if (pass_in.equals("true")) {
 				pass_out = true;
+				name = (String) in.readObject();
+				email = (String) in.readObject();
+				phone = (String) in.readObject();
+				dept_num = (String) in.readObject();
+				doing = (String) in.readObject();
+				System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
+						+ email + " phone : " + phone + " dept_num: " + dept_num);
+				System.out.println("정보를 읽었습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

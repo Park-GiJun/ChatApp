@@ -191,7 +191,7 @@ public class PasswordSet_admin {
 		});
 
 		// 이벤트
-		pwd_Login.addActionListener(new ActionListener() { // 로그인 버튼 클릭 이벤트
+		info_Pefer.addActionListener(new ActionListener() { // 로그인 버튼 클릭 이벤트
 			public void actionPerformed(ActionEvent e) {
 				String getAdminCode = pwd_Code.getText();
 				String getAdminPwd = pwd_Pwd.getText();

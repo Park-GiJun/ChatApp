@@ -160,57 +160,58 @@ public class MainFrame extends JFrame {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
 					try {
 						if (!id.equals("admin") && !pwd.equals("admin")) {
-							clientConnection.login(id, pwd);
-							mainLayout.show(getContentPane(), "mainPanel");
-							pass = true;
-							name = clientConnection.getName();
-							UserEmail = clientConnection.getEmail();
-							String phone = clientConnection.getPhone();
-							String Dept_num = clientConnection.getDeptnum();
-							String[] todoarr = clientConnection.getDoing().split("//");
-							for (String a : todoarr) {
-								sop(a);
-							}
-							home_name.setText("이름 : " + name);
-							home_email.setText("이메일 : " + UserEmail);
-							home_num.setText("전화번호 : " + phone);
-							home_deptNum.setText("내선번호 : " + Dept_num);
-							for (int i = 0; i < todoarr.length; i++) {
-								String todoStr = todoarr[i];
-								JCheckBox todoBox = new JCheckBox(todoStr);
-								todoBox.setBackground(eColor);
-								todoBox.setForeground(Color.white);
-								todoList.add(todoBox);
+							pass = clientConnection.login(id, pwd);
+							
+							if (pass) {
+								mainLayout.show(getContentPane(), "mainPanel");
+								name = clientConnection.getName();
+								UserEmail = clientConnection.getEmail();
+								String phone = clientConnection.getPhone();
+								String Dept_num = clientConnection.getDeptnum();
+								String[] todoarr = clientConnection.getDoing().split("//");
+								for (String a : todoarr) {
+									sop(a);
+								}
+								home_name.setText("이름 : " + name);
+								home_email.setText("이메일 : " + UserEmail);
+								home_num.setText("전화번호 : " + phone);
+								home_deptNum.setText("내선번호 : " + Dept_num);
+								for (int i = 0; i < todoarr.length; i++) {
+									String todoStr = todoarr[i];
+									JCheckBox todoBox = new JCheckBox(todoStr);
+									todoBox.setBackground(eColor);
+									todoBox.setForeground(Color.white);
+									todoList.add(todoBox);
 
-								// 할 일 목록을 그리드 레이아웃에 추가
-								home_todo.add(todoBox);
+									// 할 일 목록을 그리드 레이아웃에 추가
+									home_todo.add(todoBox);
 
-								todoBox.addItemListener(new ItemListener() {
-									@Override
-									public void itemStateChanged(ItemEvent event) {
-										if (event.getStateChange() == ItemEvent.SELECTED) {
-											state = "delete";
-											clientConnection.sendTodo(id, todoStr, state);
-											// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
-											home_todo.remove(todoBox);
-											home_todo.revalidate();
-											home_todo.repaint();
+									todoBox.addItemListener(new ItemListener() {
+										@Override
+										public void itemStateChanged(ItemEvent event) {
+											if (event.getStateChange() == ItemEvent.SELECTED) {
+												state = "delete";
+												clientConnection.sendTodo(id, todoStr, state);
+												// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
+												home_todo.remove(todoBox);
+												home_todo.revalidate();
+												home_todo.repaint();
+											}
 										}
-									}
-								});
-								home_todo.setAlignmentY(CENTER_ALIGNMENT);
-								// 패널을 다시 그리도록 요청
-								home_todo.revalidate();
-								home_todo.repaint();
+									});
+									home_todo.setAlignmentY(CENTER_ALIGNMENT);
+									// 패널을 다시 그리도록 요청
+									home_todo.revalidate();
+									home_todo.repaint();
+								}
+								adapter.setId(id);
+								adapter.setPwd(pwd);
+								adapter.setName(name);
+								adapter.setEmail(UserEmail);
+								adapter.setPhone(phone);
+								adapter.setNum(Dept_num);
+								setTitle(id);
 							}
-							adapter.setId(id);
-							adapter.setPwd(pwd);
-							adapter.setName(name);
-							adapter.setEmail(UserEmail);
-							adapter.setPhone(phone);
-							adapter.setNum(Dept_num);
-
-							setTitle(id);
 						} else if (id.equals("admin") && pwd.equals("admin")) {
 							System.out.println("관리자 로그인");
 							setVisible(false);
@@ -233,7 +234,7 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 //				MainFrame.DISPOSE();
-				SignUp signup = new SignUp();
+				SignUp signup = new SignUp(adapter);
 			}
 		});
 
@@ -396,7 +397,6 @@ public class MainFrame extends JFrame {
 				System.out.println(search);
 				clientConnection.nameTree(search);
 				System.out.println("search 버튼 이벤트 끝났다");
-
 			}
 		});
 

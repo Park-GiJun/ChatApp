@@ -173,16 +173,16 @@ public class ClientConnection {
 			out.writeObject(user_id);
 			out.writeObject(user_pwd);
 			pass_in = (String) in.readObject();
-			name = (String) in.readObject();
-			email = (String) in.readObject();
-			phone = (String) in.readObject();
-			dept_num = (String) in.readObject();
-			doing = (String) in.readObject();
-			System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
-					+ email + " phone : " + phone + " dept_num: " + dept_num);
-			System.out.println("정보를 읽었습니다.");
 			if (pass_in.equals("true")) {
 				pass_out = true;
+				name = (String) in.readObject();
+				email = (String) in.readObject();
+				phone = (String) in.readObject();
+				dept_num = (String) in.readObject();
+				doing = (String) in.readObject();
+				System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
+						+ email + " phone : " + phone + " dept_num: " + dept_num);
+				System.out.println("정보를 읽었습니다.");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

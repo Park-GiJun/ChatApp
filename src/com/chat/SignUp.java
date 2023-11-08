@@ -19,8 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SignUp extends JFrame {
-//	private Adapter adapter;
-
+	private Adapter adapter;
 
 	// 1. 메인 프레임
 	JPanel signPanel = new JPanel();
@@ -67,9 +66,10 @@ public class SignUp extends JFrame {
 
 	Font mainFont = new Font("Gothic", Font.BOLD, 20);
 
-	public SignUp() { // public SignUp(Adapter adapter) {
-//		this.adapter = adapter;
-
+//	public SignUp() { 
+	public SignUp(Adapter adapter) {
+		this.adapter = adapter;
+		dept_Box = new JComboBox<String>(adapter.getDeptList());
 		// 1. 메인 프레임
 		setTitle("사원 정보 등록");
 		setSize(450, 400);
@@ -101,7 +101,7 @@ public class SignUp extends JFrame {
 		signCN.setBounds(130, 213, 145, 25);
 		signOK_Btn.setText("등록");
 		signOK_Btn.setBounds(300, 280, 80, 40);
-		
+
 		// 1-*. 중복 시 확인 메세지 / 입력 안 된 필드 확인 메세지
 		overlap_Frame.setTitle("중복 확인");
 		overlap_Frame.setSize(380, 150);
@@ -110,7 +110,7 @@ public class SignUp extends JFrame {
 		overlap_Frame.setVisible(false);
 		overlap_Message.setText("중복된 사번입니다. 다시 확인하세요.");
 		overlap_Message.setBounds(80, 50, 250, 25);
-		
+
 		null_Frame.setTitle("입력 확인");
 		null_Frame.setSize(380, 150);
 		null_Frame.setLocationRelativeTo(null);
@@ -180,7 +180,7 @@ public class SignUp extends JFrame {
 		signPanel.add(signImg_Btn);
 		signPanel.revalidate();
 		signPanel.repaint();
-		
+
 		overlap_Frame.add(overlap_Message);
 		null_Frame.add(null_Message);
 
@@ -230,7 +230,7 @@ public class SignUp extends JFrame {
 				System.out.println("등록 버튼 클릭");
 				name = signName.getText();
 				cn = signCN.getText();
-				
+
 				if (name.isEmpty() || cn.isEmpty()) { // 비어있는 필드 있으면
 					null_Frame.setVisible(true);
 					System.out.println("---누락된 정보 발견");

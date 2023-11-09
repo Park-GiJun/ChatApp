@@ -2,6 +2,7 @@ package com.chat;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -232,8 +233,14 @@ public class ClientConnection {
 	public BufferedImage readImage() throws IOException, ClassNotFoundException {
 		byte[] receiveImage = (byte[]) in.readObject();
 		BufferedImage image = ImageIO.read(new ByteArrayInputStream(receiveImage));
+		saveImage(image, "C:/Users/tpgj9/OneDrive/사진/ReceivedImage.jpg", "jpg");
+
 		return image;
 
+	}
+	public void saveImage(BufferedImage image, String filePath, String format) throws IOException {
+	    File outputImage = new File(filePath);
+	    ImageIO.write(image, format, outputImage);
 	}
 
 	public String[] SignUpDept() {

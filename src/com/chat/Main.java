@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		// 클라이언트 연결 관리 클래스 생성
 
-		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5010);
+		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5020);
 
 		Thread messageReceiverThread = new Thread(new Runnable() {
 			public void run() {

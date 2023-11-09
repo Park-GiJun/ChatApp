@@ -61,12 +61,14 @@ public class MainFrame extends JFrame {
 	private JButton login_Btn = new JButton();
 	private String id, pwd, UserEmail, name, userImage;
 	private boolean pass = false;
-	private JButton pwdAdminSet = new JButton();
-	Color aColor = new Color(121, 144, 163);
-	Color bColor = new Color(193, 223, 249);
-	Color cColor = new Color(116, 140, 219);
-	Color dColor = new Color(22, 59, 136);
-	Color eColor = new Color(25, 45, 69);
+	String username = System.getProperty("user.home");
+	ImageIcon img = new ImageIcon(username + "/git/ChatApp/src/com/chat/chats/logo.png");
+	private JLabel logo_Img = new JLabel(img);
+	Color aColor = new Color(255, 255, 255);
+	Color bColor = new Color(45, 47, 59);
+	Color cColor = new Color(109, 134, 154);
+	Color dColor = new Color(192, 210, 219);
+	Color eColor = new Color(174, 191, 199);
 
 	// 메인패널
 	JPanel main_Panel = new JPanel();
@@ -145,11 +147,14 @@ public class MainFrame extends JFrame {
 		loginPanel.add(id_TextField);
 		loginPanel.add(pwd_TextField);
 		loginPanel.add(login_Btn);
+		loginPanel.add(logo_Img);
+		logo_Img.setIcon(img);
+		logo_Img.setBounds(170, 80, 450, 175);
 		id_TextField.setBounds(218, 326, 251, 38);
 		pwd_TextField.setBounds(218, 374, 251, 38);
 		login_Btn.setBounds(496, 326, 86, 86);
-		loginPanel.add(pwdAdminSet);
-		pwdAdminSet.setBounds(218, 417, 80, 20);
+//		loginPanel.add(pwdAdminSet);
+//		pwdAdminSet.setBounds(218, 417, 80, 20);
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -306,7 +311,7 @@ public class MainFrame extends JFrame {
 
 		// 홈패널
 		home_Panel.setLayout(null);
-		home_Panel.setBackground(dColor);
+		home_Panel.setBackground(aColor);
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 190);
@@ -355,7 +360,7 @@ public class MainFrame extends JFrame {
 		search_Panel.setBounds(0, 0, 700, 560);
 
 		// 검색 리스트 패널 (search_List) 설정
-		search_List.setBackground(bColor);
+		search_List.setBackground(dColor);
 		search_List.setLayout(null);
 		search_List.setBounds(0, 0, 230, 560);
 
@@ -371,7 +376,7 @@ public class MainFrame extends JFrame {
 
 		// 검색 결과 페이지 (search_Page) 설정
 		search_Page.setBounds(230, 0, 470, 560);
-		search_Page.setBackground(dColor);
+		search_Page.setBackground(aColor);
 
 		// 검색 리스트 패널 (search_listPanel) 설정
 		search_listPanel.setBounds(0, 80, 230, 450);
@@ -401,7 +406,7 @@ public class MainFrame extends JFrame {
 		message_Panel.setBackground(dColor);
 		message_Panel.add(message_Box);
 		message_Box.setBounds(0, 0, 90, 540);
-		message_Box.setBackground(bColor);
+		message_Box.setBackground(aColor);
 		BoxLayout boxLayoutY = new BoxLayout(message_Box, BoxLayout.Y_AXIS);
 		message_Box.setLayout(boxLayoutY);
 		message_Panel.add(message_chatBox);
@@ -446,9 +451,10 @@ public class MainFrame extends JFrame {
 
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				message_postBtn.setBackground(dColor);
 				String recipient = JOptionPane.showInputDialog("수신자: ");
 				JButton personButton = new JButton(recipient);
-				personButton.setBackground(cColor);
+				personButton.setBackground(dColor);
 				String buttonText = recipient;
 				personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
 				message_Box.add(personButton);
@@ -520,25 +526,28 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
 				System.out.println(adapter.getEmail() + "*" + adapter.getPhone() + "*" + adapter.getNum());
-				search_Btn.setBackground(aColor);
-				home_Btn.setBackground(bColor);
-				message_Btn.setBackground(aColor);
+				search_Btn.setBackground(cColor);
+				home_Btn.setBackground(aColor);
+				message_Btn.setBackground(cColor);
+				info_Btn.setBackground(cColor);
 			}
 		});
 		search_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "searchPanel");
-				search_Btn.setBackground(bColor);
-				home_Btn.setBackground(aColor);
-				message_Btn.setBackground(aColor);
+				search_Btn.setBackground(aColor);
+				home_Btn.setBackground(cColor);
+				message_Btn.setBackground(cColor);
+				info_Btn.setBackground(cColor);
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "messagePanel");
-				search_Btn.setBackground(aColor);
-				home_Btn.setBackground(aColor);
-				message_Btn.setBackground(bColor);
+				search_Btn.setBackground(cColor);
+				home_Btn.setBackground(cColor);
+				message_Btn.setBackground(aColor);
+				info_Btn.setBackground(cColor);
 			}
 		});
 

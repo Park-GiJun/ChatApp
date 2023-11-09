@@ -1,10 +1,13 @@
 package com.chat;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
 
 public class ClientConnection {
 	private String serverAddress;
@@ -22,6 +25,7 @@ public class ClientConnection {
 	String setPwd, setEmail, setPhone;
 	String nameTree[];
 	String treeName;
+	BufferedImage userimage;
 	private String[] Dept = { "테스트" };
 	String[] searchName;
 
@@ -57,6 +61,10 @@ public class ClientConnection {
 		return nameTree;
 	}
 
+	public BufferedImage getUserImage() {
+		return userimage;
+	}
+
 	public ClientConnection() {
 	}
 
@@ -73,7 +81,7 @@ public class ClientConnection {
 			out.writeObject(name);
 			out.writeObject(cn);
 			out.writeObject(dept);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("newUser 오류");
 		}
@@ -91,7 +99,7 @@ public class ClientConnection {
 //		}
 //		return image;
 //	}
-	
+
 	public String selectMethod() {
 		System.out.println("selectMethod 시작");
 		try {
@@ -106,8 +114,11 @@ public class ClientConnection {
 				return "[onlinecheck]";
 			} else if (inp.equals("[nameTree]")) {
 				System.out.println("select method nametree");
-				nameTreeStart();
+				searchName = nameTreeStart();
 				return "[nameTree]";
+			} else if (inp.equals("[image]")) {
+				System.out.println("select method image");
+				return "[image]";
 			} else {
 				return " ";
 			}
@@ -206,6 +217,7 @@ public class ClientConnection {
 				phone = (String) in.readObject();
 				dept_num = (String) in.readObject();
 				doing = (String) in.readObject();
+				userimage = readImage();
 				System.out.println("client loginStart method - pass_in : " + pass_in + " name : " + name + " Email : "
 						+ email + " phone : " + phone + " dept_num: " + dept_num);
 				System.out.println("정보를 읽었습니다.");
@@ -215,6 +227,13 @@ public class ClientConnection {
 		}
 		System.out.println("clientconnection login : " + pass_out);
 		return pass_out;
+	}
+
+	public BufferedImage readImage() throws IOException, ClassNotFoundException {
+		byte[] receiveImage = (byte[]) in.readObject();
+		BufferedImage image = ImageIO.read(new ByteArrayInputStream(receiveImage));
+		return image;
+
 	}
 
 	public String[] SignUpDept() {
@@ -235,37 +254,37 @@ public class ClientConnection {
 		return Dept;
 	}
 
-   public void nameTree(String name) {
-      System.out.println("nameTree 시작");
-      try {
-         out.writeObject("[nameTree]");
-         System.out.println("[nameTree] 전송");
-         out.writeObject(name);
-         System.out.println("nameTree 끝났다");
-      } catch (Exception e) {
-         e.printStackTrace();
-         System.out.println("nameTree 오류");
-      }
-   }
+	public void nameTree(String name) {
+		System.out.println("nameTree 시작");
+		try {
+			out.writeObject("[nameTree]");
+			System.out.println("[nameTree] 전송");
+			out.writeObject(name);
+			System.out.println("nameTree 끝났다");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("nameTree 오류");
+		}
+	}
 
-   public String [] nameTreeStart() {
-      System.out.println("nameTreeStart 메소드 시작");
-      try {
-         int listSize = (Integer)in.readObject();
-         System.out.println("listsize 받음 listSize : "+ listSize);
-         searchName = new String [listSize];
-         for(int i = 0; i<listSize; i++) {
-            searchName[i] = (String)in.readObject();
-            System.out.println("배열에 넣기 "+ i +"번째 "+searchName[i]);
-         }
-         System.out.println("배열넣기 끝났다");
-      } catch (Exception e) {
-         e.printStackTrace();
-         System.out.println("nameTreeStart 오류");
-      }
-      System.out.println("return 배열 간다");
-      return searchName;
-   }
+	public String[] nameTreeStart() {
+		System.out.println("nameTreeStart 메소드 시작");
+		try {
+			int listSize = (Integer) in.readObject();
+			System.out.println("listsize 받음 listSize : " + listSize);
+			searchName = new String[listSize];
+			for (int i = 0; i < listSize; i++) {
+				searchName[i] = (String) in.readObject();
+				System.out.println("배열에 넣기 " + i + "번째 " + searchName[i]);
+			}
+			System.out.println("배열넣기 끝났다");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("nameTreeStart 오류");
+		}
+		System.out.println("return 배열 간다");
+		return searchName;
+	}
 
 	private void connectToServer() {
 		try {

@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,7 +42,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
@@ -59,7 +59,7 @@ public class MainFrame extends JFrame {
 	private JTextField id_TextField = new JTextField();
 	private JTextField pwd_TextField = new JTextField();
 	private JButton login_Btn = new JButton();
-	private String id, pwd, UserEmail, name;
+	private String id, pwd, UserEmail, name, userImage;
 	private boolean pass = false;
 	private JButton pwdAdminSet = new JButton();
 	Color aColor = new Color(121, 144, 163);
@@ -117,7 +117,6 @@ public class MainFrame extends JFrame {
 	String clickedRecipient;
 	Map<String, JButton> recipientButtons = new HashMap<>();
 
-
 	// 관리자
 	JFrame admin_Frame = new JFrame();
 	JPanel admin_Panel = new JPanel();
@@ -163,13 +162,17 @@ public class MainFrame extends JFrame {
 					try {
 						if (!id.equals("admin") && !pwd.equals("admin")) {
 							pass = clientConnection.login(id, pwd);
-							
+
 							if (pass) {
 								mainLayout.show(getContentPane(), "mainPanel");
 								name = clientConnection.getName();
 								UserEmail = clientConnection.getEmail();
 								String phone = clientConnection.getPhone();
 								String Dept_num = clientConnection.getDeptnum();
+								BufferedImage userImage = clientConnection.getUserImage();
+								JLabel userimage = new JLabel(new ImageIcon(userImage));
+								home_photo.add(userimage);
+								home_photo.setBackground(dColor);
 								String[] todoarr = clientConnection.getDoing().split("//");
 								for (String a : todoarr) {
 									sop(a);
@@ -178,8 +181,6 @@ public class MainFrame extends JFrame {
 								home_email.setText("이메일 : " + UserEmail);
 								home_num.setText("전화번호 : " + phone);
 								home_deptNum.setText("내선번호 : " + Dept_num);
-//								home_test.imageUpdate(clientConnection.userImage(), 0, 0, 0, 165, 190);
-//								home_photo.add(home_test);
 								for (int i = 0; i < todoarr.length; i++) {
 									String todoStr = todoarr[i];
 									JCheckBox todoBox = new JCheckBox(todoStr);
@@ -215,7 +216,7 @@ public class MainFrame extends JFrame {
 								adapter.setPhone(phone);
 								adapter.setNum(Dept_num);
 								setTitle(id);
-							}else {
+							} else {
 								JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
 										JOptionPane.WARNING_MESSAGE);
 							}
@@ -239,7 +240,7 @@ public class MainFrame extends JFrame {
 		});
 		signUp_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					SignUp signup = new SignUp(adapter);
+				SignUp signup = new SignUp(adapter);
 			}
 		});
 
@@ -247,9 +248,9 @@ public class MainFrame extends JFrame {
 		pwdSet_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
-	}
+			}
 		});
-		
+
 		// 관리자 화면 닫기 버튼 시 프로그램 종료
 		admin_Frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -257,7 +258,6 @@ public class MainFrame extends JFrame {
 				System.out.println("@관리자 접속 종료");
 			}
 		});
-
 
 		setTitle(id);
 
@@ -310,12 +310,6 @@ public class MainFrame extends JFrame {
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 190);
-
-		ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
-		JLabel home_test = new JLabel("ONE", mario, SwingConstants.CENTER);
-
-		home_photo.add(home_test);
-		home_photo.setBackground(dColor);
 
 		home_Panel.add(home_name);
 		home_name.setBounds(290, 250, 200, 20);

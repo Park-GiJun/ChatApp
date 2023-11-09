@@ -3,7 +3,9 @@ package com.chat;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -174,9 +176,13 @@ public class MainFrame extends JFrame {
 								UserEmail = clientConnection.getEmail();
 								String phone = clientConnection.getPhone();
 								String Dept_num = clientConnection.getDeptnum();
-								BufferedImage userImage = clientConnection.getUserImage();
-								JLabel userimage = new JLabel(new ImageIcon(userImage));
-								home_photo.add(userimage);
+								BufferedImage originalImage = clientConnection.getUserImage();
+								int newWidth = 165; // 원하는 너비
+								int newHeight = 190; // 원하는 높이
+
+								BufferedImage resizedImage = resize(originalImage, newWidth, newHeight);
+								JLabel userImageLabel = new JLabel(new ImageIcon(resizedImage));
+								home_photo.add(userImageLabel);
 								home_photo.setBackground(dColor);
 								String[] todoarr = clientConnection.getDoing().split("//");
 								for (String a : todoarr) {
@@ -848,6 +854,16 @@ public class MainFrame extends JFrame {
 
 			}
 		});
+	}
+	public static BufferedImage resize(BufferedImage img, int newWidth, int newHeight) {
+	    Image tmp = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+	    BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+
+	    Graphics2D g2d = resizedImage.createGraphics();
+	    g2d.drawImage(tmp, 0, 0, null);
+	    g2d.dispose();
+
+	    return resizedImage;
 	}
 
 	public String getId() {

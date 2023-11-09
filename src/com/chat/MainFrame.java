@@ -3,7 +3,9 @@ package com.chat;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -12,6 +14,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,6 +31,7 @@ import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -55,14 +61,16 @@ public class MainFrame extends JFrame {
 	private JTextField id_TextField = new JTextField();
 	private JTextField pwd_TextField = new JTextField();
 	private JButton login_Btn = new JButton();
-	private String id, pwd, UserEmail, name;
+	private String id, pwd, UserEmail, name, userImage;
 	private boolean pass = false;
-	private JButton pwdAdminSet = new JButton();
-	Color aColor = new Color(121, 144, 163);
-	Color bColor = new Color(193, 223, 249);
-	Color cColor = new Color(116, 140, 219);
-	Color dColor = new Color(22, 59, 136);
-	Color eColor = new Color(25, 45, 69);
+	String username = System.getProperty("user.home");
+	ImageIcon img = new ImageIcon(username + "/git/ChatApp/src/com/chat/chats/logo.png");
+	JLabel logo_Img = new JLabel(img);
+	Color aColor = new Color(255, 255, 255);
+	Color bColor = new Color(45, 47, 59);
+	Color cColor = new Color(109, 134, 154);
+	Color dColor = new Color(192, 210, 219);
+	Color eColor = new Color(174, 191, 199);
 
 	// 메인패널
 	JPanel main_Panel = new JPanel();
@@ -78,8 +86,7 @@ public class MainFrame extends JFrame {
 	String state = "";
 	JPanel home_Panel = new JPanel();
 	JPanel home_photo = new JPanel();
-	JLabel home_test = null;
-	
+
 	JLabel home_name = new JLabel();
 	JLabel home_num = new JLabel();
 	JLabel home_email = new JLabel();
@@ -114,7 +121,6 @@ public class MainFrame extends JFrame {
 	String clickedRecipient;
 	Map<String, JButton> recipientButtons = new HashMap<>();
 
-
 	// 관리자
 	JFrame admin_Frame = new JFrame();
 	JPanel admin_Panel = new JPanel();
@@ -143,11 +149,15 @@ public class MainFrame extends JFrame {
 		loginPanel.add(id_TextField);
 		loginPanel.add(pwd_TextField);
 		loginPanel.add(login_Btn);
+		loginPanel.add(logo_Img);
+		logo_Img.setBackground(aColor);
+		
+		logo_Img.setBounds(170, 80, 450, 175);
 		id_TextField.setBounds(218, 326, 251, 38);
 		pwd_TextField.setBounds(218, 374, 251, 38);
 		login_Btn.setBounds(496, 326, 86, 86);
-		loginPanel.add(pwdAdminSet);
-		pwdAdminSet.setBounds(218, 417, 80, 20);
+//		loginPanel.add(pwdAdminSet);
+//		pwdAdminSet.setBounds(218, 417, 80, 20);
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -160,13 +170,21 @@ public class MainFrame extends JFrame {
 					try {
 						if (!id.equals("admin") && !pwd.equals("admin")) {
 							pass = clientConnection.login(id, pwd);
-							
+
 							if (pass) {
 								mainLayout.show(getContentPane(), "mainPanel");
 								name = clientConnection.getName();
 								UserEmail = clientConnection.getEmail();
 								String phone = clientConnection.getPhone();
 								String Dept_num = clientConnection.getDeptnum();
+								BufferedImage originalImage = clientConnection.getUserImage();
+								int newWidth = 165; // 원하는 너비
+								int newHeight = 190; // 원하는 높이
+
+								BufferedImage resizedImage = resize(originalImage, newWidth, newHeight);
+								JLabel userImageLabel = new JLabel(new ImageIcon(resizedImage));
+								home_photo.add(userImageLabel);
+								home_photo.setBackground(dColor);
 								String[] todoarr = clientConnection.getDoing().split("//");
 								for (String a : todoarr) {
 									sop(a);
@@ -175,8 +193,6 @@ public class MainFrame extends JFrame {
 								home_email.setText("이메일 : " + UserEmail);
 								home_num.setText("전화번호 : " + phone);
 								home_deptNum.setText("내선번호 : " + Dept_num);
-								home_test.imageUpdate(clientConnection.userImage(), 0, 0, 0, 165, 190);
-								home_photo.add(home_test);
 								for (int i = 0; i < todoarr.length; i++) {
 									String todoStr = todoarr[i];
 									JCheckBox todoBox = new JCheckBox(todoStr);
@@ -212,6 +228,9 @@ public class MainFrame extends JFrame {
 								adapter.setPhone(phone);
 								adapter.setNum(Dept_num);
 								setTitle(id);
+							} else {
+								JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
+										JOptionPane.WARNING_MESSAGE);
 							}
 						} else if (id.equals("admin") && pwd.equals("admin")) {
 							System.out.println("관리자 로그인");
@@ -233,8 +252,6 @@ public class MainFrame extends JFrame {
 		});
 		signUp_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-//				MainFrame.DISPOSE();
 				SignUp signup = new SignUp(adapter);
 			}
 		});
@@ -246,15 +263,14 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-//		pwdAdminSet.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
-//				SignUp admin = new SignUp(adapter);
-//
-//			}
-//		});
+		// 관리자 화면 닫기 버튼 시 프로그램 종료
+		admin_Frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+				System.out.println("@관리자 접속 종료");
+			}
+		});
+
 		setTitle(id);
 
 		// 메인 패널
@@ -302,12 +318,10 @@ public class MainFrame extends JFrame {
 
 		// 홈패널
 		home_Panel.setLayout(null);
-		home_Panel.setBackground(dColor);
+		home_Panel.setBackground(aColor);
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 190);
-
-		home_photo.setBackground(dColor);
 
 		home_Panel.add(home_name);
 		home_name.setBounds(290, 250, 200, 20);
@@ -353,7 +367,7 @@ public class MainFrame extends JFrame {
 		search_Panel.setBounds(0, 0, 700, 560);
 
 		// 검색 리스트 패널 (search_List) 설정
-		search_List.setBackground(bColor);
+		search_List.setBackground(dColor);
 		search_List.setLayout(null);
 		search_List.setBounds(0, 0, 230, 560);
 
@@ -369,7 +383,7 @@ public class MainFrame extends JFrame {
 
 		// 검색 결과 페이지 (search_Page) 설정
 		search_Page.setBounds(230, 0, 470, 560);
-		search_Page.setBackground(dColor);
+		search_Page.setBackground(aColor);
 
 		// 검색 리스트 패널 (search_listPanel) 설정
 		search_listPanel.setBounds(0, 80, 230, 450);
@@ -384,10 +398,6 @@ public class MainFrame extends JFrame {
 		search_List.add(search_DBlist);
 		search_DBlist.setBounds(10, 90, 210, 350);
 
-//      JButton example = new JButton("12");
-//      search_List.add(example);
-//      example.setBounds(10, 90, 210, 350);
-
 		search_btnclick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String search = search_bar.getText();
@@ -397,17 +407,13 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-//      search_List.add(search_Tree);
-//      search_List.setBounds(0, 81, 230, 450);
-
-
 		// 메세지 패널
 		message_Panel.setLayout(null);
 		message_Panel.setBounds(100, 0, 700, 500);
 		message_Panel.setBackground(dColor);
 		message_Panel.add(message_Box);
 		message_Box.setBounds(0, 0, 90, 540);
-		message_Box.setBackground(bColor);
+		message_Box.setBackground(aColor);
 		BoxLayout boxLayoutY = new BoxLayout(message_Box, BoxLayout.Y_AXIS);
 		message_Box.setLayout(boxLayoutY);
 		message_Panel.add(message_chatBox);
@@ -452,9 +458,10 @@ public class MainFrame extends JFrame {
 
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				message_postBtn.setBackground(dColor);
 				String recipient = JOptionPane.showInputDialog("수신자: ");
 				JButton personButton = new JButton(recipient);
-				personButton.setBackground(cColor);
+				personButton.setBackground(dColor);
 				String buttonText = recipient;
 				personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
 				message_Box.add(personButton);
@@ -526,25 +533,28 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
 				System.out.println(adapter.getEmail() + "*" + adapter.getPhone() + "*" + adapter.getNum());
-				search_Btn.setBackground(aColor);
-				home_Btn.setBackground(bColor);
-				message_Btn.setBackground(aColor);
+				search_Btn.setBackground(cColor);
+				home_Btn.setBackground(aColor);
+				message_Btn.setBackground(cColor);
+				info_Btn.setBackground(cColor);
 			}
 		});
 		search_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "searchPanel");
-				search_Btn.setBackground(bColor);
-				home_Btn.setBackground(aColor);
-				message_Btn.setBackground(aColor);
+				search_Btn.setBackground(aColor);
+				home_Btn.setBackground(cColor);
+				message_Btn.setBackground(cColor);
+				info_Btn.setBackground(cColor);
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "messagePanel");
-				search_Btn.setBackground(aColor);
-				home_Btn.setBackground(aColor);
-				message_Btn.setBackground(bColor);
+				search_Btn.setBackground(cColor);
+				home_Btn.setBackground(cColor);
+				message_Btn.setBackground(aColor);
+				info_Btn.setBackground(cColor);
 			}
 		});
 
@@ -846,6 +856,16 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
+	public static BufferedImage resize(BufferedImage img, int newWidth, int newHeight) {
+	    Image tmp = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+	    BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+
+	    Graphics2D g2d = resizedImage.createGraphics();
+	    g2d.drawImage(tmp, 0, 0, null);
+	    g2d.dispose();
+
+	    return resizedImage;
+	}
 
 	public String getId() {
 		return id_TextField.getText();
@@ -854,4 +874,5 @@ public class MainFrame extends JFrame {
 	void sop(String a) {
 		System.out.println(a);
 	}
+	
 }

@@ -16,9 +16,8 @@ public class Main {
 				MainFrame mainFrame = new MainFrame(clientConnection, adapter);
 				// 메인 프레임 표시
 				mainFrame.setVisible(true);
-
             while (!mainFrame.getPass()) {
-//               System.out.println("Loading...");
+               System.out.println("Loading...");
             }
             System.out.println(mainFrame.getPass());
             // 메시지 수신 스레드 시작
@@ -68,4 +67,3 @@ public class Main {
       messageReceiverThread.start();
    }
 }
-

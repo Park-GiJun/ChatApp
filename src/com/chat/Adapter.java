@@ -13,32 +13,8 @@ public class Adapter {
 	private String DBname;
 	private boolean pass;
 	private ClientConnection client;
-	private String [] arr;
+	private String[] arr;
 
-	// 입력없이 저장된 정보를 불러오기 위한 생성자
-//	public Adapter(ClientConnection clientConnection) {
-//		this.clientConnection = clientConnection;
-//		clientConnection.pwdUp(cn, name);
-//		System.out.println(DBcn+"**"+DBname);
-//	}
-//	// 사번 조회
-//	public Adapter(String cn) {
-//		setCn(cn);
-//	}
-//	// 패스워드 초기화 프레임 사번과 이름
-//	public Adapter(String cn, String name) {
-//		setCn(cn);
-//		setName(name);
-//		System.out.println(cn+"@@"+name);
-//	}
-//	
-//	// 홈 프레임 정보확인
-//	public Adapter(String name, String email, String num, String phone) {
-//		setName(name);
-//		setEmail(email);
-//		setNum(num);
-//		setPhone(phone);
-//	}
 	public Adapter() {
 
 	}
@@ -59,9 +35,9 @@ public class Adapter {
 		setDBcn(id);
 		setDBname(name);
 	}
-	
-	public void setnewUser(String name, String cn, String dept) {
-		client.newUser(name, cn, dept);
+
+	public void setnewUser(String name, String cn, String dept, String imagefile) {
+		client.newUser(name, cn, dept, imagefile);
 		System.out.println("adapter setnewUser 실행");
 	}
 
@@ -73,13 +49,16 @@ public class Adapter {
 		setPhone(client.setPhone);
 		setEmail(client.setEmail);
 	}
-	public String [] getDeptList() {
-		String DeptList [] = client.SignUpDept();
+
+	public String[] getDeptList() {
+		String DeptList[] = client.SignUpDept();
 		return DeptList;
 	}
-	public void setNameTree(String [] ar) {
+
+	public void setNameTree(String[] ar) {
 		this.arr = ar;
 	}
+
 	public void setDBcn(String cn) {
 		this.DBcn = cn;
 	}
@@ -120,9 +99,10 @@ public class Adapter {
 		this.user_pwd = pwd;
 	}
 
-	public String [] getArr() {
+	public String[] getArr() {
 		return arr;
 	}
+
 	public String getDBcn() {
 		return DBcn;
 	}

@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -24,6 +25,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -59,14 +62,15 @@ public class MainFrame extends JFrame {
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
 	private JTextField id_TextField = new JTextField();
-	private JTextField pwd_TextField = new JTextField();
+	private JPasswordField pwd_TextField = new JPasswordField();
 	private JButton login_Btn = new JButton();
 	private String id, pwd, UserEmail, name, userImage;
 	private boolean pass = false;
 	String username = System.getProperty("user.home");
 	ImageIcon img = new ImageIcon(username + "/git/ChatApp/src/com/chat/chats/logo.png");
+	Image icon = Toolkit.getDefaultToolkit().getImage(username + "/git/ChatApp/src/com/chat/chats/icon.png");
 	private JLabel logo_Img = new JLabel(img);
-	Color aColor = new Color(255, 255, 255);
+	Color aColor = new Color(211, 211, 211);
 	Color bColor = new Color(45, 47, 59);
 	Color cColor = new Color(109, 134, 154);
 	Color dColor = new Color(192, 210, 219);
@@ -101,7 +105,7 @@ public class MainFrame extends JFrame {
 	JTextField search_bar = new JTextField(12);
 	JButton search_btnclick = new JButton();
 	JTree search_Tree = new JTree();
-	JList<String> search_DBlist = new JList<String>(new String[] { "item1", "item2" });
+	JList<String> search_DBlist = new JList<String>(new String[] { "김사장", "김이사" });
 	JScrollPane search_listPanel = new JScrollPane();
 
 	// 메세지 패널
@@ -140,6 +144,7 @@ public class MainFrame extends JFrame {
 		getContentPane().setLayout(mainLayout);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setIconImage(icon);
 
 		// 로그인 패널
 		add(loginPanel);
@@ -149,14 +154,15 @@ public class MainFrame extends JFrame {
 		loginPanel.add(id_TextField);
 		loginPanel.add(pwd_TextField);
 		loginPanel.add(login_Btn);
+		login_Btn.setText("Login");
 		loginPanel.add(logo_Img);
 		logo_Img.setIcon(img);
 		logo_Img.setBounds(170, 80, 450, 175);
 		id_TextField.setBounds(218, 326, 251, 38);
 		pwd_TextField.setBounds(218, 374, 251, 38);
 		login_Btn.setBounds(496, 326, 86, 86);
-//		loginPanel.add(pwdAdminSet);
-//		pwdAdminSet.setBounds(218, 417, 80, 20);
+		
+		
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
@@ -183,7 +189,7 @@ public class MainFrame extends JFrame {
 								BufferedImage resizedImage = resize(originalImage, newWidth, newHeight);
 								JLabel userImageLabel = new JLabel(new ImageIcon(resizedImage));
 								home_photo.add(userImageLabel);
-								home_photo.setBackground(dColor);
+								home_photo.setBackground(aColor);
 								String[] todoarr = clientConnection.getDoing().split("//");
 								for (String a : todoarr) {
 									sop(a);
@@ -291,13 +297,13 @@ public class MainFrame extends JFrame {
 		message_Btn.setSize(100, 100);
 
 		// 색상
-		home_Btn.setBackground(aColor);
+		home_Btn.setBackground(dColor);
 		home_Btn.setBorder(null);
-		search_Btn.setBackground(aColor);
+		search_Btn.setBackground(dColor);
 		search_Btn.setBorder(null);
-		message_Btn.setBackground(aColor);
+		message_Btn.setBackground(dColor);
 		message_Btn.setBorder(null);
-		info_Btn.setBackground(aColor);
+		info_Btn.setBackground(dColor);
 		info_Btn.setBorder(null);
 		main_Panel.setBackground(aColor);
 		message_postBtn.setBackground(cColor);
@@ -305,6 +311,10 @@ public class MainFrame extends JFrame {
 		message_postBtn.setBorder(null);
 		addPerson.setBorder(null);
 		home_todo.setBackground(eColor);
+		login_Btn.setBorder(null);
+		login_Btn.setBackground(aColor);
+		loginPanel.setBackground(cColor);
+		left_Panel.setBackground(aColor);
 
 		// 변경 패널
 		main_Panel.add(card_Panel);
@@ -366,7 +376,7 @@ public class MainFrame extends JFrame {
 		search_Panel.setBounds(0, 0, 700, 560);
 
 		// 검색 리스트 패널 (search_List) 설정
-		search_List.setBackground(dColor);
+		search_List.setBackground(cColor);
 		search_List.setLayout(null);
 		search_List.setBounds(0, 0, 230, 560);
 
@@ -425,6 +435,9 @@ public class MainFrame extends JFrame {
 		message_chatBox.add(message_sendPanel);
 		message_sendPanel.setLayout(null);
 		message_sendPanel.setBounds(0, 485, 610, 40);
+		message_Panel.setBorder(null);
+		message_chatlog.setBorder(null);
+		message_sendPanel.setBorder(null);
 
 		// 메세지 입력창
 		message_sendPanel.add(message_sendBox);
@@ -532,28 +545,28 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
 				System.out.println(adapter.getEmail() + "*" + adapter.getPhone() + "*" + adapter.getNum());
-				search_Btn.setBackground(cColor);
-				home_Btn.setBackground(aColor);
-				message_Btn.setBackground(cColor);
-				info_Btn.setBackground(cColor);
+				search_Btn.setBackground(eColor);
+				home_Btn.setBackground(cColor);
+				message_Btn.setBackground(eColor);
+				info_Btn.setBackground(eColor);
 			}
 		});
 		search_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "searchPanel");
-				search_Btn.setBackground(aColor);
-				home_Btn.setBackground(cColor);
-				message_Btn.setBackground(cColor);
-				info_Btn.setBackground(cColor);
+				search_Btn.setBackground(cColor);
+				home_Btn.setBackground(eColor);
+				message_Btn.setBackground(eColor);
+				info_Btn.setBackground(eColor);
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "messagePanel");
-				search_Btn.setBackground(cColor);
-				home_Btn.setBackground(cColor);
-				message_Btn.setBackground(aColor);
-				info_Btn.setBackground(cColor);
+				search_Btn.setBackground(eColor);
+				home_Btn.setBackground(eColor);
+				message_Btn.setBackground(cColor);
+				info_Btn.setBackground(eColor);
 			}
 		});
 
@@ -571,7 +584,6 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		// home_todo 패널의 레이아웃을 GridLayout(0, 2)로 설정
 		home_todo.setLayout(new BoxLayout(home_todo, BoxLayout.Y_AXIS));
 
 		// 할 일 목록을 관리할 리스트
@@ -651,14 +663,10 @@ public class MainFrame extends JFrame {
 	void saveSendChat(String message, String opposite, String me) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + me + "_" + opposite + ".txt";
-		int year = currentDateTime.getYear();
-		int month = currentDateTime.getMonthValue();
-		int day = currentDateTime.getDayOfMonth();
-		int hour = currentDateTime.getHour();
-		int minute = currentDateTime.getMinute();
-		int second = currentDateTime.getSecond();
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
+		LocalDateTime currentDateTime = LocalDateTime.now(); // 현재 시간 가져오기
+
 		try {
 			if (!parentDir.exists()) {
 				// 디렉토리가 존재하지 않으면 생성
@@ -670,8 +678,9 @@ public class MainFrame extends JFrame {
 			}
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + me
-					+ " : " + message);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss");
+			String formattedDateTime = currentDateTime.format(formatter);
+			bufferedWriter.write(formattedDateTime + " // " + me + " : " + message);
 			bufferedWriter.newLine();
 			bufferedWriter.close();
 			System.out.println("saved Send Message");
@@ -683,14 +692,9 @@ public class MainFrame extends JFrame {
 	void saveReceiveChat(String message, String opposite, String me) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + opposite + "_" + me + ".txt";
-		int year = currentDateTime.getYear();
-		int month = currentDateTime.getMonthValue();
-		int day = currentDateTime.getDayOfMonth();
-		int hour = currentDateTime.getHour();
-		int minute = currentDateTime.getMinute();
-		int second = currentDateTime.getSecond();
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
+		LocalDateTime currentDateTime = LocalDateTime.now(); // 현재 시간 가져오기
 
 		try {
 			if (!parentDir.exists()) {
@@ -703,8 +707,9 @@ public class MainFrame extends JFrame {
 			}
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + me
-					+ " : " + message);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss");
+			String formattedDateTime = currentDateTime.format(formatter);
+			bufferedWriter.write(formattedDateTime + " // " + me + " : " + message);
 			bufferedWriter.newLine();
 			bufferedWriter.close();
 			System.out.println("saved Receive Message");
@@ -751,16 +756,12 @@ public class MainFrame extends JFrame {
 			// 파일이 존재하지 않으면 생성
 			file.createNewFile();
 		}
-		int year = currentDateTime.getYear();
-		int month = currentDateTime.getMonthValue();
-		int day = currentDateTime.getDayOfMonth();
-		int hour = currentDateTime.getHour();
-		int minute = currentDateTime.getMinute();
-		int second = currentDateTime.getSecond();
+		LocalDateTime currentDateTime = LocalDateTime.now(); // 현재 시간 가져오기
 		FileWriter fileWriter = new FileWriter(filePath, true);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-		bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + "post"
-				+ " : " + message);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss");
+		String formattedDateTime = currentDateTime.format(formatter);
+		bufferedWriter.write(formattedDateTime + " // " + post + " : " + message);
 		bufferedWriter.newLine();
 		bufferedWriter.close();
 		System.out.println("saved Send Post Message");
@@ -786,14 +787,9 @@ public class MainFrame extends JFrame {
 	}
 
 	void receivePost(String message) {
+		LocalDateTime currentDateTime = LocalDateTime.now();
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
-		int year = currentDateTime.getYear();
-		int month = currentDateTime.getMonthValue();
-		int day = currentDateTime.getDayOfMonth();
-		int hour = currentDateTime.getHour();
-		int minute = currentDateTime.getMinute();
-		int second = currentDateTime.getSecond();
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
 
@@ -808,15 +804,15 @@ public class MainFrame extends JFrame {
 			}
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // "
-					+ "post" + " : " + message);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss");
+			String formattedDateTime = currentDateTime.format(formatter);
+			bufferedWriter.write(formattedDateTime + " // " + "post" + " : " + message);
 			bufferedWriter.newLine();
 			bufferedWriter.close();
 			System.out.println("saved Receive Post Message");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	void makeBtn(String recipient) {
@@ -855,15 +851,16 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
+
 	public static BufferedImage resize(BufferedImage img, int newWidth, int newHeight) {
-	    Image tmp = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
-	    BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+		Image tmp = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 
-	    Graphics2D g2d = resizedImage.createGraphics();
-	    g2d.drawImage(tmp, 0, 0, null);
-	    g2d.dispose();
+		Graphics2D g2d = resizedImage.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
 
-	    return resizedImage;
+		return resizedImage;
 	}
 
 	public String getId() {

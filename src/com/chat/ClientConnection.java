@@ -87,19 +87,6 @@ public class ClientConnection {
 			System.out.println("newUser 오류");
 		}
 	}
-//	public Image userImage() {
-//		System.out.println("이미지 시작");
-//		Image image = null;
-//		try {
-//			out.writeObject("[image]");
-//			image = (Image)in.readObject();
-//			System.out.println("서버에서 이미지 받음");
-//		}catch(Exception e) {
-//			e.printStackTrace();
-//			System.out.println("이미지 오류");
-//		}
-//		return image;
-//	}
 
 	public String selectMethod() {
 		System.out.println("selectMethod 시작");
@@ -238,9 +225,10 @@ public class ClientConnection {
 		return image;
 
 	}
+
 	public void saveImage(BufferedImage image, String filePath, String format) throws IOException {
-	    File outputImage = new File(filePath);
-	    ImageIO.write(image, format, outputImage);
+		File outputImage = new File(filePath);
+		ImageIO.write(image, format, outputImage);
 	}
 
 	public String[] SignUpDept() {

@@ -72,6 +72,9 @@ public class ClientConnection {
 	public BufferedImage getUserImage() {
 		return userimage;
 	}
+	public BufferedImage getSearchImage() {
+		return searchImage;
+	}
 
 	public ClientConnection() {
 	}

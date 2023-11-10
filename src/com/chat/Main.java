@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class Main {
@@ -44,13 +45,15 @@ public class Main {
 					mainFrame.result_Num.setText("내선번호 : "+clientConnection.searchDeptNum);
 					mainFrame.result_Phone.setText("전화번호 : "+clientConnection.searchPhone);
 					
-					BufferedImage originalImage = clientConnection.searchImage;
+					BufferedImage originalImage = clientConnection.getSearchImage();
 					int newWidth = 165; // 원하는 너비
 					int newHeight = 190; // 원하는 높이
 
 					BufferedImage resizedImage = resize(originalImage, newWidth, newHeight);
 					JLabel userImageLabel = new JLabel(new ImageIcon(resizedImage));
+					System.out.println("이미지 출력"+userImageLabel);
 					mainFrame.result_Photo.add(userImageLabel);
+//					userImageLabel.setComponentZOrder(mainFrame.result_Photo, 0);
 					
 					mainFrame.result_Panel.revalidate();
                     mainFrame.result_Panel.repaint();

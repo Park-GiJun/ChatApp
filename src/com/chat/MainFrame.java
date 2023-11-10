@@ -51,6 +51,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 public class MainFrame extends JFrame {
+	
 	private static final long serialVersionUID = 1L;
 	// ClientConnection 객체 추가
 	private ClientConnection clientConnection;

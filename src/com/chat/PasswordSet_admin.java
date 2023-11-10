@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class PasswordSet_admin {
-	private Adapter adapter;
 	// 1. 메인 프레임
 	Font labelFont = new Font("Gothic", Font.BOLD, 13);
 
@@ -47,9 +46,6 @@ public class PasswordSet_admin {
 
 	// 1-2. 로그인 정보 확인 경고
 	public PasswordSet_admin(Adapter adapter) {
-		this.adapter = adapter;
-		// 관리자 로그인
-
 		// 관리자 로그인 성공 -> 사원 정보 조회
 		info_Frame.setSize(450, 210);
 		info_Frame.setVisible(true);

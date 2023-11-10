@@ -19,9 +19,11 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SignUp extends JFrame {
-   private Adapter adapter;
-
-   // 1. 메인 프레임
+   /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+// 1. 메인 프레임
    JPanel signPanel = new JPanel();
    JLabel signText = new JLabel();
    JLabel signName_Label = new JLabel();
@@ -67,7 +69,6 @@ public class SignUp extends JFrame {
    Font mainFont = new Font("Gothic", Font.BOLD, 20);
 
    public SignUp(Adapter adapter) {
-      this.adapter = adapter;
       dept_Box = new JComboBox<String>(adapter.getDeptList());
       // 1. 메인 프레임
       setTitle("사원 정보 등록");

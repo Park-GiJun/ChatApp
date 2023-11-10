@@ -641,7 +641,7 @@ public class MainFrame extends JFrame {
 				String name = search_DBlist.getSelectedValue();
 				int nameIndex = search_DBlist.getSelectedIndex();
 				System.out.println(name);
-				System.out.println(nameIndex)
+				System.out.println(nameIndex);
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {

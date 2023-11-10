@@ -111,8 +111,8 @@ public class MainFrame extends JFrame {
 	JTree search_Tree = new JTree();
 	JList<String> search_DBlist = new JList<String>(new String[] { "김사장", "김이사" });
 	JScrollPane search_listPanel = new JScrollPane();
-	
-		// 서치 결과
+
+	// 서치 결과
 	JPanel result_Panel = new JPanel();
 	JLabel result_Photo = new JLabel();
 	JLabel result_NameLabel = new JLabel();
@@ -128,7 +128,6 @@ public class MainFrame extends JFrame {
 	String search_phone;
 	String search_email;
 	String search_num;
-
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
 	JPanel message_Box = new JPanel();
@@ -413,10 +412,11 @@ public class MainFrame extends JFrame {
 		search_List.add(search_btnclick);
 
 		// 검색 결과 페이지 (search_Page) 설정
+		// 사진 - 이름 - 전화번호 이메일 내선번호 
 		search_Page.setBounds(230, 0, 470, 560);
 		search_Page.setBackground(aColor);
 		search_Page.setLayout(null);
-		
+
 		result_Panel.setBounds(320, 0, 470, 560);
 		result_Panel.setBackground(aColor);
 		result_Panel.setLayout(null);
@@ -462,11 +462,7 @@ public class MainFrame extends JFrame {
 		search_List.add(search_btnclick);
 		search_List.add(search_DBlist);
 		search_DBlist.setBounds(10, 90, 210, 350);
-		
-	
-		
-	
-		
+
 		search_btnclick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String search = search_bar.getText();
@@ -478,12 +474,17 @@ public class MainFrame extends JFrame {
 
 		search_DBlist.addListSelectionListener(new ListSelectionListener() {
 			private boolean isAdjusting = false;
+
 			public void valueChanged(ListSelectionEvent e) {
 				if (!e.getValueIsAdjusting() && !isAdjusting) {
 					isAdjusting = true;
 					System.out.println("리스트 선택");
 					String name = search_DBlist.getSelectedValue();
-					search_nameLabel.setText(name);
+	int nameIndex = search_DBlist.getSelectedIndex();
+				System.out.println(name);
+				System.out.println(nameIndex);
+				
+				clientConnection.searchPerson(clientConnection.nameTree[nameIndex][1]);
 					sop(name);
 					isAdjusting = false;
 				}
@@ -546,6 +547,10 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				message_postBtn.setBackground(dColor);
 				String recipient = JOptionPane.showInputDialog("수신자: ");
+				if (recipientButtons.containsKey(recipient)) {
+					System.out.println("이미 같은 이름의 버튼이 존재합니다.");
+					return; // 이미 존재하면 더 이상 진행하지 않음
+				}
 				JButton personButton = new JButton(recipient);
 				personButton.setBackground(dColor);
 				String buttonText = recipient;
@@ -632,10 +637,11 @@ public class MainFrame extends JFrame {
 				home_Btn.setBackground(eColor);
 				message_Btn.setBackground(eColor);
 				info_Btn.setBackground(eColor);
-				String search = search_bar.getText();
-				System.out.println(search);
-				clientConnection.nameTree(search);
-				System.out.println("search 버튼 이벤트 끝났다");
+				System.out.println("리스트 선택");
+				String name = search_DBlist.getSelectedValue();
+				int nameIndex = search_DBlist.getSelectedIndex();
+				System.out.println(name);
+				System.out.println(nameIndex)
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
@@ -894,12 +900,13 @@ public class MainFrame extends JFrame {
 	}
 
 	void makeBtn(String recipient) {
-
 		if (recipientButtons.containsKey(recipient)) {
 			System.out.println("이미 같은 이름의 버튼이 존재합니다.");
 			return; // 이미 존재하면 더 이상 진행하지 않음
 		}
+		message_postBtn.setBackground(dColor);
 		JButton personButton = new JButton(recipient);
+		personButton.setBackground(dColor);
 		String buttonText = recipient;
 		personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
 		message_Box.add(personButton);
@@ -913,6 +920,7 @@ public class MainFrame extends JFrame {
 				messageDisplayArea.setText("");
 				String message = message_sendBox.getText();
 				clickedRecipient = recipient;
+				message_sendBtn.setText(recipient);
 				if (message != null) {
 					showMessageForRecipient(buttonText);
 					sendMessage(message, recipient);

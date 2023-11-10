@@ -129,6 +129,7 @@ public class ClientConnection {
 			} else if (inp.equals("[searchPerson]")) {
 				System.out.println("select method searchPerson");
 				searchPersonStart();
+				return "[searchPerson]";
 			}else {
 			
 				return " ";
@@ -313,10 +314,12 @@ public class ClientConnection {
 		}
 		System.out.println("serachPerson 종료");
 	}
+	
 	public void searchPersonStart() {
 		System.out.println("searchPersonStart 시작");
 		try {
 			// 사진 이름 전화번호 이메일 내선번호
+			searchImage = null;
 			searchName = (String)in.readObject();
 			searchEmail = (String)in.readObject();
 			searchPhone = (String)in.readObject();

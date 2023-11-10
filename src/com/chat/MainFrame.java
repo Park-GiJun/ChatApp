@@ -49,8 +49,6 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -111,7 +109,23 @@ public class MainFrame extends JFrame {
 	JTree search_Tree = new JTree();
 	JList<String> search_DBlist = new JList<String>(new String[] { "김사장", "김이사" });
 	JScrollPane search_listPanel = new JScrollPane();
-	
+
+	// 서치 결과
+	JPanel result_Panel = new JPanel();
+	JPanel result_Photo = new JPanel();
+	JLabel result_NameLabel = new JLabel();
+	JLabel result_Name = new JLabel();
+	JLabel result_PhoneLabel = new JLabel();
+	JLabel result_Phone = new JLabel();
+	JLabel result_EmailLabel = new JLabel();
+	JLabel result_Email = new JLabel();
+	JLabel result_NumLabel = new JLabel();
+	JLabel result_Num = new JLabel();
+	JLabel search_Num = new JLabel();
+//	String search_name;
+//	String search_phone;
+//	String search_email;
+//	String search_num;
 
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
@@ -166,14 +180,13 @@ public class MainFrame extends JFrame {
 		id_TextField.setBounds(218, 326, 251, 38);
 		pwd_TextField.setBounds(218, 374, 251, 38);
 		login_Btn.setBounds(496, 326, 86, 86);
-		
-		
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				id = id_TextField.getText();
-				pwd = pwd_TextField.getText();
+				char[] passwordChars = pwd_TextField.getPassword();
+				String pwd = new String(passwordChars);
 
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
@@ -321,6 +334,8 @@ public class MainFrame extends JFrame {
 		loginPanel.setBackground(cColor);
 		left_Panel.setBackground(aColor);
 
+		result_Photo.setBackground(Color.BLACK);
+
 		// 변경 패널
 		main_Panel.add(card_Panel);
 		card_Panel.setLayout(panelLayout);
@@ -396,20 +411,51 @@ public class MainFrame extends JFrame {
 		search_List.add(search_btnclick);
 
 		// 검색 결과 페이지 (search_Page) 설정
-		// 사진 - 이름 - 전화번호 이메일 내선번호 
+		// 사진 - 이름 - 전화번호 이메일 내선번호
 		search_Page.setBounds(230, 0, 470, 560);
-		search_Page.setBackground(bColor);
+		search_Page.setBackground(aColor);
+		search_Page.setLayout(null);
 
-		
-		
-		
-		
+		result_Panel.setBounds(320, 0, 470, 560);
+		result_Panel.setBackground(aColor);
+		result_Panel.setLayout(null);
+		result_Panel.setVisible(true);
+		result_Photo.setBackground(aColor);
+		result_Photo.setBounds(60, 60, 165, 190);
+//		result_NameLabel.setText("이름: ");
+//		result_NameLabel.setBounds(30, 260, 40, 15);
+//		result_Name.setText(search_name);
+		result_Name.setBounds(70, 270, 150, 15);
+//		result_PhoneLabel.setText("휴대폰: ");
+//		result_PhoneLabel.setBounds(50, 285, 50, 15);
+//		result_Phone.setText(search_phone);
+		result_Phone.setBounds(70, 295, 150, 15);
+//		result_EmailLabel.setText("이메일: ");
+//		result_EmailLabel.setBounds(50, 310, 50, 15);
+//		result_Email.setText(search_email);
+		result_Email.setBounds(70, 320, 150, 15);
+//		result_NumLabel.setText("내선번호: ");
+//		result_NumLabel.setBounds(50, 330, 150, 15);
+//		result_Num.setText(search_num);
+		result_Num.setBounds(70, 345, 150, 15);
+
+		result_Panel.add(result_NameLabel);
+		result_Panel.add(result_Name);
+		result_Panel.add(result_Photo);
+		result_Panel.add(result_PhoneLabel);
+		result_Panel.add(result_Phone);
+		result_Panel.add(result_EmailLabel);
+		result_Panel.add(result_Email);
+		result_Panel.add(result_NumLabel);
+		result_Panel.add(result_Num);
+
 		// 검색 리스트 패널 (search_listPanel) 설정
 		search_listPanel.setBounds(0, 80, 230, 450);
 
 		// search_Panel에 모든 컴포넌트를 추가합니다.
 		search_Panel.add(search_List);
 		search_Panel.add(search_Page);
+		search_Panel.add(result_Panel);
 
 		// search_List 패널에 search_bar와 search_btnclick를 추가합니다.
 		search_List.add(search_bar);
@@ -425,20 +471,51 @@ public class MainFrame extends JFrame {
 				System.out.println("search 버튼 이벤트 끝났다");
 			}
 		});
+		search_DBlist.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 1) {
+					int selectedIndex = search_DBlist.getSelectedIndex();
+					if (selectedIndex != -1) {
+						System.out.println("리스트 선택");
+						String selectedValue = search_DBlist.getSelectedValue();
+						System.out.println("리스트 선택: " + selectedValue);
+						System.out.println("인덱스: " + selectedIndex);
 
-		search_DBlist.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				System.out.println("리스트 선택");
-				String name = search_DBlist.getSelectedValue();
-				int nameIndex = search_DBlist.getSelectedIndex();
-				System.out.println(name);
-				System.out.println(nameIndex);
-				
-				clientConnection.searchPerson(clientConnection.nameTree[nameIndex][1]);
+						// 여기에서 원하는 동작 수행
+						clientConnection.searchPerson(clientConnection.nameTree[selectedIndex][1]);
+						result_Panel.setVisible(true);
+						
+//						result_Name.setText(clientConnection.searchName);
+//						result_Email.setText(clientConnection.searchEmail);
+//						result_Num.setText(clientConnection.searchDeptNum);
+//						result_Phone.setText(clientConnection.searchPhone);
+						
+						System.out.println("검색 끝났소. 집 가라 ");
+					}
+				}
 			}
-			
 		});
-		
+//		search_DBlist.addListSelectionListener(new ListSelectionListener() {
+//			private boolean isAdjusting = false;
+//			public void valueChanged(ListSelectionEvent e) {
+//				if (!e.getValueIsAdjusting() && !isAdjusting) {
+//					isAdjusting = true;
+//					System.out.println("리스트 선택");
+//					String name = search_DBlist.getSelectedValue();
+//					int nameIndex = search_DBlist.getSelectedIndex();
+//					search_name = name;
+//					isAdjusting = false;
+//					System.out.println(name);
+//					System.out.println(nameIndex);
+//					
+//					clientConnection.searchPerson(clientConnection.nameTree[nameIndex][1]);
+//					result_Panel.setVisible(true);
+//					System.out.println("검색 끝났소. 집 가라 ");
+//				}
+//			}
+//		});
+
 		// 메세지 패널
 		message_Panel.setLayout(null);
 		message_Panel.setBounds(100, 0, 700, 500);
@@ -581,12 +658,10 @@ public class MainFrame extends JFrame {
 				home_Btn.setBackground(eColor);
 				message_Btn.setBackground(eColor);
 				info_Btn.setBackground(eColor);
-				
-				System.out.println("리스트 선택");
-				String name = search_DBlist.getSelectedValue();
-				int nameIndex = search_DBlist.getSelectedIndex();
-				System.out.println(name);
-				System.out.println(nameIndex);
+				String search = search_bar.getText();
+				System.out.println(search);
+				clientConnection.nameTree(search);
+				System.out.println("search 버튼 이벤트 끝났다");
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
@@ -899,5 +974,5 @@ public class MainFrame extends JFrame {
 	void sop(String a) {
 		System.out.println(a);
 	}
-	
+
 }

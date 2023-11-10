@@ -49,6 +49,8 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -109,6 +111,7 @@ public class MainFrame extends JFrame {
 	JTree search_Tree = new JTree();
 	JList<String> search_DBlist = new JList<String>(new String[] { "김사장", "김이사" });
 	JScrollPane search_listPanel = new JScrollPane();
+	
 
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
@@ -393,9 +396,14 @@ public class MainFrame extends JFrame {
 		search_List.add(search_btnclick);
 
 		// 검색 결과 페이지 (search_Page) 설정
+		// 사진 - 이름 - 전화번호 이메일 내선번호 
 		search_Page.setBounds(230, 0, 470, 560);
-		search_Page.setBackground(aColor);
+		search_Page.setBackground(bColor);
 
+		
+		
+		
+		
 		// 검색 리스트 패널 (search_listPanel) 설정
 		search_listPanel.setBounds(0, 80, 230, 450);
 
@@ -418,6 +426,19 @@ public class MainFrame extends JFrame {
 			}
 		});
 
+		search_DBlist.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				System.out.println("리스트 선택");
+				String name = search_DBlist.getSelectedValue();
+				int nameIndex = search_DBlist.getSelectedIndex();
+				System.out.println(name);
+				System.out.println(nameIndex);
+				
+				clientConnection.searchPerson(clientConnection.nameTree[nameIndex][1]);
+			}
+			
+		});
+		
 		// 메세지 패널
 		message_Panel.setLayout(null);
 		message_Panel.setBounds(100, 0, 700, 500);
@@ -560,6 +581,12 @@ public class MainFrame extends JFrame {
 				home_Btn.setBackground(eColor);
 				message_Btn.setBackground(eColor);
 				info_Btn.setBackground(eColor);
+				
+				System.out.println("리스트 선택");
+				String name = search_DBlist.getSelectedValue();
+				int nameIndex = search_DBlist.getSelectedIndex();
+				System.out.println(name);
+				System.out.println(nameIndex);
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {

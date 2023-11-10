@@ -7,7 +7,7 @@ public class Main {
 	public static void main(String[] args) {
 		// 클라이언트 연결 관리 클래스 생성
 
-		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5020);
+		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5000);
 
 		Thread messageReceiverThread = new Thread(new Runnable() {
 			public void run() {
@@ -28,7 +28,7 @@ public class Main {
 					mainFrame.home_email.setText("이메일 : " + adapter.getEmail());
 					mainFrame.home_num.setText("전화번호 : " + adapter.getPhone());
 					mainFrame.home_deptNum.setText("내선번호 : " + adapter.getNum());
-					mainFrame.search_DBlist.setListData(clientConnection.searchName);
+					mainFrame.search_DBlist.setListData(clientConnection.getNameTree());
 					if (check.equals("[chat]")) {
 						try {
 							System.out.println("메시지 대기 중...");
@@ -68,4 +68,3 @@ public class Main {
 		messageReceiverThread.start();
 	}
 }
-

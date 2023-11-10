@@ -3,6 +3,7 @@ package com.chat;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -16,6 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,6 +25,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,14 +41,16 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -59,14 +64,17 @@ public class MainFrame extends JFrame {
 	// 로그인 패널 및 로그인 정보 필드
 	private JPanel loginPanel = new JPanel();
 	private JTextField id_TextField = new JTextField();
-	private JTextField pwd_TextField = new JTextField();
+	private JPasswordField pwd_TextField = new JPasswordField();
 	private JButton login_Btn = new JButton();
-	private String id, pwd, UserEmail, name;
+	private String id, pwd, UserEmail, name, userImage;
 	private boolean pass = false;
-	ImageIcon img = new ImageIcon("C:\\Users\\heeja\\git\\ChatApp\\src\\com\\chat\\logo.png");
+	String username = System.getProperty("user.home");
+	ImageIcon img = new ImageIcon(username + "/git/ChatApp/src/com/chat/chats/logo.png");
+
+	Image icon = Toolkit.getDefaultToolkit().getImage(username + "/git/ChatApp/src/com/chat/chats/icon.png");
 	private JLabel logo_Img = new JLabel(img);
-//	private JButton pwdAdminSet = new JButton();
-	Color aColor = new Color(255, 255, 255);
+	Color aColor = new Color(211, 211, 211);
+
 	Color bColor = new Color(45, 47, 59);
 	Color cColor = new Color(109, 134, 154);
 	Color dColor = new Color(192, 210, 219);
@@ -101,8 +109,25 @@ public class MainFrame extends JFrame {
 	JTextField search_bar = new JTextField(12);
 	JButton search_btnclick = new JButton();
 	JTree search_Tree = new JTree();
-	JList<String> search_DBlist = new JList<String>(new String[] { "item1", "item2" });
+	JList<String> search_DBlist = new JList<String>(new String[] { "김사장", "김이사" });
 	JScrollPane search_listPanel = new JScrollPane();
+
+	// 서치 결과
+	JPanel result_Panel = new JPanel();
+	JLabel result_Photo = new JLabel();
+	JLabel result_NameLabel = new JLabel();
+	JLabel result_Name = new JLabel();
+	JLabel result_PhoneLabel = new JLabel();
+	JLabel result_Phone = new JLabel();
+	JLabel result_EmailLabel = new JLabel();
+	JLabel result_Email = new JLabel();
+	JLabel result_NumLabel = new JLabel();
+	JLabel result_Num = new JLabel();
+	JLabel search_Num = new JLabel();
+	String search_name;
+	String search_phone;
+	String search_email;
+	String search_num;
 
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
@@ -140,6 +165,7 @@ public class MainFrame extends JFrame {
 		getContentPane().setLayout(mainLayout);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setIconImage(icon);
 
 		// 로그인 패널
 		add(loginPanel);
@@ -149,76 +175,88 @@ public class MainFrame extends JFrame {
 		loginPanel.add(id_TextField);
 		loginPanel.add(pwd_TextField);
 		loginPanel.add(login_Btn);
+		login_Btn.setText("Login");
 		loginPanel.add(logo_Img);
-		logo_Img.setIcon(img);
+
 		logo_Img.setBounds(170, 80, 450, 175);
 		id_TextField.setBounds(218, 326, 251, 38);
 		pwd_TextField.setBounds(218, 374, 251, 38);
 		login_Btn.setBounds(496, 326, 86, 86);
-//		loginPanel.add(pwdAdminSet);
-//		pwdAdminSet.setBounds(218, 417, 80, 20);
 
 		// 로그인 버튼
 		login_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				id = id_TextField.getText();
-				pwd = pwd_TextField.getText();
+				char[] passwordChars = pwd_TextField.getPassword();
+				String pwd = new String(passwordChars);
 
 				if (!id.isEmpty() && !pwd.isEmpty()) {
 					// 서버로 아이디와 비밀번호 전송 (이 부분은 ClientConnection 클래스로 이동)
 					try {
 						if (!id.equals("admin") && !pwd.equals("admin")) {
-							clientConnection.login(id, pwd);
-							mainLayout.show(getContentPane(), "mainPanel");
-							pass = true;
-							name = clientConnection.getName();
-							UserEmail = clientConnection.getEmail();
-							String phone = clientConnection.getPhone();
-							String Dept_num = clientConnection.getDeptnum();
-							String[] todoarr = clientConnection.getDoing().split("//");
-							for (String a : todoarr) {
-								sop(a);
-							}
-							home_name.setText("이름 : " + name);
-							home_email.setText("이메일 : " + UserEmail);
-							home_num.setText("전화번호 : " + phone);
-							home_deptNum.setText("내선번호 : " + Dept_num);
-							for (int i = 0; i < todoarr.length; i++) {
-								String todoStr = todoarr[i];
-								JCheckBox todoBox = new JCheckBox(todoStr);
-								todoBox.setBackground(eColor);
-								todoBox.setForeground(Color.white);
-								todoList.add(todoBox);
+							pass = clientConnection.login(id, pwd);
 
-								// 할 일 목록을 그리드 레이아웃에 추가
-								home_todo.add(todoBox);
+							if (pass) {
+								mainLayout.show(getContentPane(), "mainPanel");
+								name = clientConnection.getName();
+								UserEmail = clientConnection.getEmail();
+								String phone = clientConnection.getPhone();
+								String Dept_num = clientConnection.getDeptnum();
+								BufferedImage originalImage = clientConnection.getUserImage();
+								int newWidth = 165; // 원하는 너비
+								int newHeight = 190; // 원하는 높이
 
-								todoBox.addItemListener(new ItemListener() {
-									@Override
-									public void itemStateChanged(ItemEvent event) {
-										if (event.getStateChange() == ItemEvent.SELECTED) {
-											state = "delete";
-											clientConnection.sendTodo(id, todoStr, state);
-											// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
-											home_todo.remove(todoBox);
-											home_todo.revalidate();
-											home_todo.repaint();
+								BufferedImage resizedImage = resize(originalImage, newWidth, newHeight);
+								JLabel userImageLabel = new JLabel(new ImageIcon(resizedImage));
+								home_photo.add(userImageLabel);
+								home_photo.setBackground(aColor);
+								String[] todoarr = clientConnection.getDoing().split("//");
+								for (String a : todoarr) {
+									sop(a);
+								}
+								home_name.setText("이름 : " + name);
+								home_email.setText("이메일 : " + UserEmail);
+								home_num.setText("전화번호 : " + phone);
+								home_deptNum.setText("내선번호 : " + Dept_num);
+								for (int i = 0; i < todoarr.length; i++) {
+									String todoStr = todoarr[i];
+									JCheckBox todoBox = new JCheckBox(todoStr);
+									todoBox.setBackground(eColor);
+									todoBox.setForeground(Color.white);
+									todoList.add(todoBox);
+
+									// 할 일 목록을 그리드 레이아웃에 추가
+									home_todo.add(todoBox);
+
+									todoBox.addItemListener(new ItemListener() {
+										@Override
+										public void itemStateChanged(ItemEvent event) {
+											if (event.getStateChange() == ItemEvent.SELECTED) {
+												state = "delete";
+												clientConnection.sendTodo(id, todoStr, state);
+												// 체크박스가 선택되면 해당 체크박스와 라벨을 제거
+												home_todo.remove(todoBox);
+												home_todo.revalidate();
+												home_todo.repaint();
+											}
 										}
-									}
-								});
-								home_todo.setAlignmentY(CENTER_ALIGNMENT);
-								// 패널을 다시 그리도록 요청
-								home_todo.revalidate();
-								home_todo.repaint();
+									});
+									home_todo.setAlignmentY(CENTER_ALIGNMENT);
+									// 패널을 다시 그리도록 요청
+									home_todo.revalidate();
+									home_todo.repaint();
+								}
+								adapter.setId(id);
+								adapter.setPwd(pwd);
+								adapter.setName(name);
+								adapter.setEmail(UserEmail);
+								adapter.setPhone(phone);
+								adapter.setNum(Dept_num);
+								setTitle(id);
+							} else {
+								JOptionPane.showMessageDialog(loginPanel, "아이디와 비밀번호를 확인해주세요.", "로그인에 실패했습니다.",
+										JOptionPane.WARNING_MESSAGE);
 							}
-							adapter.setId(id);
-							adapter.setPwd(pwd);
-							adapter.setName(name);
-							adapter.setEmail(UserEmail);
-							adapter.setPhone(phone);
-							adapter.setNum(Dept_num);
-
-							setTitle(id);
 						} else if (id.equals("admin") && pwd.equals("admin")) {
 							System.out.println("관리자 로그인");
 							setVisible(false);
@@ -239,8 +277,7 @@ public class MainFrame extends JFrame {
 		});
 		signUp_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				MainFrame.DISPOSE();
-				SignUp signup = new SignUp();
+				SignUp signup = new SignUp(adapter);
 			}
 		});
 
@@ -250,7 +287,7 @@ public class MainFrame extends JFrame {
 				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
 			}
 		});
-		
+
 		// 관리자 화면 닫기 버튼 시 프로그램 종료
 		admin_Frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -259,15 +296,6 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-//		pwdAdminSet.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				PasswordSet_admin pwdSet = new PasswordSet_admin(adapter);
-//				SignUp admin = new SignUp(adapter);
-//
-//			}
-//		});
 		setTitle(id);
 
 		// 메인 패널
@@ -289,22 +317,26 @@ public class MainFrame extends JFrame {
 		message_Btn.setSize(100, 100);
 
 		// 색상
-		left_Panel.setBackground(cColor);
-		home_Btn.setBackground(cColor);
+		home_Btn.setBackground(dColor);
 		home_Btn.setBorder(null);
-		search_Btn.setBackground(cColor);
+		search_Btn.setBackground(dColor);
 		search_Btn.setBorder(null);
-		message_Btn.setBackground(cColor);
+		message_Btn.setBackground(dColor);
 		message_Btn.setBorder(null);
-		info_Btn.setBackground(cColor);
+		info_Btn.setBackground(dColor);
 		info_Btn.setBorder(null);
 		main_Panel.setBackground(aColor);
-		
-		message_postBtn.setBackground(dColor);
-		addPerson.setBackground(dColor);
+		message_postBtn.setBackground(cColor);
+		addPerson.setBackground(cColor);
 		message_postBtn.setBorder(null);
 		addPerson.setBorder(null);
 		home_todo.setBackground(eColor);
+		login_Btn.setBorder(null);
+		login_Btn.setBackground(aColor);
+		loginPanel.setBackground(cColor);
+		left_Panel.setBackground(aColor);
+
+		result_Photo.setBackground(eColor);
 
 		// 변경 패널
 		main_Panel.add(card_Panel);
@@ -321,12 +353,6 @@ public class MainFrame extends JFrame {
 		home_Panel.setBounds(100, 0, 700, 560);
 		home_Panel.add(home_photo);
 		home_photo.setBounds(268, 25, 165, 190);
-
-		ImageIcon mario = new ImageIcon("src/com/images/test1.jfif");
-		JLabel home_test = new JLabel("ONE", mario, SwingConstants.CENTER);
-
-		home_photo.add(home_test);
-		home_photo.setBackground(eColor);
 
 		home_Panel.add(home_name);
 		home_name.setBounds(290, 250, 200, 20);
@@ -372,7 +398,7 @@ public class MainFrame extends JFrame {
 		search_Panel.setBounds(0, 0, 700, 560);
 
 		// 검색 리스트 패널 (search_List) 설정
-		search_List.setBackground(dColor);
+		search_List.setBackground(cColor);
 		search_List.setLayout(null);
 		search_List.setBounds(0, 0, 230, 560);
 
@@ -389,6 +415,39 @@ public class MainFrame extends JFrame {
 		// 검색 결과 페이지 (search_Page) 설정
 		search_Page.setBounds(230, 0, 470, 560);
 		search_Page.setBackground(aColor);
+		search_Page.setLayout(null);
+		
+		result_Panel.setBounds(320, 0, 470, 560);
+		result_Panel.setBackground(aColor);
+		result_Panel.setLayout(null);
+		result_Panel.setVisible(false);
+		result_Photo.setBounds(290, 80, 135, 160);
+		result_NameLabel.setText("이름: ");
+		result_NameLabel.setBounds(50, 230, 40, 15);
+		result_Name.setText(search_name);
+		result_Name.setBounds(90, 230, 50, 15);
+		result_PhoneLabel.setText("휴대폰: ");
+		result_PhoneLabel.setBounds(50, 255, 50, 15);
+		result_Phone.setText(search_phone);
+		result_Phone.setBounds(100, 255, 100, 15);
+		result_EmailLabel.setText("이메일: ");
+		result_EmailLabel.setBounds(50, 280, 50, 15);
+		result_Email.setText(search_email);
+		result_Email.setBounds(100, 280, 150, 15);
+		result_NumLabel.setText("내선번호: ");
+		result_NumLabel.setBounds(50, 305, 60, 15);
+		result_Num.setText(search_num);
+		result_Num.setBounds(110, 305, 50, 15);
+
+		result_Panel.add(result_NameLabel);
+		result_Panel.add(result_Name);
+		result_Panel.add(result_Photo);
+		result_Panel.add(result_PhoneLabel);
+		result_Panel.add(result_Phone);
+		result_Panel.add(result_EmailLabel);
+		result_Panel.add(result_Email);
+		result_Panel.add(result_NumLabel);
+		result_Panel.add(result_Num);
 
 		// 검색 리스트 패널 (search_listPanel) 설정
 		search_listPanel.setBounds(0, 80, 230, 450);
@@ -396,16 +455,13 @@ public class MainFrame extends JFrame {
 		// search_Panel에 모든 컴포넌트를 추가합니다.
 		search_Panel.add(search_List);
 		search_Panel.add(search_Page);
+		search_Panel.add(result_Panel);
 
 		// search_List 패널에 search_bar와 search_btnclick를 추가합니다.
 		search_List.add(search_bar);
 		search_List.add(search_btnclick);
 		search_List.add(search_DBlist);
 		search_DBlist.setBounds(10, 90, 210, 350);
-
-//      JButton example = new JButton("12");
-//      search_List.add(example);
-//      example.setBounds(10, 90, 210, 350);
 
 		search_btnclick.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -416,8 +472,14 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-//      search_List.add(search_Tree);
-//      search_List.setBounds(0, 81, 230, 450);
+		search_DBlist.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				System.out.println("리스트 선택");
+				String name = search_DBlist.getSelectedValue();
+
+			}
+
+		});
 
 		// 메세지 패널
 		message_Panel.setLayout(null);
@@ -438,6 +500,9 @@ public class MainFrame extends JFrame {
 		message_chatBox.add(message_sendPanel);
 		message_sendPanel.setLayout(null);
 		message_sendPanel.setBounds(0, 485, 610, 40);
+		message_Panel.setBorder(null);
+		message_chatlog.setBorder(null);
+		message_sendPanel.setBorder(null);
 
 		// 메세지 입력창
 		message_sendPanel.add(message_sendBox);
@@ -465,7 +530,7 @@ public class MainFrame extends JFrame {
 		// message_chatlog에 messageDisplayPanel을 추가합니다.
 		message_chatlog.setViewportView(messageDisplayArea);
 
-//		// 사용자 추가
+//      // 사용자 추가
 		clickedRecipient = null;
 
 		addPerson.addActionListener(new ActionListener() {
@@ -545,28 +610,28 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
 				System.out.println(adapter.getEmail() + "*" + adapter.getPhone() + "*" + adapter.getNum());
-				search_Btn.setBackground(cColor);
-				home_Btn.setBackground(aColor);
-				message_Btn.setBackground(cColor);
-				info_Btn.setBackground(cColor);
+				search_Btn.setBackground(eColor);
+				home_Btn.setBackground(cColor);
+				message_Btn.setBackground(eColor);
+				info_Btn.setBackground(eColor);
 			}
 		});
 		search_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "searchPanel");
-				search_Btn.setBackground(aColor);
-				home_Btn.setBackground(cColor);
-				message_Btn.setBackground(cColor);
-				info_Btn.setBackground(cColor);
+				search_Btn.setBackground(cColor);
+				home_Btn.setBackground(eColor);
+				message_Btn.setBackground(eColor);
+				info_Btn.setBackground(eColor);
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "messagePanel");
-				search_Btn.setBackground(cColor);
-				home_Btn.setBackground(cColor);
-				message_Btn.setBackground(aColor);
-				info_Btn.setBackground(cColor);
+				search_Btn.setBackground(eColor);
+				home_Btn.setBackground(eColor);
+				message_Btn.setBackground(cColor);
+				info_Btn.setBackground(eColor);
 			}
 		});
 
@@ -584,7 +649,6 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		// home_todo 패널의 레이아웃을 GridLayout(0, 2)로 설정
 		home_todo.setLayout(new BoxLayout(home_todo, BoxLayout.Y_AXIS));
 
 		// 할 일 목록을 관리할 리스트
@@ -664,14 +728,10 @@ public class MainFrame extends JFrame {
 	void saveSendChat(String message, String opposite, String me) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + me + "_" + opposite + ".txt";
-		int year = currentDateTime.getYear();
-		int month = currentDateTime.getMonthValue();
-		int day = currentDateTime.getDayOfMonth();
-		int hour = currentDateTime.getHour();
-		int minute = currentDateTime.getMinute();
-		int second = currentDateTime.getSecond();
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
+		LocalDateTime currentDateTime = LocalDateTime.now(); // 현재 시간 가져오기
+
 		try {
 			if (!parentDir.exists()) {
 				// 디렉토리가 존재하지 않으면 생성
@@ -683,8 +743,9 @@ public class MainFrame extends JFrame {
 			}
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + me
-					+ " : " + message);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss");
+			String formattedDateTime = currentDateTime.format(formatter);
+			bufferedWriter.write(formattedDateTime + " // " + me + " : " + message);
 			bufferedWriter.newLine();
 			bufferedWriter.close();
 			System.out.println("saved Send Message");
@@ -696,14 +757,9 @@ public class MainFrame extends JFrame {
 	void saveReceiveChat(String message, String opposite, String me) {
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/" + opposite + "_" + me + ".txt";
-		int year = currentDateTime.getYear();
-		int month = currentDateTime.getMonthValue();
-		int day = currentDateTime.getDayOfMonth();
-		int hour = currentDateTime.getHour();
-		int minute = currentDateTime.getMinute();
-		int second = currentDateTime.getSecond();
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
+		LocalDateTime currentDateTime = LocalDateTime.now(); // 현재 시간 가져오기
 
 		try {
 			if (!parentDir.exists()) {
@@ -716,8 +772,9 @@ public class MainFrame extends JFrame {
 			}
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + me
-					+ " : " + message);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss");
+			String formattedDateTime = currentDateTime.format(formatter);
+			bufferedWriter.write(formattedDateTime + " // " + me + " : " + message);
 			bufferedWriter.newLine();
 			bufferedWriter.close();
 			System.out.println("saved Receive Message");
@@ -764,16 +821,12 @@ public class MainFrame extends JFrame {
 			// 파일이 존재하지 않으면 생성
 			file.createNewFile();
 		}
-		int year = currentDateTime.getYear();
-		int month = currentDateTime.getMonthValue();
-		int day = currentDateTime.getDayOfMonth();
-		int hour = currentDateTime.getHour();
-		int minute = currentDateTime.getMinute();
-		int second = currentDateTime.getSecond();
+		LocalDateTime currentDateTime = LocalDateTime.now(); // 현재 시간 가져오기
 		FileWriter fileWriter = new FileWriter(filePath, true);
 		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-		bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // " + "post"
-				+ " : " + message);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss");
+		String formattedDateTime = currentDateTime.format(formatter);
+		bufferedWriter.write(formattedDateTime + " // " + post + " : " + message);
 		bufferedWriter.newLine();
 		bufferedWriter.close();
 		System.out.println("saved Send Post Message");
@@ -799,14 +852,9 @@ public class MainFrame extends JFrame {
 	}
 
 	void receivePost(String message) {
+		LocalDateTime currentDateTime = LocalDateTime.now();
 		String username = System.getProperty("user.home");
 		String filePath = username + "/git/ChatApp/src/com/chat/chats/post.txt";
-		int year = currentDateTime.getYear();
-		int month = currentDateTime.getMonthValue();
-		int day = currentDateTime.getDayOfMonth();
-		int hour = currentDateTime.getHour();
-		int minute = currentDateTime.getMinute();
-		int second = currentDateTime.getSecond();
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
 
@@ -821,15 +869,15 @@ public class MainFrame extends JFrame {
 			}
 			FileWriter fileWriter = new FileWriter(filePath, true);
 			BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-			bufferedWriter.write(year + ":" + month + ":" + day + ":" + hour + ":" + minute + ":" + second + " // "
-					+ "post" + " : " + message);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy:MM:dd:HH:mm:ss");
+			String formattedDateTime = currentDateTime.format(formatter);
+			bufferedWriter.write(formattedDateTime + " // " + "post" + " : " + message);
 			bufferedWriter.newLine();
 			bufferedWriter.close();
 			System.out.println("saved Receive Post Message");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	void makeBtn(String recipient) {
@@ -869,6 +917,17 @@ public class MainFrame extends JFrame {
 		});
 	}
 
+	public static BufferedImage resize(BufferedImage img, int newWidth, int newHeight) {
+		Image tmp = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+
+		Graphics2D g2d = resizedImage.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
+
+		return resizedImage;
+	}
+
 	public String getId() {
 		return id_TextField.getText();
 	}
@@ -876,4 +935,5 @@ public class MainFrame extends JFrame {
 	void sop(String a) {
 		System.out.println(a);
 	}
+
 }

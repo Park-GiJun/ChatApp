@@ -3,6 +3,7 @@ package com.chat;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+//github.com/Park-GiJun/ChatApp.git
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -113,6 +114,7 @@ public class ClientConnection {
 //		}
 //		return image;
 //	}
+
 	public String selectMethod() {
 		System.out.println("selectMethod 시작");
 		try {
@@ -246,7 +248,6 @@ public class ClientConnection {
 		byte[] receiveImage = (byte[]) in.readObject();
 		BufferedImage image = ImageIO.read(new ByteArrayInputStream(receiveImage));
 		return image;
-
 	}
 
 	public String[] SignUpDept() {

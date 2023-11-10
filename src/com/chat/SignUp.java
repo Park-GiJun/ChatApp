@@ -235,6 +235,7 @@ public class SignUp extends JFrame {
 				System.out.println("server로 정보 전송"+name+", "+cn+", "+dept);
 				System.out.println("server로 파일경로 전송, 클라이언트에서 객체화 하여 넘어감");
 				System.out.println("경로 : "+ imagefile);
+
 				
 				if (name.isEmpty() || cn.isEmpty()) { // 비어있는 필드 있으면
 					null_Frame.setVisible(true);
@@ -292,3 +293,4 @@ public class SignUp extends JFrame {
 //		SignUp sign = new SignUp();
 //	}
 }
+

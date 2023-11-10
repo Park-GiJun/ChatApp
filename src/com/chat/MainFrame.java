@@ -65,7 +65,9 @@ public class MainFrame extends JFrame {
 	private boolean pass = false;
 	String username = System.getProperty("user.home");
 	ImageIcon img = new ImageIcon(username + "/git/ChatApp/src/com/chat/chats/logo.png");
+
 	JLabel logo_Img = new JLabel(img);
+
 	Color aColor = new Color(255, 255, 255);
 	Color bColor = new Color(45, 47, 59);
 	Color cColor = new Color(109, 134, 154);
@@ -150,8 +152,7 @@ public class MainFrame extends JFrame {
 		loginPanel.add(pwd_TextField);
 		loginPanel.add(login_Btn);
 		loginPanel.add(logo_Img);
-		logo_Img.setBackground(aColor);
-		
+
 		logo_Img.setBounds(170, 80, 450, 175);
 		id_TextField.setBounds(218, 326, 251, 38);
 		pwd_TextField.setBounds(218, 374, 251, 38);

@@ -18,7 +18,7 @@ import javax.swing.event.DocumentListener;
 
 public class Information {
 	Adapter adapter = new Adapter();
-	
+
 	// 1. 메인 프레임
 	JFrame main_Frame = new JFrame("정보 수정");
 	JPanel main_Panel = new JPanel();
@@ -47,14 +47,15 @@ public class Information {
 	String setPwd;
 	String setPhone;
 	String setEmail;
-	
 
 	// 3. 수정 완료
 	JFrame save_Frame = new JFrame();
 	JPanel save_Panel = new JPanel();
 	JLabel save_Message = new JLabel("회원 정보 수정 완료되었습니다.");
+
 	public Information(Adapter adapter) {
 		this.adapter = adapter;
+
 		// 1. 메인 프레임
 		main_Frame.setSize(450, 480);
 		main_Frame.setVisible(true);
@@ -75,11 +76,9 @@ public class Information {
 		main_Name.setBounds(171, 133, 180, 25);
 
 		main_PwdLabel.setBounds(66, 173, 250, 25);
-//		main_Pwd.setEchoChar('*');
 		main_Pwd.setBounds(171, 171, 150, 25);
 
 		main_PwdCheckLabel.setBounds(66, 213, 250, 25);
-//		main_PwdCheck.setEchoChar('*');
 		main_PwdCheck.setBounds(171, 211, 150, 25);
 		main_PwdMessage.setBounds(171, 239, 200, 15);
 
@@ -92,22 +91,18 @@ public class Information {
 		main_Button.setBounds(330, 365, 60, 30);
 
 		// 1-1. 로그인 정보 각 필드에 배치
-		
+
 		try {
-			
-		String db_Number = adapter.getId();
-		String db_Name = adapter.getName();
-		String db_Pwd = adapter.getPwd();
-		String db_Phone = adapter.getPhone();
-		String db_Email = adapter.getEmail();
-		System.out.println(db_Number+"/"+db_Name+"/"+db_Pwd+"/"+db_Phone+"/"+db_Email);
-		
-		main_Number.setText(db_Number);
-		main_Name.setText(db_Name);
-//		main_Pwd.setText(db_Pwd);
-//		main_PwdCheck.setText(db_Pwd);
-//		main_Phone.setText(db_Phone);
-//		main_Email.setText(db_Email);
+
+			String db_Number = adapter.getId();
+			String db_Name = adapter.getName();
+			String db_Pwd = adapter.getPwd();
+			String db_Phone = adapter.getPhone();
+			String db_Email = adapter.getEmail();
+			System.out.println(db_Number + "/" + db_Name + "/" + db_Pwd + "/" + db_Phone + "/" + db_Email);
+
+			main_Number.setText(db_Number);
+			main_Name.setText(db_Name);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -155,7 +150,7 @@ public class Information {
 				}
 			}
 		});
-		
+
 		// 메인 창 닫기
 		main_Frame.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -187,7 +182,7 @@ public class Information {
 				save_Frame.setVisible(true);
 				clientSend();
 				adapter.setInfo(setPwd, setPhone, setEmail);
-				
+
 			}
 		});
 
@@ -228,37 +223,38 @@ public class Information {
 		save_Panel.add(save_Message);
 
 	}
-	public void clientSend () {
+
+	public void clientSend() {
 		System.out.println("clientSend 불렀다");
 		String pwd1 = main_Pwd.getText();
 		String phone = main_Phone.getText();
 		String email = main_Email.getText();
 		String pwdSet;
-		
+
 		if (main_PwdMessage.getText().equals("비밀번호 일치")) {
 			pwdSet = pwd1;
 		} else {
 			pwdSet = " ";
 		}
-		
+
 		if (pwdSet != null) {
 			setPwd = pwdSet;
 		} else {
 			setPwd = " ";
 		}
-		
+
 		if (phone != null) {
 			setPhone = phone;
 		} else {
 			setPhone = " ";
 		}
-		
+
 		if (email != null) {
 			setEmail = email;
 		} else {
 			setEmail = " ";
 		}
-		System.out.println(setPwd+" == "+setPhone + " == "+ setEmail);
+		System.out.println(setPwd + " == " + setPhone + " == " + setEmail);
 		System.out.println("clientsend 끝났다");
 	}
 //	public static void main(String[] args) {

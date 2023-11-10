@@ -66,7 +66,6 @@ public class SignUp extends JFrame {
 
 	Font mainFont = new Font("Gothic", Font.BOLD, 20);
 
-//	public SignUp() { 
 	public SignUp(Adapter adapter) {
 		this.adapter = adapter;
 		dept_Box = new JComboBox<String>(adapter.getDeptList());
@@ -75,7 +74,6 @@ public class SignUp extends JFrame {
 		setSize(450, 400);
 		setVisible(true);
 
-//		setResizable(false);
 		setLocationRelativeTo(null);
 
 		signPanel.setBackground(Color.white);
@@ -231,12 +229,12 @@ public class SignUp extends JFrame {
 				name = signName.getText();
 				cn = signCN.getText();
 				dept = (String) dept_Box.getSelectedItem();
+
 				String imagefile = sign_fc.getSelectedFile().getPath();
 				System.out.println("server로 정보 전송"+name+", "+cn+", "+dept);
 				System.out.println("server로 파일경로 전송, 클라이언트에서 객체화 하여 넘어감");
 				System.out.println("경로 : "+ imagefile);
 
-				
 				if (name.isEmpty() || cn.isEmpty()) { // 비어있는 필드 있으면
 					null_Frame.setVisible(true);
 					System.out.println("---누락된 정보 발견");
@@ -248,6 +246,7 @@ public class SignUp extends JFrame {
 					adapter.setnewUser(name,cn,dept,imagefile);
 					checkText.setText("<html><div style='text-align: center;'>" + "이름 : " + name + ", 부서 : " + dept + ", 사번 : " + cn
 							+ "<br/>" + "위 정보로 등록할까요?" + "</div></html>");
+
 					checkFrame.setVisible(true);
 				}
 			}

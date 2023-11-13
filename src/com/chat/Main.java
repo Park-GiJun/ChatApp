@@ -1,6 +1,6 @@
 package com.chat;
 
-import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -8,14 +8,14 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 public class Main {
+	static Image imgem;
 	public static void main(String[] args) {
 		// 클라이언트 연결 관리 클래스 생성
 
-		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5000);
+		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5010);
 
 		Thread messageReceiverThread = new Thread(new Runnable() {
 			public void run() {
@@ -50,14 +50,11 @@ public class Main {
 					int newHeight = 190; // 원하는 높이
 
 					BufferedImage resizedImage = resize(originalImage, newWidth, newHeight);
-					JLabel userImageLabel = new JLabel(new ImageIcon(resizedImage));
-					System.out.println("이미지 출력"+userImageLabel);
-					mainFrame.result_Photo.add(userImageLabel);
-//					userImageLabel.setComponentZOrder(mainFrame.result_Photo, 0);
-					
-					mainFrame.result_Panel.revalidate();
-                    mainFrame.result_Panel.repaint();
-					
+					ImageIcon result_pic = new ImageIcon(resizedImage);
+					mainFrame.result_Photo_Label.setIcon(result_pic);
+			
+					mainFrame.result_Photo.revalidate();
+					mainFrame.result_Photo.repaint();
 					}
 					if (check.equals("[chat]")) {
 						try {
@@ -107,4 +104,5 @@ public class Main {
 
 		return resizedImage;
 	}
+	
 }

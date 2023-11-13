@@ -3,6 +3,7 @@ package com.chat;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -114,6 +115,7 @@ public class MainFrame extends JFrame {
 	// 서치 결과
 	JPanel result_Panel = new JPanel();
 	JPanel result_Photo = new JPanel();
+	JLabel result_Photo_Label = new JLabel();
 	JLabel result_NameLabel = new JLabel();
 	JLabel result_Name = new JLabel();
 	JLabel result_PhoneLabel = new JLabel();
@@ -420,9 +422,10 @@ public class MainFrame extends JFrame {
 		result_Panel.setBounds(320, 0, 470, 560);
 		result_Panel.setBackground(aColor);
 		result_Panel.setLayout(null);
-		result_Panel.setVisible(true);
+		result_Panel.setVisible(true);;
 		result_Photo.setBackground(aColor);
 		result_Photo.setBounds(60, 60, 165, 190);
+		
 //		result_NameLabel.setText("이름: ");
 //		result_NameLabel.setBounds(30, 260, 40, 15);
 //		result_Name.setText(search_name);
@@ -449,6 +452,7 @@ public class MainFrame extends JFrame {
 		result_Panel.add(result_Email);
 		result_Panel.add(result_NumLabel);
 		result_Panel.add(result_Num);
+		result_Photo.add(result_Photo_Label);
 
 		// 검색 리스트 패널 (search_listPanel) 설정
 		search_listPanel.setBounds(0, 80, 230, 450);
@@ -486,11 +490,6 @@ public class MainFrame extends JFrame {
 						// 여기에서 원하는 동작 수행
 						clientConnection.searchPerson(clientConnection.nameTree[selectedIndex][1]);
 						result_Panel.setVisible(true);
-						
-//						result_Name.setText(clientConnection.searchName);
-//						result_Email.setText(clientConnection.searchEmail);
-//						result_Num.setText(clientConnection.searchDeptNum);
-//						result_Phone.setText(clientConnection.searchPhone);
 						
 						System.out.println("검색 끝났소. 집 가라 ");
 					}
@@ -975,5 +974,6 @@ public class MainFrame extends JFrame {
 	void sop(String a) {
 		System.out.println(a);
 	}
+	
 
 }

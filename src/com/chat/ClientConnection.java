@@ -62,7 +62,7 @@ public class ClientConnection {
 	}
 
 	public String[] getNameTree() {
-		for(int i = 0; i<search.length; i++) {
+		for (int i = 0; i < search.length; i++) {
 			search[i] = nameTree[i][0];
 		}
 		return search;
@@ -70,6 +70,10 @@ public class ClientConnection {
 
 	public BufferedImage getUserImage() {
 		return userimage;
+	}
+
+	public BufferedImage getSearchImage() {
+		return searchImage;
 	}
 
 	public ClientConnection() {
@@ -128,8 +132,9 @@ public class ClientConnection {
 			} else if (inp.equals("[searchPerson]")) {
 				System.out.println("select method searchPerson");
 				searchPersonStart();
-			}else {
-			
+				return "[searchPerson]";
+			} else {
+
 				return " ";
 			}
 		} catch (Exception e) {
@@ -284,8 +289,8 @@ public class ClientConnection {
 			nameTree = new String[listSize][2];
 			search = new String[listSize];
 			for (int i = 0; i < listSize; i++) {
-				String name = (String)in.readObject();
-				String cn = (String)in.readObject();
+				String name = (String) in.readObject();
+				String cn = (String) in.readObject();
 				nameTree[i][0] = name;
 				nameTree[i][1] = cn;
 				System.out.println("배열에 넣기 " + i + "번째 " + nameTree[i][0] + nameTree[i][1]);
@@ -298,32 +303,35 @@ public class ClientConnection {
 		System.out.println("return 배열 간다");
 		return nameTree;
 	}
-	
+
 	public void searchPerson(String cn) {
 		System.out.println("searchPerson 시작");
 		try {
 			out.writeObject("[searchPerson]");
 			System.out.println("[searchPerson] 전송");
 			out.writeObject(cn);
-			System.out.println("사번 전송 "+ cn);
-		}catch(Exception e) {
+			System.out.println("사번 전송 " + cn);
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("searchPerson 오류");
 		}
 		System.out.println("serachPerson 종료");
 	}
+
 	public void searchPersonStart() {
 		System.out.println("searchPersonStart 시작");
 		try {
 			// 사진 이름 전화번호 이메일 내선번호
-			searchName = (String)in.readObject();
-			searchEmail = (String)in.readObject();
-			searchPhone = (String)in.readObject();
-			searchDeptNum = (String)in.readObject();
+			searchImage = null;
+			searchName = (String) in.readObject();
+			searchEmail = (String) in.readObject();
+			searchPhone = (String) in.readObject();
+			searchDeptNum = (String) in.readObject();
 			searchImage = readImage();
 			System.out.println("선택한 사람의 정보를 읽었습니다.");
-			System.out.println("name : "+searchName+"| Phone : "+searchPhone+"| Email : "+searchEmail+"| DeptNum : "+ searchDeptNum);
-		}catch(Exception e) {
+			System.out.println("name : " + searchName + "| Phone : " + searchPhone + "| Email : " + searchEmail
+					+ "| DeptNum : " + searchDeptNum);
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("searchPersonStart 오류");
 		}
@@ -332,7 +340,7 @@ public class ClientConnection {
 
 	private void connectToServer() {
 		try {
-			socket = new Socket(serverAddress, serverPort);
+			Socket socket = new Socket(serverAddress, serverPort);
 			out = new ObjectOutputStream(socket.getOutputStream());
 			in = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {

@@ -256,7 +256,4 @@ public class Information {
 		System.out.println(setPwd + " == " + setPhone + " == " + setEmail);
 		System.out.println("clientsend 끝났다");
 	}
-//	public static void main(String[] args) {
-//		Information info = new Information();
-//	}
 }

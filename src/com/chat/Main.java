@@ -1,13 +1,20 @@
 package com.chat;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public class Main {
+	static Image imgem;
+
 	public static void main(String[] args) {
 		// 클라이언트 연결 관리 클래스 생성
 
-		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5000);
+		ClientConnection clientConnection = new ClientConnection("14.42.124.35", 5010);
 
 		Thread messageReceiverThread = new Thread(new Runnable() {
 			public void run() {
@@ -28,7 +35,26 @@ public class Main {
 					mainFrame.home_email.setText("이메일 : " + adapter.getEmail());
 					mainFrame.home_num.setText("전화번호 : " + adapter.getPhone());
 					mainFrame.home_deptNum.setText("내선번호 : " + adapter.getNum());
-					mainFrame.search_DBlist.setListData(clientConnection.getNameTree());
+					if (check.equals("[nameTree]")) {
+						mainFrame.search_DBlist.setListData(clientConnection.getNameTree());
+					}
+					if (check.equals("[searchPerson]")) {
+						mainFrame.result_Name.setText("이름 : " + clientConnection.searchName);
+						mainFrame.result_Email.setText("이메일 : " + clientConnection.searchEmail);
+						mainFrame.result_Num.setText("내선번호 : " + clientConnection.searchDeptNum);
+						mainFrame.result_Phone.setText("전화번호 : " + clientConnection.searchPhone);
+
+						BufferedImage originalImage = clientConnection.getSearchImage();
+						int newWidth = 165; // 원하는 너비
+						int newHeight = 190; // 원하는 높이
+
+						BufferedImage resizedImage = resize(originalImage, newWidth, newHeight);
+						ImageIcon result_pic = new ImageIcon(resizedImage);
+						mainFrame.result_Photo_Label.setIcon(result_pic);
+
+						mainFrame.result_Photo.revalidate();
+						mainFrame.result_Photo.repaint();
+					}
 					if (check.equals("[chat]")) {
 						try {
 							System.out.println("메시지 대기 중...");
@@ -67,4 +93,16 @@ public class Main {
 		});
 		messageReceiverThread.start();
 	}
+
+	public static BufferedImage resize(BufferedImage img, int newWidth, int newHeight) {
+		Image tmp = img.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+		BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+
+		Graphics2D g2d = resizedImage.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
+
+		return resizedImage;
+	}
+
 }

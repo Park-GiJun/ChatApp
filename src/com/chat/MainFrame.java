@@ -49,10 +49,9 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class MainFrame extends JFrame {
+
 	private static final long serialVersionUID = 1L;
 	// ClientConnection 객체 추가
 	private ClientConnection clientConnection;
@@ -74,7 +73,6 @@ public class MainFrame extends JFrame {
 	Image icon = Toolkit.getDefaultToolkit().getImage(username + "/git/ChatApp/src/com/chat/chats/icon.png");
 	private JLabel logo_Img = new JLabel(img);
 	Color aColor = new Color(211, 211, 211);
-
 	Color bColor = new Color(45, 47, 59);
 	Color cColor = new Color(109, 134, 154);
 	Color dColor = new Color(192, 210, 219);
@@ -114,7 +112,8 @@ public class MainFrame extends JFrame {
 
 	// 서치 결과
 	JPanel result_Panel = new JPanel();
-	JLabel result_Photo = new JLabel();
+	JPanel result_Photo = new JPanel();
+	JLabel result_Photo_Label = new JLabel();
 	JLabel result_NameLabel = new JLabel();
 	JLabel result_Name = new JLabel();
 	JLabel result_PhoneLabel = new JLabel();
@@ -124,10 +123,7 @@ public class MainFrame extends JFrame {
 	JLabel result_NumLabel = new JLabel();
 	JLabel result_Num = new JLabel();
 	JLabel search_Num = new JLabel();
-	String search_name;
-	String search_phone;
-	String search_email;
-	String search_num;
+
 	// 메세지 패널
 	JPanel message_Panel = new JPanel();
 	JPanel message_Box = new JPanel();
@@ -335,7 +331,7 @@ public class MainFrame extends JFrame {
 		loginPanel.setBackground(cColor);
 		left_Panel.setBackground(aColor);
 
-		result_Photo.setBackground(eColor);
+		result_Photo.setBackground(Color.BLACK);
 
 		// 변경 패널
 		main_Panel.add(card_Panel);
@@ -412,7 +408,7 @@ public class MainFrame extends JFrame {
 		search_List.add(search_btnclick);
 
 		// 검색 결과 페이지 (search_Page) 설정
-		// 사진 - 이름 - 전화번호 이메일 내선번호 
+		// 사진 - 이름 - 전화번호 이메일 내선번호
 		search_Page.setBounds(230, 0, 470, 560);
 		search_Page.setBackground(aColor);
 		search_Page.setLayout(null);
@@ -420,24 +416,15 @@ public class MainFrame extends JFrame {
 		result_Panel.setBounds(320, 0, 470, 560);
 		result_Panel.setBackground(aColor);
 		result_Panel.setLayout(null);
-		result_Panel.setVisible(false);
-		result_Photo.setBounds(290, 80, 135, 160);
-		result_NameLabel.setText("이름: ");
-		result_NameLabel.setBounds(50, 230, 40, 15);
-		result_Name.setText(search_name);
-		result_Name.setBounds(90, 230, 50, 15);
-		result_PhoneLabel.setText("휴대폰: ");
-		result_PhoneLabel.setBounds(50, 255, 50, 15);
-		result_Phone.setText(search_phone);
-		result_Phone.setBounds(100, 255, 100, 15);
-		result_EmailLabel.setText("이메일: ");
-		result_EmailLabel.setBounds(50, 280, 50, 15);
-		result_Email.setText(search_email);
-		result_Email.setBounds(100, 280, 150, 15);
-		result_NumLabel.setText("내선번호: ");
-		result_NumLabel.setBounds(50, 305, 60, 15);
-		result_Num.setText(search_num);
-		result_Num.setBounds(110, 305, 50, 15);
+		result_Panel.setVisible(true);
+		;
+		result_Photo.setBackground(aColor);
+		result_Photo.setBounds(60, 60, 165, 190);
+		result_Name.setBounds(70, 270, 150, 15);
+		;
+		result_Phone.setBounds(70, 295, 150, 15);
+		result_Email.setBounds(70, 320, 150, 15);
+		result_Num.setBounds(70, 345, 150, 15);
 
 		result_Panel.add(result_NameLabel);
 		result_Panel.add(result_Name);
@@ -448,6 +435,7 @@ public class MainFrame extends JFrame {
 		result_Panel.add(result_Email);
 		result_Panel.add(result_NumLabel);
 		result_Panel.add(result_Num);
+		result_Photo.add(result_Photo_Label);
 
 		// 검색 리스트 패널 (search_listPanel) 설정
 		search_listPanel.setBounds(0, 80, 230, 450);
@@ -471,22 +459,23 @@ public class MainFrame extends JFrame {
 				System.out.println("search 버튼 이벤트 끝났다");
 			}
 		});
+		search_DBlist.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 1) {
+					int selectedIndex = search_DBlist.getSelectedIndex();
+					if (selectedIndex != -1) {
+						System.out.println("리스트 선택");
+						String selectedValue = search_DBlist.getSelectedValue();
+						System.out.println("리스트 선택: " + selectedValue);
+						System.out.println("인덱스: " + selectedIndex);
 
-		search_DBlist.addListSelectionListener(new ListSelectionListener() {
-			private boolean isAdjusting = false;
+						// 여기에서 원하는 동작 수행
+						clientConnection.searchPerson(clientConnection.nameTree[selectedIndex][1]);
+						result_Panel.setVisible(true);
 
-			public void valueChanged(ListSelectionEvent e) {
-				if (!e.getValueIsAdjusting() && !isAdjusting) {
-					isAdjusting = true;
-					System.out.println("리스트 선택");
-					String name = search_DBlist.getSelectedValue();
-	int nameIndex = search_DBlist.getSelectedIndex();
-				System.out.println(name);
-				System.out.println(nameIndex);
-				
-				clientConnection.searchPerson(clientConnection.nameTree[nameIndex][1]);
-					sop(name);
-					isAdjusting = false;
+						System.out.println("검색 끝났소. 집 가라 ");
+					}
 				}
 			}
 		});
@@ -540,17 +529,12 @@ public class MainFrame extends JFrame {
 		// message_chatlog에 messageDisplayPanel을 추가합니다.
 		message_chatlog.setViewportView(messageDisplayArea);
 
-//      // 사용자 추가
+//		// 사용자 추가
 		clickedRecipient = null;
-
 		addPerson.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				message_postBtn.setBackground(dColor);
 				String recipient = JOptionPane.showInputDialog("수신자: ");
-				if (recipientButtons.containsKey(recipient)) {
-					System.out.println("이미 같은 이름의 버튼이 존재합니다.");
-					return; // 이미 존재하면 더 이상 진행하지 않음
-				}
 				JButton personButton = new JButton(recipient);
 				personButton.setBackground(dColor);
 				String buttonText = recipient;
@@ -584,7 +568,6 @@ public class MainFrame extends JFrame {
 				});
 			}
 		});
-
 		message_sendBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				messageDisplayArea.setText("");
@@ -600,7 +583,6 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-
 		message_sendBox.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -619,7 +601,6 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-
 		home_Btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelLayout.show(card_Panel, "homePanel");
@@ -637,11 +618,10 @@ public class MainFrame extends JFrame {
 				home_Btn.setBackground(eColor);
 				message_Btn.setBackground(eColor);
 				info_Btn.setBackground(eColor);
-				System.out.println("리스트 선택");
-				String name = search_DBlist.getSelectedValue();
-				int nameIndex = search_DBlist.getSelectedIndex();
-				System.out.println(name);
-				System.out.println(nameIndex);
+				String search = search_bar.getText();
+				System.out.println(search);
+				clientConnection.nameTree(search);
+				System.out.println("search 버튼 이벤트 끝났다");
 			}
 		});
 		message_Btn.addActionListener(new ActionListener() {
@@ -653,7 +633,6 @@ public class MainFrame extends JFrame {
 				info_Btn.setBackground(eColor);
 			}
 		});
-
 		message_postBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String message = message_sendBox.getText();
@@ -667,12 +646,9 @@ public class MainFrame extends JFrame {
 				}
 			}
 		});
-
 		home_todo.setLayout(new BoxLayout(home_todo, BoxLayout.Y_AXIS));
-
 		// 할 일 목록을 관리할 리스트
 		List<JCheckBox> todoList = new ArrayList<>();
-
 		home_todo.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -750,7 +726,6 @@ public class MainFrame extends JFrame {
 		File file = new File(filePath);
 		File parentDir = file.getParentFile();
 		LocalDateTime currentDateTime = LocalDateTime.now(); // 현재 시간 가져오기
-
 		try {
 			if (!parentDir.exists()) {
 				// 디렉토리가 존재하지 않으면 생성
@@ -900,15 +875,15 @@ public class MainFrame extends JFrame {
 	}
 
 	void makeBtn(String recipient) {
+
 		if (recipientButtons.containsKey(recipient)) {
 			System.out.println("이미 같은 이름의 버튼이 존재합니다.");
 			return; // 이미 존재하면 더 이상 진행하지 않음
 		}
-		message_postBtn.setBackground(dColor);
 		JButton personButton = new JButton(recipient);
-		personButton.setBackground(dColor);
 		String buttonText = recipient;
 		personButton.setMaximumSize(new Dimension(90, 50)); // 최대 크기 설정
+		personButton.setBackground(dColor);
 		message_Box.add(personButton);
 		recipientButtons.put(recipient, personButton);
 		message_Box.revalidate(); // 레이아웃을 갱신하여 버튼을 새 위치에 배치
@@ -920,7 +895,6 @@ public class MainFrame extends JFrame {
 				messageDisplayArea.setText("");
 				String message = message_sendBox.getText();
 				clickedRecipient = recipient;
-				message_sendBtn.setText(recipient);
 				if (message != null) {
 					showMessageForRecipient(buttonText);
 					sendMessage(message, recipient);
@@ -956,5 +930,4 @@ public class MainFrame extends JFrame {
 	void sop(String a) {
 		System.out.println(a);
 	}
-
 }

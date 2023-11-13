@@ -3,7 +3,7 @@
   <backgroundColor>
     <red>255</red>
     <green>255</green>
-    <blue>206</blue>
+    <blue>255</blue>
   </backgroundColor>
   <foregroundColor>
     <red>199</red>
@@ -24,7 +24,11 @@
   <targetConnections/>
   <children>
     <net.java.amateras.uml.sequencediagram.model.LifeLineModel>
-      <backgroundColor reference="../../../backgroundColor"/>
+      <backgroundColor>
+        <red>0</red>
+        <green>0</green>
+        <blue>255</blue>
+      </backgroundColor>
       <foregroundColor reference="../../../foregroundColor"/>
       <showIcon>true</showIcon>
       <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../.."/>
@@ -47,7 +51,7 @@
       <targetConnections/>
       <children>
         <net.java.amateras.uml.sequencediagram.model.ActivationModel>
-          <backgroundColor reference="../../../../../backgroundColor"/>
+          <backgroundColor reference="../../../backgroundColor"/>
           <foregroundColor reference="../../../../../foregroundColor"/>
           <showIcon>true</showIcon>
           <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../.."/>
@@ -68,6 +72,7 @@
           </constraint>
           <sourceConnections>
             <net.java.amateras.uml.sequencediagram.model.SyncMessageModel>
+              <backgroundColor reference="../../../../../../../backgroundColor"/>
               <showIcon>true</showIcon>
               <listeners serialization="custom">
                 <java.beans.PropertyChangeSupport>
@@ -80,7 +85,11 @@
               </listeners>
               <source class="net.java.amateras.uml.sequencediagram.model.ActivationModel" reference="../../.."/>
               <target class="net.java.amateras.uml.sequencediagram.model.ActivationModel">
-                <backgroundColor reference="../../../../../../../../backgroundColor"/>
+                <backgroundColor>
+                  <red>0</red>
+                  <green>0</green>
+                  <blue>255</blue>
+                </backgroundColor>
                 <foregroundColor reference="../../../../../../../../foregroundColor"/>
                 <showIcon>true</showIcon>
                 <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../.."/>
@@ -101,6 +110,7 @@
                 </constraint>
                 <sourceConnections>
                   <net.java.amateras.uml.sequencediagram.model.ReturnMessageModel>
+                    <backgroundColor reference="../../../../../../../../../../backgroundColor"/>
                     <showIcon>true</showIcon>
                     <listeners serialization="custom">
                       <java.beans.PropertyChangeSupport>
@@ -118,6 +128,7 @@
                     <direction>false</direction>
                   </net.java.amateras.uml.sequencediagram.model.ReturnMessageModel>
                   <net.java.amateras.uml.sequencediagram.model.SyncMessageModel>
+                    <backgroundColor reference="../../../../../../../../../../backgroundColor"/>
                     <showIcon>true</showIcon>
                     <listeners serialization="custom">
                       <java.beans.PropertyChangeSupport>
@@ -130,7 +141,11 @@
                     </listeners>
                     <source class="net.java.amateras.uml.sequencediagram.model.ActivationModel" reference="../../.."/>
                     <target class="net.java.amateras.uml.sequencediagram.model.ActivationModel">
-                      <backgroundColor reference="../../../../../../../../../../../backgroundColor"/>
+                      <backgroundColor>
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>255</blue>
+                      </backgroundColor>
                       <foregroundColor reference="../../../../../../../../../../../foregroundColor"/>
                       <showIcon>true</showIcon>
                       <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../../../../.."/>
@@ -151,6 +166,7 @@
                       </constraint>
                       <sourceConnections>
                         <net.java.amateras.uml.sequencediagram.model.ReturnMessageModel>
+                          <backgroundColor reference="../../../../../../../../../../../../../backgroundColor"/>
                           <showIcon>true</showIcon>
                           <listeners serialization="custom">
                             <java.beans.PropertyChangeSupport>
@@ -168,6 +184,7 @@
                           <direction>false</direction>
                         </net.java.amateras.uml.sequencediagram.model.ReturnMessageModel>
                         <net.java.amateras.uml.sequencediagram.model.SyncMessageModel>
+                          <backgroundColor reference="../../../../../../../../../../../../../backgroundColor"/>
                           <showIcon>true</showIcon>
                           <listeners serialization="custom">
                             <java.beans.PropertyChangeSupport>
@@ -180,7 +197,11 @@
                           </listeners>
                           <source class="net.java.amateras.uml.sequencediagram.model.ActivationModel" reference="../../.."/>
                           <target class="net.java.amateras.uml.sequencediagram.model.ActivationModel">
-                            <backgroundColor reference="../../../../../../../../../../../../../../backgroundColor"/>
+                            <backgroundColor>
+                              <red>0</red>
+                              <green>0</green>
+                              <blue>255</blue>
+                            </backgroundColor>
                             <foregroundColor reference="../../../../../../../../../../../../../../foregroundColor"/>
                             <showIcon>true</showIcon>
                             <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../../../../../../../.."/>
@@ -201,6 +222,7 @@
                             </constraint>
                             <sourceConnections>
                               <net.java.amateras.uml.sequencediagram.model.ReturnMessageModel>
+                                <backgroundColor reference="../../../../../../../../../../../../../../../../backgroundColor"/>
                                 <showIcon>true</showIcon>
                                 <listeners serialization="custom">
                                   <java.beans.PropertyChangeSupport>
@@ -224,7 +246,7 @@
                             <children/>
                             <filterProperty/>
                             <ownerLine>
-                              <backgroundColor reference="../../../../../../../../../../../../../../../backgroundColor"/>
+                              <backgroundColor reference="../../backgroundColor"/>
                               <foregroundColor reference="../../../../../../../../../../../../../../../foregroundColor"/>
                               <showIcon>true</showIcon>
                               <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../../../../../../../../.."/>
@@ -250,7 +272,7 @@
                               </children>
                               <filterProperty/>
                               <owner>
-                                <backgroundColor reference="../../../../../../../../../../../../../../../../backgroundColor"/>
+                                <backgroundColor reference="../../../backgroundColor"/>
                                 <foregroundColor reference="../../../../../../../../../../../../../../../../foregroundColor"/>
                                 <showIcon>true</showIcon>
                                 <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../../../../../../../../../.."/>
@@ -296,7 +318,7 @@
                       <children/>
                       <filterProperty/>
                       <ownerLine>
-                        <backgroundColor reference="../../../../../../../../../../../../backgroundColor"/>
+                        <backgroundColor reference="../../backgroundColor"/>
                         <foregroundColor reference="../../../../../../../../../../../../foregroundColor"/>
                         <showIcon>true</showIcon>
                         <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../../../../../.."/>
@@ -322,7 +344,7 @@
                         </children>
                         <filterProperty/>
                         <owner>
-                          <backgroundColor reference="../../../../../../../../../../../../../backgroundColor"/>
+                          <backgroundColor reference="../../../backgroundColor"/>
                           <foregroundColor reference="../../../../../../../../../../../../../foregroundColor"/>
                           <showIcon>true</showIcon>
                           <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../../../../../../.."/>
@@ -368,7 +390,7 @@
                 <children/>
                 <filterProperty/>
                 <ownerLine>
-                  <backgroundColor reference="../../../../../../../../../backgroundColor"/>
+                  <backgroundColor reference="../../backgroundColor"/>
                   <foregroundColor reference="../../../../../../../../../foregroundColor"/>
                   <showIcon>true</showIcon>
                   <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../../.."/>
@@ -394,7 +416,7 @@
                   </children>
                   <filterProperty/>
                   <owner>
-                    <backgroundColor reference="../../../../../../../../../../backgroundColor"/>
+                    <backgroundColor reference="../../../backgroundColor"/>
                     <foregroundColor reference="../../../../../../../../../../foregroundColor"/>
                     <showIcon>true</showIcon>
                     <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../../../../../../../.."/>
@@ -444,7 +466,7 @@
       </children>
       <filterProperty/>
       <owner class="net.java.amateras.uml.sequencediagram.model.ActorModel">
-        <backgroundColor reference="../../../../backgroundColor"/>
+        <backgroundColor reference="../../backgroundColor"/>
         <foregroundColor reference="../../../../foregroundColor"/>
         <showIcon>true</showIcon>
         <parent class="net.java.amateras.uml.sequencediagram.model.InteractionModel" reference="../../../.."/>

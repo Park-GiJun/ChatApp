@@ -288,8 +288,4 @@ public class SignUp extends JFrame {
       });
 
    }
-
-//   public static void main(String[] args) {
-//      SignUp sign = new SignUp();
-//   }
 }

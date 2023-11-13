@@ -57,7 +57,11 @@
           </listeners>
           <source class="net.java.amateras.uml.usecasediagram.model.UsecaseActorModel" reference="../../.."/>
           <target class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-            <backgroundColor reference="../../../../../../backgroundColor"/>
+            <backgroundColor>
+              <red>0</red>
+              <green>0</green>
+              <blue>255</blue>
+            </backgroundColor>
             <foregroundColor reference="../../../../../../foregroundColor"/>
             <showIcon>true</showIcon>
             <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../.."/>
@@ -74,7 +78,7 @@
               <height>40</height>
               <width>100</width>
               <x>800</x>
-              <y>189</y>
+              <y>195</y>
             </constraint>
             <sourceConnections>
               <net.java.amateras.uml.usecasediagram.model.UsecaseIncludeModel>
@@ -90,7 +94,11 @@
                 </listeners>
                 <source class="net.java.amateras.uml.usecasediagram.model.UsecaseModel" reference="../../.."/>
                 <target class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                  <backgroundColor reference="../../../../../../../../../backgroundColor"/>
+                  <backgroundColor>
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>255</blue>
+                  </backgroundColor>
                   <foregroundColor reference="../../../../../../../../../foregroundColor"/>
                   <showIcon>true</showIcon>
                   <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../.."/>
@@ -106,8 +114,8 @@
                   <constraint>
                     <height>40</height>
                     <width>100</width>
-                    <x>545</x>
-                    <y>265</y>
+                    <x>544</x>
+                    <y>271</y>
                   </constraint>
                   <sourceConnections/>
                   <targetConnections>
@@ -123,7 +131,11 @@
                         </java.beans.PropertyChangeSupport>
                       </listeners>
                       <source class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                        <backgroundColor reference="../../../../../../../../../../../../backgroundColor"/>
+                        <backgroundColor>
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>255</blue>
+                        </backgroundColor>
                         <foregroundColor reference="../../../../../../../../../../../../foregroundColor"/>
                         <showIcon>true</showIcon>
                         <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../../../../.."/>
@@ -157,7 +169,11 @@
                             </listeners>
                             <source class="net.java.amateras.uml.usecasediagram.model.UsecaseModel" reference="../../.."/>
                             <target class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                              <backgroundColor reference="../../../../../../../../../../../../../../../backgroundColor"/>
+                              <backgroundColor>
+                                <red>0</red>
+                                <green>0</green>
+                                <blue>255</blue>
+                              </backgroundColor>
                               <foregroundColor reference="../../../../../../../../../../../../../../../foregroundColor"/>
                               <showIcon>true</showIcon>
                               <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../../../../../../../.."/>
@@ -234,7 +250,11 @@
                                   </listeners>
                                   <source class="net.java.amateras.uml.usecasediagram.model.UsecaseActorModel" reference="../../.."/>
                                   <target class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                                    <backgroundColor reference="../../../../../../../../../../../../../../../../../../backgroundColor"/>
+                                    <backgroundColor>
+                                      <red>0</red>
+                                      <green>0</green>
+                                      <blue>255</blue>
+                                    </backgroundColor>
                                     <foregroundColor reference="../../../../../../../../../../../../../../../../../../foregroundColor"/>
                                     <showIcon>true</showIcon>
                                     <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../../../../../../../../../../.."/>
@@ -292,7 +312,11 @@
                                   </listeners>
                                   <source class="net.java.amateras.uml.usecasediagram.model.UsecaseActorModel" reference="../../.."/>
                                   <target class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                                    <backgroundColor reference="../../../../../../../../../../../../../../../../../../backgroundColor"/>
+                                    <backgroundColor>
+                                      <red>0</red>
+                                      <green>0</green>
+                                      <blue>255</blue>
+                                    </backgroundColor>
                                     <foregroundColor reference="../../../../../../../../../../../../../../../../../../foregroundColor"/>
                                     <showIcon>true</showIcon>
                                     <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../../../../../../../../../../.."/>
@@ -340,7 +364,11 @@
                                         </listeners>
                                         <source class="net.java.amateras.uml.usecasediagram.model.UsecaseModel" reference="../../.."/>
                                         <target class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                                          <backgroundColor reference="../../../../../../../../../../../../../../../../../../../../../backgroundColor"/>
+                                          <backgroundColor>
+                                            <red>0</red>
+                                            <green>0</green>
+                                            <blue>255</blue>
+                                          </backgroundColor>
                                           <foregroundColor reference="../../../../../../../../../../../../../../../../../../../../../foregroundColor"/>
                                           <showIcon>true</showIcon>
                                           <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../../../../../../../../../../../../../.."/>
@@ -392,7 +420,11 @@
                                   </listeners>
                                   <source class="net.java.amateras.uml.usecasediagram.model.UsecaseActorModel" reference="../../.."/>
                                   <target class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                                    <backgroundColor reference="../../../../../../../../../../../../../../../../../../backgroundColor"/>
+                                    <backgroundColor>
+                                      <red>0</red>
+                                      <green>0</green>
+                                      <blue>255</blue>
+                                    </backgroundColor>
                                     <foregroundColor reference="../../../../../../../../../../../../../../../../../../foregroundColor"/>
                                     <showIcon>true</showIcon>
                                     <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../../../../../../../../../../.."/>
@@ -469,7 +501,11 @@
                         </java.beans.PropertyChangeSupport>
                       </listeners>
                       <source class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                        <backgroundColor reference="../../../../../../../../../../../../backgroundColor"/>
+                        <backgroundColor>
+                          <red>0</red>
+                          <green>0</green>
+                          <blue>255</blue>
+                        </backgroundColor>
                         <foregroundColor reference="../../../../../../../../../../../../foregroundColor"/>
                         <showIcon>true</showIcon>
                         <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../../../../.."/>
@@ -536,7 +572,11 @@
                 </listeners>
                 <source class="net.java.amateras.uml.usecasediagram.model.UsecaseModel" reference="../../.."/>
                 <target class="net.java.amateras.uml.usecasediagram.model.UsecaseModel">
-                  <backgroundColor reference="../../../../../../../../../backgroundColor"/>
+                  <backgroundColor>
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>255</blue>
+                  </backgroundColor>
                   <foregroundColor reference="../../../../../../../../../foregroundColor"/>
                   <showIcon>true</showIcon>
                   <parent class="net.java.amateras.uml.usecasediagram.model.UsecaseRootModel" reference="../../../../../../../../.."/>
